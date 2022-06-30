@@ -58,15 +58,15 @@ static const Layout layouts[] = {
 static CustomTagLayout tags[][TAGS] = {
 // monitor 0
 // tag name,    layout idx (see layouts)
-{{"1/web",               2}, // monocle
- {"2/mail",              0},
- {"3/chat",              5}, // gaplessgrid
- {"4/rss",               0},
+{{"1/",                 2}, // monocle
+ {"2/",                 0},
+ {"3/",                 5}, // gaplessgrid
+ {"4/",                 0},
  {"5",                   0},
  {"6",                   0},
  {"7",                   0},
  {"8",                   0},
- {"9/music",             2}},
+ {"9/",                 2}},
 
 // monitor 1
 // ...
