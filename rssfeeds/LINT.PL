@@ -21,6 +21,7 @@ my %pkgsrc = map { $_ => 1 } qw(
 	dwm60cf st084cf xkbswitch dwmblocks
 	pkgmk pkgman revdep rejmerge pkgutils pkgmaint
 	trinity-gtk-theme trinity-icon-theme trinity-extra-theme
+	jukebox
 	);
 
 my %pkgdb = map { chomp; $_, 1} qx(pkgman printf "%n\n");
