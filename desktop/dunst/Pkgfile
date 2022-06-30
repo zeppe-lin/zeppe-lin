@@ -1,0 +1,17 @@
+# Description: Lightweight replacement for the notification daemons provided by most desktop environments
+# URL:         https://dunst-project.org/
+# Depends on:  dbus gdk-pixbuf pango xorg-libxinerama xorg-libxrandr xorg-libxscrnsaver libnotify
+
+name=dunst
+version=1.8.1
+release=1
+source=https://github.com/dunst-project/$name/archive/v$version/$name-$version.tar.gz
+
+build() {
+	cd $name-$version
+
+	export WAYLAND=0
+
+	make V=1
+	make PREFIX=/usr SYSCONFDIR=/etc DESTDIR=$PKG install
+}
