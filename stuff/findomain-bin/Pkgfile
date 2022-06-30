@@ -1,12 +1,11 @@
 # Description: Subdomain enumerator
 # URL:         https://github.com/Findomain/Findomain
-# Depends on:
 
-name=findomain
+name=findomain-bin
 version=8.1.1
 release=1
 source=$name-$version-i386
 
 build() {
-	install -m 755 -D $name-$version-i386 $PKG/usr/bin/$name
+	install -m 755 -D $name-$version-i386 $PKG/usr/bin/findomain
 }
