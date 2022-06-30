@@ -1,0 +1,18 @@
+# Description: Display directory tree
+# URL:         http://mama.indstate.edu/users/ice/tree/
+
+name=tree
+version=2.0.2
+release=1
+source=ftp://mama.indstate.edu/linux/$name/$name-$version.tgz
+
+build() {
+	cd $name-$version
+
+	sed "s|CFLAGS=|CFLAGS=$CFLAGS |" -i Makefile
+
+	make
+
+	install -m 0755 -Dt $PKG/usr/bin/ tree
+	install -m 0644 -Dt $PKG/usr/share/man/man1/ doc/tree.1
+}

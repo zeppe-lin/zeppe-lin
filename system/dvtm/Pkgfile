@@ -1,0 +1,25 @@
+# Description: Dynamic virtual terminal manager
+# URL:         http://www.brain-dump.org/projects/dvtm
+# Depends on:  ncurses
+
+name=dvtm
+version=0.15
+release=1
+source="http://www.brain-dump.org/projects/$name/$name-$version.tar.gz
+	config.def.h"
+
+build() {
+	cd $name-$version
+
+	cp $SRC/config.def.h config.h
+	[ -f $PKGMK_ROOT/config.h ] && cp $PKGMK_ROOT/config.h .
+
+	sed -i 's/CFLAGS = /CFLAGS +=/' config.mk
+
+	make clean
+	make
+	make PREFIX=/usr DESTDIR=$PKG install
+
+	# conflicts with ncurses
+	rm -r $PKG/usr/share/terminfo
+}

@@ -1,0 +1,15 @@
+# Description: Expose cryptographic recipes and primitives
+# URL:         https://pypi.org/project/cryptography/
+# Depends on:  python3-asn1crypto python3-cffi python3-idna python3-six
+
+name=python3-cryptography
+version=3.3.2
+release=1
+source=https://pypi.python.org/packages/source/c/cryptography/cryptography-$version.tar.gz
+
+build() {
+	cd ${name#*-}-$version
+
+	/usr/bin/python3 setup.py build
+	/usr/bin/python3 setup.py install --prefix=/usr --root=$PKG --optimize=1 --skip-build
+}

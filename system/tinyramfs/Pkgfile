@@ -1,0 +1,20 @@
+# Description: Tiny initramfs written in POSIX shell
+# URL:         file:///usr/src/zeppe-lin/system/tinyramfs
+
+name=tinyramfs
+version=0.2.1
+release=1
+source="device-helper
+	init
+	Makefile
+	tinyramfs.8.pod
+	tinyramfs.cmdline.7.pod
+	tinyramfs.config.5.pod
+	tinyramfs.hooks.7.pod
+	tinyramfs.in"
+
+build() {
+	cp -r $PKGMK_ROOT/hooks .
+
+	make VERSION=$version DESTDIR=$PKG PREFIX=/usr install
+}

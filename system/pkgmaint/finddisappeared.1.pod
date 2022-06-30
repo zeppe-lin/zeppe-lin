@@ -1,0 +1,49 @@
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+finddisappeared - find files that are owned by package manager but disappeared
+
+=head1 SYNOPSIS
+
+B<finddisappeared> [I<OPTION>]
+
+=head1 DESCRIPTION
+
+B<finddisappeared> lists the files that are owned by package manager
+(listed in the package database), but missing (somehow disappeared) on the
+actual file system.
+
+=head1 OPTIONS
+
+Mandatory arguments to long options are mandatory for short options too.
+
+=over 8
+
+=item B<-r>, B<--root> I<PATH>
+
+Specify alternate root location (default is C</>).
+
+=item B<-v>, B<--version>
+
+Print version and exit.
+
+=item B<-h>, B<--help>
+
+Print help and exit.
+
+=back
+
+=head1 AUTHORS
+
+Martil Opel L<mo@obbl.net>
+
+=head1 SEE ALSO
+
+L<finddeps(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/pkgmaint/finddeps.1.pod>,
+L<finddisowned(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/pkgmaint/finddisowned.1.pod>,
+L<findredundantdeps(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/pkgmaint/findredundantdeps.1.pod>
+
+=cut

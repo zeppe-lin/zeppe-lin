@@ -1,0 +1,33 @@
+# Description: General Purpose video player based on MPlayer and mplayer2
+# URL:         https://mpv.io
+# Depends on:  ffmpeg libjpeg-turbo mesa xorg-libxinerama xorg-libxscrnsaver
+
+name=mpv
+version=0.34.1
+release=3
+source="https://github.com/$name-player/$name/archive/v$version/$name-v$version.tar.gz
+	https://waf.io/waf-2.0.9"
+
+build() {
+	cd $name-$version
+
+	install -m 0755 $SRC/waf-2.0.9 waf
+
+	pkgman isinst libcdio-paranoia && _PKGMK_MPV="$_PKGMK_MPV --enable-cdda"
+	pkgman isinst libdvdnav        && _PKGMK_MPV="$_PKGMK_MPV --enable-dvdnav"
+
+	/usr/bin/python3 waf configure $_PKGMK_MPV \
+		--prefix=/usr \
+		--enable-libarchive \
+		--enable-libmpv-shared \
+		--disable-lcms \
+		-j ${JOBS-1}
+
+	/usr/bin/python3 waf build -v
+	/usr/bin/python3 waf install --destdir=$PKG
+
+	# remove junk
+	rm -r $PKG/usr/share/doc/
+	# remove zsh completion
+	rm -r $PKG/usr/share/zsh/
+}

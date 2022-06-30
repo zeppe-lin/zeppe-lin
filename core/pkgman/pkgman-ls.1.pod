@@ -1,0 +1,35 @@
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+pkgman-ls - print out a listing of the package's directory
+
+=head1 SYNOPSIS
+
+B<pkgman> ls [B<--path>] I<PKGNAME>...
+
+=head1 DESCRIPTION
+
+Prints out a listing of the package's directory from the packages
+sources.
+
+=head1 OPTIONS
+
+=over 8
+
+=item B<--path>
+
+Show path info.
+
+=back
+
+=head1 EXIT STATUS
+
+0 if success, 255 if package source is not found.
+
+=cut
+
+# vim:sw=2:ts=2:sts=2:et:cc=72
+# End of file.

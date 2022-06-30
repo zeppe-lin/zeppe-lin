@@ -1,0 +1,33 @@
+README tinyramfs
+
+
+  INITRAMFS WITH ENCRYPTED ROOT
+
+    1. Install cryptsetup (of course).
+
+    2. In manual kernel setup is recommended to include the following
+       necessary features (statically or as modules).
+
+    General Setup --->
+      [*] Initial RAM filesystem and RAM disk (iniramfs/initrd) support
+
+    Device Drivers --->
+      Multiple devices driver support (RAID and LVM) --->
+        [*] Device mapper support
+        [*] Crypt target support
+
+    Cryptographic API --->
+      <*> XTS support
+      <*> SHA224 and SHA256 digest algorithm
+      <*> AES cipher algorithms
+      <*> AES cipher algorithms (x86_64)
+      <*> User-space interface for hash algorithms
+      <*> User-space interface for symmetric key cipher algorithms
+
+    3. Read the tinyramfs' manual pages to see the various
+       configuration settings:
+
+       $ apropos tinyramfs
+
+
+End of file.

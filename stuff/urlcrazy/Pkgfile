@@ -1,0 +1,29 @@
+# Description: Domain typo squatting, URL hijacking, phishing, and corporate espionage
+# URL:         https://github.com/urbanadventurer/urlcrazy
+# Depends on:  ruby
+
+name=urlcrazy
+version=0.7.3
+release=1
+source="https://github.com/urbanadventurer/$name/archive/v$version/$name-$version.tar.gz
+	$name.sh"
+
+build() {
+	cd $name-$version
+
+	rm README.md CHANGELOG.md
+
+	install -d $PKG/usr/bin $PKG/opt/$name
+	cp -a * $PKG/opt/$name
+
+	cd $PKG/opt/$name
+	bundle config set deployment 'false'
+	bundle config set no-cache 'false'
+	bundle config set --local path vendor/bundle
+	bundle config set --local without development test
+	bundle install -j ${JOBS:-1}
+	find vendor/bundle/ruby -exec chmod o+r '{}' \;
+	find vendor/bundle/ruby -name gem_make.out -o -name mkmf.log -delete
+
+	install -m 755 $SRC/$name.sh $PKG/usr/bin/$name
+}

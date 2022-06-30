@@ -1,0 +1,23 @@
+# Description: MP3 encoder
+# URL:         http://lame.sourceforge.net/
+# Depends on:  ncurses
+
+name=lame
+version=3.100
+release=1
+source=http://downloads.sourceforge.net/project/$name/$name/$version/$name-$version.tar.gz
+
+build() {
+	cd $name-$version
+
+	./configure \
+		--prefix=/usr \
+		--disable-analyzer-hooks \
+		--disable-gtktest \
+		--enable-nasm \
+
+	make V=1
+	make DESTDIR=$PKG install
+
+	rm -r $PKG/usr/share/doc
+}

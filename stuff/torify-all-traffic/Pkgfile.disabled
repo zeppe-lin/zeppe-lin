@@ -1,0 +1,17 @@
+# Description: Redirect all traffic through Tor network
+# URL:         file:///usr/src/zeppe-lin/stuff/torify-all-traffic
+# Depends on:  tor
+
+name=torify-all-traffic
+version=0.1
+release=2
+source="rc.torify torifyrc"
+
+build() {
+	install -m 750 -D $SRC/rc.torify $PKG/etc/rc.d/torify
+	install -g tor -o tor -m 600 -D $SRC/torifyrc $PKG/etc/tor/torifyrc
+
+	touch $PKG/etc/tor/torifyrc.control
+	chmod 600     $PKG/etc/tor/torifyrc.control
+	chown tor:tor $PKG/etc/tor/torifyrc.control
+}

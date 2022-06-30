@@ -1,0 +1,25 @@
+# Description:  Secure, configuration-free, P2P Skype replacement backend
+# URL:          https://github.com/TokTok/c-toxcore
+# Depends on:   libnsl libsodium
+# Optional:     libvpx opus
+
+name=toxcore
+version=0.2.18
+release=1
+source="https://github.com/TokTok/c-$name/archive/v$version/$name-$version.tar.gz
+	https://github.com/camgunz/cmp/archive/v20/cmp-20.tar.gz"
+
+build() {
+	mv cmp-20/* c-$name-$version/third_party/cmp/
+
+	cmake -S c-$name-$version -B build -G Ninja \
+		-D CMAKE_INSTALL_PREFIX=/usr \
+		-D CMAKE_INSTALL_LIBDIR=/usr/lib \
+		-D BUILD_TOXAV=off \
+		-D DHT_BOOTSTRAP=off \
+		-D BOOTSTRAP_DAEMON=off \
+		-D BUILD_TESTING=off \
+
+	ninja -C build -j ${JOBS:-1} -v
+	DESTDIR=$PKG ninja -C build install
+}

@@ -1,0 +1,45 @@
+# Description: Common C routines used by Gtk+ and other libs
+# URL:         https://www.gtk.org/
+# Depends on:  libffi libpcre zlib
+
+name=glib
+version=2.72.2
+release=2
+source="https://download.gnome.org/sources/$name/${version%.*}/$name-$version.tar.xz
+	gschemas.compiled"
+
+build() {
+	# remove libelf and util-linux dependencies
+	sed -i 's/HAVE_LIBELF/HAVE_KISS/'      $name-$version/gio/meson.build
+	sed -i 's/libmount_dep.found()/false/' $name-$version/meson.build
+
+	# don't build tests/fuzzing stuff
+	find . -type f -name meson.build -exec \
+		sed -i "/subdir('tests')/d;/subdir('fuzzing')/d" {} +
+
+	meson build $name-$version \
+		--prefix=/usr \
+		--wrap-mode=nodownload \
+		-D b_lto=true \
+		-D b_pie=true \
+		-D fam=false \
+		-D glib_debug=disabled \
+		-D gtk_doc=false \
+		-D installed_tests=false \
+		-D libelf=disabled \
+		-D libmount=disabled \
+		-D man=false \
+		-D nls=disabled \
+		-D selinux=disabled \
+		-D tests=false \
+
+	ninja -C build -j ${JOBS:-1} -v
+	DESTDIR=$PKG ninja -C build install
+
+	export PYTHONHASHSEED=0
+	/usr/bin/python3     -m compileall -d /usr/share/glib-2.0/codegen $PKG/usr/share/glib-2.0/codegen
+	/usr/bin/python3 -O  -m compileall -d /usr/share/glib-2.0/codegen $PKG/usr/share/glib-2.0/codegen
+	/usr/bin/python3 -OO -m compileall -d /usr/share/glib-2.0/codegen $PKG/usr/share/glib-2.0/codegen
+
+	install -m 0644 $SRC/gschemas.compiled $PKG/usr/share/glib-2.0/schemas/gschemas.compiled
+}

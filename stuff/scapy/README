@@ -1,0 +1,13 @@
+README scapy
+
+    REQUIREMENTS
+
+    Optional software for special features:
+
+    python3-matplotlib     ->  Plotting support
+    python3-pyx            ->  PostScript and PDF graphs drawing
+    graphviz, imagemagick  ->  Graph generation
+    python3-cryptography   ->  WEP, PKI and TLS support
+    sox                    ->  VOIP support
+
+End of file.

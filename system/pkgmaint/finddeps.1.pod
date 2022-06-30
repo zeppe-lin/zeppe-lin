@@ -1,0 +1,50 @@
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+finddeps - find linked dependencies for a package
+
+=head1 SYNOPSIS
+
+B<finddeps> [I<OPTION>] I<PKGNAME>
+
+=head1 DESCRIPTION
+
+B<finddeps> lists the dependencies of the installed package's dynamic
+executables and libraries.
+
+B<finddeps> operates on installed packages and requires
+L<ldd(1)|https://www.mankier.com/1/ldd>,
+L<pkginfo(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/pkgutils/pkginfo.8.pod>
+and
+L<pkgman(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/pkgman/pkgman.1.pod>.
+
+=head1 OPTIONS
+
+=over 8
+
+=item B<-v>, B<--version>
+
+Print version and exit.
+
+=item B<-h>, B<--help>
+
+Print help and exit.
+
+=back
+
+=head1 COPYRIGHT
+
+Copyright (c) 2021 Alexandr Savca <https://github.com/zeppe-lin>.
+
+License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.
+
+=head1 SEE ALSO
+
+L<finddisappeared(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/pkgmaint/finddisappeared.1.pod>,
+L<finddisowned(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/pkgmaint/finddisowned.1.pod>,
+L<findredundantdeps(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/pkgmaint/findredundantdeps.1.pod>
+
+=cut

@@ -1,0 +1,25 @@
+# Description: Headers defining the core protocol and extensions for the X Window System
+# URL:         http://xorg.freedesktop.org
+
+name=xorg-xorgproto
+version=2022.1
+release=1
+source=https://xorg.freedesktop.org/archive/individual/proto/xorgproto-$version.tar.bz2
+
+build() {
+	cd xorgproto-$version
+
+	./configure \
+		--prefix=/usr   \
+		--enable-legacy \
+
+	make V=1
+	make DESTDIR=$PKG install
+
+	# remove junk
+	rm -r   $PKG/usr/include/X11/extensions/apple* \
+		$PKG/usr/include/X11/extensions/windows* \
+		$PKG/usr/share/pkgconfig/applewmproto.pc \
+		$PKG/usr/share/pkgconfig/windowswmproto.pc \
+		$PKG/usr/share/doc/
+}

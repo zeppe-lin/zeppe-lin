@@ -1,0 +1,58 @@
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+pkgman-edit - edit the package's file
+
+=head1 SYNOPSIS
+
+B<pkgman> edit I<PKGNAME> [I<FILE>]
+
+=head1 DESCRIPTION
+
+Edit the package I<FILE> from the package source directory using the editor
+specified in the C<$EDITOR> environment variable.  If I<FILE> is not
+specified, C<Pkgfile> is used.
+
+=head1 ENVIRONMENT
+
+=over 8
+
+=item I<EDITOR>
+
+If the package's source directory has a I<FILE>, then
+L<pkgman(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgman/pkgman.1.pod>
+will try to open it using a I<EDITOR>.  If I<EDITOR> is unset, then
+L<pkgman(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgman/pkgman.1.pod>
+will fail.
+
+=back
+
+=head1 EXIT STATUS
+
+=over 8
+
+=item C<0>
+
+if success
+
+=item C<255>
+
+if environment variable I<EDITOR> is unset
+
+=item C<255>
+
+if package source is not found
+
+=item E<gt>0
+
+I<EDITOR> execution exit status
+
+=back
+
+=cut
+
+# vim:sw=2:ts=2:sts=2:et:cc=72
+# End of file.

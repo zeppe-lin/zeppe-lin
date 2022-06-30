@@ -1,0 +1,18 @@
+# Description: Trinity icon theme
+# URL:         file:///usr/src/zeppe-lin/desktop/trinity-icon-theme
+# Depends on:  librsvg-compat hicolor-icon-theme
+
+name=trinity-icon-theme
+version=0.1
+release=2
+source=ABOUT
+
+build() {
+	install -d $PKG/usr/share/icons/trinity
+	cp -r $PKGMK_ROOT/* $PKG/usr/share/icons/trinity
+	touch $PKG/usr/share/icons/trinity/icon-theme.cache
+
+	# remove junk
+	cd $PKG/usr/share/icons/trinity/
+	rm Pkgfile post-install ABOUT COPY*
+}

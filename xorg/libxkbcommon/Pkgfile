@@ -1,0 +1,25 @@
+# Description: Handle keyboard descriptions
+# URL:         https://xkbcommon.org
+# Depends on:  libbsd xkeyboard-config
+# Optional:    wayland-protocols
+
+name=libxkbcommon
+version=1.4.1
+release=1
+source=https://github.com/xkbcommon/$name/archive/xkbcommon-$version.tar.gz
+
+build() {
+	pkgman isinst wayland-protocols || PKGMK_XKBCOMMON=' -D enable-wayland=false'
+
+	meson build libxkbcommon-xkbcommon-$version \
+		--prefix=/usr \
+		--libexecdir=/usr/lib \
+		--wrap-mode=nodownload \
+		-D b_lto=true \
+		-D b_pie=true \
+		-D enable-docs=false \
+		$PKGMK_XKBCOMMON
+
+	ninja -C build -j ${JOBS:-1} -v
+	DESTDIR=$PKG ninja -C build install
+}

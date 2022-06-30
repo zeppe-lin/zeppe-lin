@@ -1,0 +1,26 @@
+# Description: Diagnose issues with power consumption and power management
+# URL:         https://01.org/powertop/
+# Depends on:  libnl ncurses pciutils
+
+name=powertop
+version=2.14
+release=2
+source=https://github.com/fenrus75/$name/archive/v$version/$name-$version.tar.gz
+
+build() {
+	cd $name-$version
+
+	# disable gettext
+	sed -i '/po\/Makefile.in/d' configure.ac
+	sed -i '/GETTEXT_PACKAGE/d' configure.ac
+	sed -i '/AM_GNU_GETTEXT/d'  configure.ac
+	sed -i '/po\b/d' Makefile.am
+
+	./autogen.sh
+	./configure \
+		--prefix=/usr \
+		--disable-nls \
+
+	make V=1
+	make DESTDIR=$PKG install
+}

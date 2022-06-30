@@ -1,0 +1,139 @@
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+pkgman-(install|update) - (install|update) packages
+
+=head1 SYNOPSIS
+
+B<pkgman> (install|update) [B<-v>|B<-vv>] [B<--test>] [B<--log>]
+[B<--deps>] [B<--force>] [B<--group>]
+[B<--margs>=I<PKGMK_ARGS>|I<PKGMK_ALIASES>]
+[B<--aargs>=I<PKGADD_ARGS>|I<PKGADD_ALIASES>]
+[B<--ignore>=I<PKGNAME,PKGNAME,...>]
+[B<--install-scripts>|[B<--pre-install>][B<--post-install>]]
+I<PKGNAME>...
+
+=head1 DESCRIPTION
+
+(Install|Update) all packages in the listed order.  It looks in all
+packages sources directories specified in F</etc/pkgman.conf> as
+C<pkgsrcdir> directories.
+
+=head1 OPTIONS
+
+=over 8
+
+=item B<-v>
+
+Be more verbose.
+
+=item B<-vv>
+
+Log to stdout the (installation|updating) process.
+
+=item B<--test>
+
+Dry run, do not actually (install|update) anything.
+
+=item B<--log>
+
+Create a transaction log file.  It can be set globally for all
+transactions (see C<writelog> in
+L<pkgman.conf(5)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgman/pkgman.conf.5.pod>).
+
+=item B<--deps>
+
+(Install|Update) all packages in the listed order including their
+dependencies.
+
+=item B<--force>
+
+Skip installation of already installed package(s).  Just ignore the
+package and install next in the listed order.  At the end of
+installation procedure, all skipped packages will be in the report.
+
+=item B<--group>
+
+(Install|Update) all packages in the listed order, but stop if
+(installation|updating) of one package fails.  This can be used to
+(install|update) packages where I<package2> depends on I<package1>.
+
+=item B<--margs>=I<PKGMK_ARGS>
+
+Arguments to be passed to
+L<pkgmk(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgmk.8.pod>.
+
+=item I<PKGMK_ALIASES>
+
+=over
+
+=item B<-fr>
+
+Force build, implies "pkgmk -f" (same as B<--margs>=-f).
+
+=item B<-um>
+
+Update md5sum, implies "pkgmk -um" (same as B<--margs>=-um).
+
+=item B<-im>
+
+Ignore md5sum, implies "pkgmk -im" (same as B<--margs>=-im).
+
+=item B<-uf>
+
+Update footprint, implies "pkgmk -uf" (same as B<--margs>=-uf).
+
+=item B<-if>
+
+Ignore footprint, implies "pkgmk -if" (same as B<--margs>=-if).
+
+=item B<-ns>
+
+No stripping, implies "pkgmk -ns" (same as B<--margs>=-ns).
+
+=item B<-kw>
+
+Keep working directory, implies "pkgmk -kw" (same as B<--margs>=-kw).
+
+=back
+
+=item B<--aargs>=I<PKGADD_ARGS>
+
+Arguments to be passed to
+L<pkgadd(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgutils/pkgadd.8.pod>.
+
+=item I<PKGADD_ALIASES>
+
+=over
+
+=item B<-f>, B<-i>
+
+Force install, implies "pkgadd -f" (same as B<--aargs>=-f).
+
+=back
+
+=item B<--ignore>=I<PKGNAME,PKGNAME,...>
+
+Do not install those packages, even if they are listed as dependency.
+
+=item B<--install-scripts>
+
+Execute pre-install and post-install script if they are there.
+
+=item B<--pre-install>
+
+Execute pre-install script if it is there.
+
+=item B<--post-install>
+
+Execute post-install scripts if it is there.
+
+=back
+
+=cut
+
+# vim:sw=2:ts=2:sts=2:et:cc=72
+# End of file.

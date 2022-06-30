@@ -1,0 +1,20 @@
+README qemu
+
+  KVM
+
+    If you don't have kvm compiled into the kernel, make sure you have the
+    kernel module loaded before running kvm.  The easiest way to ensure that
+    the kernel module is loaded is to load it on boot.  For AMD CPUs the
+    module is called 'kvm-amd'.  For Intel CPUs the module is called
+    'kvm-intel'.  Please review /etc/rc.modules for how to load these.
+
+    Make sure your user is in the 'kvm' group.  Just run
+      $ gpasswd -a <USER> kvm
+    then have <USER> re-login.
+
+    For brand new installs, the default permissions on /dev/kvm might not let
+    you access it.  You can tell udev to reset ownership/perms:
+      $ udevadm trigger -c add /dev/kvm
+ 
+
+End of file.

@@ -1,0 +1,17 @@
+# Description: X window sniper
+# URL:         http://xorg.freedesktop.org
+# Depends on:  xorg-libxmu
+
+name=xorg-xkill
+version=1.0.5
+release=1
+source=https://www.x.org/releases/individual/app/xkill-$version.tar.bz2
+
+build() {
+	cd xkill-$version
+
+	./configure --prefix=/usr
+
+	make V=1
+	make DESTDIR=$PKG install
+}

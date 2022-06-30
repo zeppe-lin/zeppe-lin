@@ -1,0 +1,11 @@
+--- sylpheed-2.7.0.old/src/summaryview.c	2018-01-16 09:59:42.000000000 +0200
++++ sylpheed-2.7.0.new/src/summaryview.c	2020-10-30 10:57:12.721000000 +0200
+@@ -637,7 +637,7 @@ void summary_init(SummaryView *summaryvi
+ 	font_desc = pango_font_description_new();
+ 	size = pango_font_description_get_size
+ 		(summaryview->statlabel_folder->style->font_desc);
+-	pango_font_description_set_size(font_desc, size * PANGO_SCALE_SMALL);
++	pango_font_description_set_size(font_desc, size);
+ 	gtk_widget_modify_font(summaryview->statlabel_folder, font_desc);
+ 	gtk_widget_modify_font(summaryview->statlabel_select, font_desc);
+ 	gtk_widget_modify_font(summaryview->statlabel_msgs, font_desc);

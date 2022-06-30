@@ -1,0 +1,122 @@
+# Description: Penetration testing framework
+# URL:         https://www.metasploit.com/
+# Depends on:  glibc-32 libpcap libxslt postgresql python3-pyopenssl python3-requests ruby
+
+name=metasploit
+version=6.2.4
+release=1
+source=https://github.com/rapid7/$name-framework/archive/$version/$name-$version.tar.gz
+
+build() {
+	cd $name-framework-$version
+
+	# https://github.com/bundler/bundler/issues/6882
+	sed -e '/BUNDLED WITH/,+1d' -i Gemfile.lock
+
+	bundle config build.nokogiri --use-system-libraries
+	sed 's|git ls-files|find -type f|' -i metasploit-framework.gemspec
+
+	CFLAGS="$CFLAGS -I/usr/include/libxml2"
+
+	bundle config set deployment 'true'
+	bundle config set no-cache 'true'
+	bundle config set --local path vendor/bundle
+	bundle install -j ${JOBS:-1}
+
+	find vendor/bundle/ruby -exec chmod o+r '{}' \;
+	find vendor/bundle/ruby \( -name gem_make.out -o -name mkmf.log \) -delete
+
+	install -d $PKG/opt/$name $PKG/usr/bin
+	cp -r . $PKG/opt/$name
+
+	for f in $PKG/opt/$name/msf*; do
+		local _msffile
+		_msffile=$PKG/usr/bin/$(basename $f)
+
+		cat >${_msffile} <<EOF
+#!/bin/sh
+BUNDLE_GEMFILE=/opt/$name/Gemfile \
+bundle exec ruby /opt/$name/$(basename $f) \$@
+EOF
+		chmod 755 ${_msffile}
+	done
+
+	(cd $PKG/opt/$name
+		for f in tools/*/*.rb; do
+			install -Dm 755 $f .$f
+			cat >$f <<EOF
+#!/bin/sh
+BUNDLE_GEMFILE=/opt/$name/Gemfile \
+bundle exec ruby /opt/$name/.$f \$@
+EOF
+			chmod 755 $f
+		done
+	)
+
+	find $PKG -type f -name *.py -exec sed -i \
+		-e '1 s/python$/python3/'         \
+		-e '1 s/python2/python3/'         \
+		{} \;
+
+	# remove obsolete and junk
+	rm $PKG/opt/metasploit/tools/hardware/killerbee_msfrelay.py
+	rm $PKG/usr/bin/msfupdate
+	rm -rf $PKG/opt/metasploit/.dockerignore
+	rm -rf $PKG/opt/metasploit/.git-blame-ignore-revs
+	rm -rf $PKG/opt/metasploit/.github/
+	rm -rf $PKG/opt/metasploit/.gitignore
+	rm -rf $PKG/opt/metasploit/*.md
+	rm -rf $PKG/opt/metasploit/Dockerfile
+	rm -rf $PKG/opt/metasploit/test/
+	rm -rf $PKG/opt/metasploit/docs/
+	rm -rf $PKG/opt/metasploit/vendor/bundle/ruby/*/gems/*/test/
+	rm -rf $PKG/opt/metasploit/vendor/bundle/ruby/*/gems/eventmachine-*/docs/
+	rm -rf $PKG/opt/metasploit/vendor/bundle/ruby/*/gems/ffi-*/ext/ffi_c/libffi/.travis/
+	rm -rf $PKG/opt/metasploit/vendor/bundle/ruby/*/gems/ffi-*/ext/ffi_c/libffi/.github/
+	rm -rf $PKG/opt/metasploit/vendor/bundle/ruby/*/gems/ffi-*/ext/ffi_c/libffi/doc/
+	rm -r $PKG/opt/metasploit/vendor/bundle/ruby/*/cache
+	find $PKG   -type f \( \
+		    -name LICENSE \
+		-or -name LICENSE_GEMS \
+		-or -name CHANGELOG \
+		-or -name CHANGELOG.md \
+		-or -name Changelog.md \
+		-or -name CHANGES \
+		-or -name CHANGES.md \
+		-or -name CONTRIBUTING.md \
+		-or -name Contributing.md \
+		-or -name Code-of-Conduct.md \
+		-or -name COPYING \
+		-or -name GUIDE.md \
+		-or -name HISTORY.md \
+		-or -name History.md \
+		-or -name LICENSE.MIT \
+		-or -name LICENSE.md \
+		-or -name LICENSE.SPECS \
+		-or -name .gitignore \
+		-or -name .travis.yml \
+		-or -name ChangeLog.old \
+		-or -name LICENSE-BUILDTOOLS \
+		-or -name AUTHORS \
+		-or -name LICENSE.txt \
+		-or -name LICENSE-MIT \
+		-or -name License.md \
+		-or -name License.txt \
+		-or -name MIT-LICENSE \
+		-or -name NOTICE \
+		-or -name README.\*.md \
+		-or -name README.markdown \
+		-or -name README.md \
+		-or -name README.rdoc \
+		-or -name Readme.md \
+		-or -name readme.md \
+		-or -name RELEASE_NOTES.md \
+		-or -name SECURITY.md \
+		-or -name GETTING_STARTED.md \
+		-or -name NAME.md \
+		-or -name NEWS.md \
+		\) -delete
+
+	# remove empty dirs
+	find $PKG -depth -type d -empty | xargs rmdir
+}

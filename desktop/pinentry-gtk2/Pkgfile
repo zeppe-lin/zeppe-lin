@@ -1,0 +1,28 @@
+# Description: Secure PinEntry Dialog
+# URL:         https://gnupg.org/related_software/pinentry/
+# Depends on:  pinentry gtk
+
+name=pinentry-gtk2
+version=1.1.1
+release=1
+source="https://www.gnupg.org/ftp/gcrypt/pinentry/pinentry-$version.tar.bz2
+	pinentry-gtk-2.c-fontfix.patch"
+
+build() {
+	cd pinentry-$version
+
+	patch -p1 -i $SRC/pinentry-gtk-2.c-fontfix.patch
+
+	./configure \
+		--prefix=/usr \
+		--disable-pinentry-curses \
+		--disable-pinentry-qt \
+		--disable-pinentry-qt5 \
+		--enable-pinentry-gtk2
+
+	make V=1
+	make DESTDIR=$PKG install
+
+	rm -rf $PKG/usr/share
+	rm $PKG/usr/bin/pinentry
+}

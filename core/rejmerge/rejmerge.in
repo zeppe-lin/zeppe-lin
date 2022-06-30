@@ -1,0 +1,339 @@
+#!/bin/sh
+
+readch() { # arg: <variable name>
+	if /bin/sh --help 2>/dev/null | grep -q GNU; then
+		# Intentional: use on GNU bash interpreter
+		# shellcheck disable=3045
+		read -r -n1 "$1"
+	else
+		# POSIX 'read -n1' implementation
+		stty -icanon -echo
+		eval "$1=\$(dd bs=1 count=1 2>/dev/null)"
+		stty icanon echo
+	fi
+}
+
+info_n() {
+	# Intentional: /bin/echo has -n option.
+        # shellcheck disable=3037
+	/bin/echo -n "=======> $1"
+}
+
+info() {
+	info_n "$1"
+	echo
+}
+
+interrupted() {
+	echo ""
+	info "Aborted."
+	# Get back normal I/O processing if rejmerge was interrupted on readch().
+	stty icanon echo
+	exit 1
+}
+
+atexit() {
+	if [ -e "$TMPFILE" ]; then
+		rm -f "$TMPFILE"
+	fi
+}
+
+rejmerge_diff() {
+	diff -u "$1" "$2" > "$3"
+}
+
+rejmerge_merge() {
+	diff --old-group-format="%<" \
+	     --new-group-format="%>" \
+	     --changed-group-format="<<<<< MERGE CONFLICT $1 >>>>>
+%<<<<<< MERGE CONFLICT $2 >>>>>
+%><<<<< END MERGE CONFLICT >>>>>
+" \
+	"$1" "$2" > "$3"
+
+	REJMERGE_MERGE_INFO="$(grep -c '^<<<<< END MERGE CONFLICT >>>>>$' "$3") merge conflict(s)."
+}
+
+permissions_menu() {
+	while true; do
+		info "Access permissions $1"
+		if stat --help 2>/dev/null | grep -q GNU; then
+			stat -c '%A  %U %G  %n' "$1"
+			stat -c '%A  %U %G  %n' "$2"
+		else
+			stat -t "$1" | awk '{print $1": Access: "$4" Uid: "$5" Gid: "$6}'
+			stat -t "$2" | awk '{print $1": Access: "$4" Uid: "$5" Gid: "$6}'
+		fi
+		while true; do
+			info_n "[K]eep [U]pgrade [D]iff [S]kip? "
+			readch CMD
+			echo
+
+			case "$CMD" in
+			k|K)
+				if chown --help 2>/dev/null | grep -q GNU; then
+					chown --reference="$1" "$2"
+					chmod --reference="$1" "$2"
+				else
+					chown "$(stat -t "$1" | awk '{print $5":"$6}')" "$2"
+					chmod "$(stat -t "$1" | awk '{print $4}')"      "$2"
+				fi
+				break 2
+				;;
+			u|U)
+				if chown --help 2>/dev/null | grep -q GNU; then
+					chown --reference="$2" "$1"
+					chmod --reference="$2" "$1"
+				else
+					chown "$(stat -t "$2" | awk '{print $5":"$6}')" "$1"
+					chmod "$(stat -t "$2" | awk '{print $4}')"      "$1"
+				fi
+				break 2
+				;;
+			d|D)	break 1
+				;;
+			s|S)	break 2
+				;;
+			esac
+		done
+	done
+}
+
+merge_menu() {
+	rejmerge_merge "$1" "$2" "$TMPFILE"
+
+	while true; do
+		info "Merged $1"
+		$PAGER "$TMPFILE"
+
+		if [ "$REJMERGE_MERGE_INFO" ]; then
+			info "$REJMERGE_MERGE_INFO"
+			unset REJMERGE_MERGE_INFO
+		fi
+
+		while true; do
+			info_n "[I]nstall [E]dit [V]iew [S]kip? "
+			readch CMD
+			echo
+
+			case "$CMD" in
+			i|I)
+				if chmod --help 2>/dev/null | grep -q GNU; then
+					chmod --reference="$1" "$TMPFILE"
+				else
+					chmod "$(stat "$1" | awk '{print $4}')" "$TMPFILE"
+				fi
+				mv -f "$TMPFILE" "$1"
+				rm -f "$2"
+				break 2
+				;;
+			e|E)	$EDITOR "$TMPFILE"
+				break 1
+				;;
+			v|V)	break 1
+				;;
+			s|S)	break 2
+				;;
+			esac
+		done
+	done
+
+	: > "$TMPFILE"
+}
+
+diff_menu() {
+	rejmerge_diff "$1" "$2" "$TMPFILE"
+
+	while true; do
+		info "$1"
+		$PAGER "$TMPFILE"
+		while true; do
+			info_n "[K]eep [U]pgrade [M]erge [D]iff [S]kip? "
+			readch CMD
+			echo
+
+			case "$CMD" in
+			k|K)	rm -f "$2"
+				break 2
+				;;
+			u|U)	mv -f "$2" "$1"
+				break 2
+				;;
+			m|M)	merge_menu "$1" "$2"
+				break 2
+				;;
+			d|D)	break 1
+				;;
+			s|S)	break 2
+				;;
+			esac
+		done
+	done
+
+	: > "$TMPFILE"
+}
+
+file_menu() {
+	while true; do
+		info "$1"
+		file "$1" "$2"
+		while true; do
+			info_n "[K]eep [U]pgrade [D]iff [S]kip? "
+			readch CMD
+			echo
+
+			case "$CMD" in
+			k|K)	rm -f "$2"
+				break 2
+				;;
+			u|U)	mv -f "$2" "$1"
+				break 2
+				;;
+			d|D)	break 1
+				;;
+			s|S)	break 2
+				;;
+			esac
+		done
+	done
+}
+
+print_help() {
+	cat <<EOF
+Usage: rejmerge [OPTION]
+Merge files that were rejected during package upgrades.
+
+Mandatory arguments to long options are mandatory for short options too.
+  -r, --root PATH  specify alternative root
+  -v, --version    print version and exit
+  -h, --help       print help and exit
+EOF
+}
+
+parse_options() {
+	while [ "$1" ]; do
+		case $1 in
+		-r|--root)
+			if [ ! "$2" ]; then
+				echo "rejmerge: option $1 requires an argument"
+				exit 1
+			fi
+			REJMERGE_ROOT="${2}"
+			REJMERGE_CONF="${2}${REJMERGE_CONF}"
+			REJECTED_DIR="${2}${REJECTED_DIR}"
+			shift
+			;;
+		-v|--version)
+			echo "rejmerge @VERSION@"
+			exit 0
+			;;
+		-h|--help)
+			print_help
+			exit 0
+			;;
+		*)
+			echo "rejmerge: invalid option $1"
+			exit 1
+			;;
+		esac
+		shift
+	done
+
+	if [ ! -d "$REJECTED_DIR" ]; then
+		echo "rejmerge: $REJECTED_DIR not found"
+		exit 1
+	fi
+}
+
+files_regular() {
+	test -f "$1" || return 1
+	test -f "$2" || return 1
+	return 0
+}
+
+main() {
+	parse_options "$@"
+
+	if [ "$(id -u)" != "0" ]; then
+		echo "rejmerge: only root can merge rejected files"
+		exit 1
+	fi
+
+	# Read configuration
+	if [ -f "$REJMERGE_CONF" ]; then
+		. "$REJMERGE_CONF"
+	fi
+
+	REJECTED_FILES_FOUND="no"
+
+	# Check files
+	for REJECTED_FILE in $(find $REJECTED_DIR ! -type d); do
+		INSTALLED_FILE="${REJMERGE_ROOT}${REJECTED_FILE##$REJECTED_DIR}"
+
+		# Remove rejected file if there is no installed version
+		if [ ! -e "$INSTALLED_FILE" ]; then
+			rm -f "$REJECTED_FILE"
+			continue
+		fi
+
+		# Check permissions
+		STAT_FILE1=""
+		STAT_FILE2=""
+		if stat --help 2>/dev/null | grep -q GNU; then
+			STAT_FILE1=$(stat -c '%A %U %G' "$INSTALLED_FILE")
+			STAT_FILE2=$(stat -c '%A %U %G' "$REJECTED_FILE")
+		else
+			STAT_FILE1=$(stat -t "$INSTALLED_FILE" | awk '{print $4" "$5" "$6}')
+			STAT_FILE2=$(stat -t "$REJECTED_FILE"  | awk '{print $4" "$5" "$6}')
+		fi
+
+		if [ "$STAT_FILE1" != "$STAT_FILE2" ]; then
+			REJECTED_FILES_FOUND="yes"
+			permissions_menu "$INSTALLED_FILE" "$REJECTED_FILE"
+		fi
+
+		# Check file types
+		if files_regular "$INSTALLED_FILE" "$REJECTED_FILE"; then
+			# Both files are regular
+			if cmp -s "$INSTALLED_FILE" "$REJECTED_FILE"; then
+				rm -f "$REJECTED_FILE"
+			else
+				REJECTED_FILES_FOUND="yes"
+				diff_menu "$INSTALLED_FILE" "$REJECTED_FILE"
+			fi
+		else
+			# At least one file is non-regular
+			REJECTED_FILES_FOUND="yes"
+			file_menu "$INSTALLED_FILE" "$REJECTED_FILE"
+		fi
+	done
+
+	# Remove empty directories
+	find "$REJECTED_DIR" -depth -type d | while read -r DIR; do
+		if [ "$DIR" != "$REJECTED_DIR" ]; then
+			rmdir "$DIR" >/dev/null 2>&1
+		fi
+	done
+
+	if [ "$REJECTED_FILES_FOUND" = "no" ]; then
+		echo "Nothing to merge"
+	fi
+
+	exit 0
+}
+
+trap "interrupted" HUP INT QUIT TERM
+trap "atexit" EXIT
+
+export LC_ALL=POSIX
+
+REJMERGE_ROOT=""
+REJMERGE_CONF="/etc/rejmerge.conf"
+REJECTED_DIR="/var/lib/pkg/rejected"
+EDITOR=${EDITOR:-/bin/vi}
+PAGER=${PAGER:-/bin/more}
+TMPFILE=$(mktemp) || exit 1
+
+main "$@"
+
+# End of file.

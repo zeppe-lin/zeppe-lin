@@ -1,0 +1,62 @@
+# Description: NFS utilities
+# URL:         http://nfs.sourceforge.net
+# Depends on:  keyutils libcap libdevmapper libevent libtirpc rpcsvc-proto rpcbind sqlite3 util-linux
+
+name=nfs-utils
+version=2.6.1
+release=1
+source="https://www.kernel.org/pub/linux/utils/$name/$version/$name-$version.tar.xz
+	exports idmapd.conf
+	rc.nfsclient
+	rc.nfsdcld
+	rc.nfs
+	rc.nfsserver
+	rc.rpc.idmapd
+	rc.rpc.mountd
+	rc.rpc.nfsd
+	rc.rpc.statd"
+
+build() {
+	cd $name-$version
+
+	sed -i '/ -pipe \\/d' configure.ac
+	autoreconf -fi
+
+	CONFIG_SHELL=/bin/bash \
+		./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--with-statedir=/var/lib/nfs \
+		--without-tcp-wrappers \
+		--disable-gss \
+		--disable-libmount-mount \
+
+	make V=1
+	make DESTDIR=$PKG install
+
+	install -d \
+		$PKG/etc/rc.d                \
+		$PKG/etc/exports.d           \
+		$PKG/var/lib/nfs/rpc_pipefs  \
+		$PKG/var/lib/nfs/v4recovery  \
+		$PKG/var/lib/nfs/nfsdcltrack \
+		$PKG/var/lib/nfs/nfsdcld     \
+
+	install -m 755 $SRC/rc.nfsclient         $PKG/etc/rc.d/nfsclient
+	install -m 755 $SRC/rc.nfsdcld           $PKG/etc/rc.d/nfsdcld
+	install -m 755 $SRC/rc.nfs               $PKG/etc/rc.d/nfs
+	install -m 755 $SRC/rc.nfsserver         $PKG/etc/rc.d/nfsserver
+	install -m 755 $SRC/rc.rpc.idmapd        $PKG/etc/rc.d/rpc.idmapd
+	install -m 755 $SRC/rc.rpc.mountd        $PKG/etc/rc.d/rpc.mountd
+	install -m 755 $SRC/rc.rpc.nfsd          $PKG/etc/rc.d/rpc.nfsd
+	install -m 755 $SRC/rc.rpc.statd         $PKG/etc/rc.d/rpc.statd
+
+	install -m 644 $SRC/exports              $PKG/etc
+	install -m 644 $SRC/idmapd.conf          $PKG/etc
+
+	install -m 644 utils/mount/nfsmount.conf $PKG/etc/
+	install -m 644 nfs.conf                  $PKG/etc/
+
+	# force rpc.statd to run as user nobody
+	chown nobody $PKG/var/lib/nfs
+}

@@ -1,0 +1,23 @@
+ABOUT start-stop-daemon
+
+
+  Start and stop system daemon programs.
+
+  This is a fork of CRUX' start-stop-daemon, which in turn is a
+  patched version of debian start-stop-daemon (part of dpkg), yeah.
+
+  Original sources can be downloaded from:
+
+  1. https://crux.nu/gitweb/?p=tools/start-stop-daemon.git;a=summary
+  2. git://crux.nu/tools/start-stop-daemon.git
+
+
+  LICENSE
+
+  The license was upgraded from (Public Domain & GPLv2+) to GPLv3+.
+
+  See COPYING and start-stop-daemon{,.8.pod} for license and copyright
+  information.
+
+
+End of file.

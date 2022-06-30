@@ -1,0 +1,40 @@
+# Description: Compositor for X (xcompmgr-dana & compton fork)
+# URL:         https://github.com/yshui/picom
+# Depends on:  hicolor-icon-theme libconfig libev mesa xorg-libpixman xorg-xcb-util-image xorg-xcb-util-renderutil uthash
+
+name=picom
+version=8.2
+release=1
+source="https://github.com/yshui/picom/archive/v$version/$name-v$version.tar.gz
+	picom.conf  picom-trans.1  picom.1"
+
+build() {
+	meson setup build $name-$version \
+		--prefix=/usr \
+		--buildtype=plain \
+		-D sanitize=false \
+		-D config_file=true \
+		-D regex=true \
+		-D vsync_drm=true \
+		-D opengl=true \
+		-D dbus=false \
+		-D xrescheck=false \
+		-D with_docs=false \
+		-D modularize=false \
+		-D unittest=false \
+
+	ninja -C build -j ${JOBS:-1} -v
+	DESTDIR=$PKG ninja -C build install
+
+	# install config files
+	install -m 644 -D $SRC/picom.conf $PKG/etc/xdg/picom.conf
+	install -m 644 $name-$version/picom.sample.conf $PKG/etc/xdg/picom.conf.example
+
+	# install man pages
+	install -m 644 -Dt $PKG/usr/share/man/man1/ $SRC/*.1
+
+	# remove junk and obsolete files
+	unlink $PKG/usr/bin/compton
+	unlink $PKG/usr/bin/compton-trans
+	rm -r $PKG/usr/share/applications $PKG/usr/share/icons
+}

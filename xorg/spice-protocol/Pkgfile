@@ -1,0 +1,16 @@
+# Description: Protocol headers for interaction with virtualized desktop devices
+# URL:         https://spice-space.org
+
+name=spice-protocol
+version=0.14.4
+release=1
+source=https://spice-space.org/download/releases/$name-$version.tar.xz
+
+build() {
+	meson setup build $name-$version \
+		--prefix=/usr \
+		--buildtype=plain \
+		--wrap-mode=nodownload \
+
+	DESTDIR=$PKG ninja -C build install
+}

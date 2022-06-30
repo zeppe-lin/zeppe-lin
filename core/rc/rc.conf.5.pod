@@ -1,0 +1,107 @@
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+rc.conf - system configuration file
+
+=head1 SYNOPSIS
+
+B</etc/rc.conf>
+
+=head1 DESCRIPTION
+
+This manual page describes the format of the F</etc/rc.conf> file.
+This file is a simple
+L<sh(1)|https://www.mankier.com/1/sh>
+script that defines font, timezone, hostname and services which are
+used on system initialization and shutdown.
+
+The file consists of a number of variable assignments of the form
+C<variable=value>. Comments can be specified by putting a hash (C<#>)
+symbol as the first character on the line.
+
+The different configuration variables are:
+
+=over 8
+
+=item B<FONT>="I<STRING>"
+
+Specifies which console font to load at system startup. The contents
+of this variable will be passed as argument to
+L<setfont(8)|https://www.mankier.com/8/setfont>.
+The available fonts are located in F</usr/share/kbd/consolefonts/>.
+
+Example: C<FONT=default>
+
+=item B<KEYMAP>="I<STRING>"
+
+Specifies which console keyboard map to load at system startup. The
+contents of this variable will be passed as argument to
+L<loadkeys(1)|https://www.mankier.com/1/loadkeys>.
+The available keyboard maps are located in F</usr/share/kbd/keymaps/>.
+
+Example: C<KEYMAP=default>
+
+=item B<TIMEZONE>="I<STRING>"
+
+Specifies the timezone used by the system. The available zone
+description files are located in F</usr/share/zoneinfo/>.
+
+Example: C<TIMEZONE=Europe/Stockholm>
+
+=item B<HOSTNAME>="I<STRING>"
+
+Specifies the hostname.
+
+Example: C<HOSTNAME=pluto>
+
+=item B<SYSLOG>="I<STRING>"
+
+Specifies the system logging daemon to run at startup.
+
+Example: C<SYSLOG=sysklogd>
+
+=item B<SERVICES>="I<STRING>..."
+
+Specifies which services to start at system startup. The services
+specified in this string must be separated by space and have a matching
+start/stop script in F</etc/rc.d/>. When entering multi-user mode the
+specified scripts will be called in the specified order with the
+argument C<start>. At system shutdown or when entering single-user
+mode these scripts will be called in the reverse order with the
+argument C<stop>.
+
+Example: C<SERVICES='lo crond net sshd'>
+
+=back
+
+=head1 EXAMPLE
+
+  #
+  # /etc/rc.conf: system configuration
+  #
+  # See rc.conf(5) for more information.
+  #
+
+  FONT=default
+  KEYMAP=us
+  TIMEZONE=UTC
+  HOSTNAME=host
+  SYSLOG=sysklogd
+  SERVICES='lo crond net'
+
+  # End of file.
+
+=head1 FILES
+
+=over 8
+
+=item F</etc/rc.conf>
+
+System configuration file.
+
+=back
+
+=cut

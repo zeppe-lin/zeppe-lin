@@ -1,0 +1,46 @@
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+pkgmkc(xx)flags - show pkgmk's compiler directives for building packages
+
+=head1 SYNOPSIS
+
+B<pkgmkc(xx)flags> [I<OPTION>]
+
+=head1 DESCRIPTION
+
+B<pkgmkcflags> and B<pkgmkcxxflags> show the pkgmk's GCC compiler directives
+for building packages: B<CFLAGS> and B<CXXFLAGS> respectively.
+
+=head1 OPTIONS
+
+Mandatory arguments to long options are mandatory for short options too.
+
+=over 8
+
+=item B<-c>, B<--config> I<FILE>
+
+Use alternate
+L<pkgmk(8)|https:/github.com/zeppe-lin/zeppe-lin/blob/master/pkgmk/pkgmk.8.pod>
+config file (default is F</etc/pkgmk.conf>).
+
+=item B<-v>, B<--version>
+
+Print version and exit.
+
+=item B<-h>, B<--help>
+
+Print help and exit.
+
+=back
+
+=head1 COPYRIGHT
+
+Copyright (c) 2021 Alexandr Savca <https://github.com/zeppe-lin>.
+
+License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.
+
+=cut 

@@ -1,0 +1,34 @@
+# Description: C, CXX, and Lisp API for GnuPG
+# URL:         https://www.gnupg.org/related_software/gpgme/
+# Depends on:  gnupg
+
+name=gpgme
+version=1.16.0
+release=1
+source="https://www.gnupg.org/ftp/gcrypt/$name/$name-$version.tar.bz2
+	gpgme-1.16.0-glibc-2.34.patch"
+
+build() {
+	cd $name-$version
+
+	patch -Np1 -i $SRC/gpgme-1.16.0-glibc-2.34.patch
+
+	./configure \
+		--prefix=/usr \
+		--enable-languages='cpp' \
+		--enable-static=yes \
+		--disable-nls \
+		--disable-gpgconf-test \
+		--disable-gpg-test \
+		--disable-gpgsm-test \
+		--disable-g13-test \
+		--disable-fd-passing \
+
+	make V=1
+	make DESTDIR=$PKG install
+
+	install -d $PKG/usr/etc/gpgme
+	echo 'c cpp' > $PKG/usr/etc/gpgme/base
+
+	rm -r $PKG/usr/share/info
+}

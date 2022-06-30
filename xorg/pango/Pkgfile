@@ -1,0 +1,21 @@
+# Description: Library for layout and rendering of text
+# URL:         http://www.gtk.org/
+# Depends on:  fribidi xorg-libxft
+
+name=pango
+version=1.50.7
+release=1
+source=http://download.gnome.org/sources/$name/${version%.*}/$name-$version.tar.xz
+
+build() {
+	meson build $name-$version \
+		--prefix=/usr \
+		--buildtype=plain \
+		--wrap-mode=nodownload \
+		-D b_lto=true \
+		-D b_pie=true \
+		-D introspection=disabled \
+
+	ninja -C build -j ${JOBS:-1} -v
+	DESTDIR=$PKG ninja -C build install
+}

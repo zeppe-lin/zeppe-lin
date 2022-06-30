@@ -1,0 +1,38 @@
+# Description: Secure, fast, compliant and very flexible web server
+# URL:         http://www.lighttpd.net
+# Depends on:  libpcre2 openssl zlib
+
+name=lighttpd
+version=1.4.65
+release=1
+source="https://download.$name.net/$name/releases-1.4.x/$name-$version.tar.xz
+	$name.conf rc.$name"
+
+build() {
+	cd $name-$version
+
+	./configure \
+		--prefix=/usr \
+		--libdir=/usr/lib/$name \
+		--with-openssl \
+		--with-pcre2 \
+
+	make V=1
+	make DESTDIR=$PKG install
+
+	install -m 644 -D $SRC/$name.conf $PKG/etc/$name.conf
+	install -m 755 -D $SRC/rc.$name   $PKG/etc/rc.d/$name
+
+	install -d $PKG/var/www/lighttpd
+	install -o www -g www -d \
+		$PKG/var/www/lighttpd/dev \
+		$PKG/var/www/lighttpd/htdocs \
+		$PKG/var/www/lighttpd/logs \
+		$PKG/var/www/lighttpd/tmp \
+
+	install -d $PKG/var/run
+	install -d $PKG/etc/ssl/certs
+	#touch $PKG/var/run/lighttpd.pid
+	touch $PKG/etc/ssl/certs/lighttpd.pem
+	chmod 0600 $PKG/etc/ssl/certs/lighttpd.pem
+}

@@ -1,0 +1,18 @@
+# Description: pciutils-like utilities for USB
+# URL:         https://github.com/gregkh/usbutils
+# Depends on:  eudev libusb usbids
+
+name=usbutils
+version=014
+release=1
+source=http://www.kernel.org/pub/linux/utils/usb/$name/$name-$version.tar.xz
+
+build() {
+	cd $name-$version
+
+	autoreconf -fi
+	./configure --prefix=/usr --disable-zlib
+
+	make V=1
+	make DESTDIR=$PKG install
+}

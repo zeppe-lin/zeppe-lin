@@ -1,0 +1,9 @@
+drwxr-xr-x	root/root	usr/
+drwxr-xr-x	root/root	usr/bin/
+-rwxr-xr-x	root/root	usr/bin/dwmblocks
+drwxr-xr-x	root/root	usr/share/
+drwxr-xr-x	root/root	usr/share/dwmblocks/
+-rwxr-xr-x	root/root	usr/share/dwmblocks/audiovol.sh
+-rwxr-xr-x	root/root	usr/share/dwmblocks/batt.sh
+-rwxr-xr-x	root/root	usr/share/dwmblocks/cpumem.sh
+-rwxr-xr-x	root/root	usr/share/dwmblocks/diskfree.sh

@@ -1,0 +1,17 @@
+# Description: High-performance DNS stub resolver for bulk lookups and reconnaissance
+# URL:         https://github.com/blechschmidt/massdns
+
+name=massdns
+version=1.0.0-0639b8c
+release=1
+source=https://github.com/blechschmidt/$name/archive/${version##*-}/$name-${version##*-}.tar.gz
+
+build() {
+	cd $name-${version##*-}*
+
+	cmake .
+	make VERBOSE=1
+
+	install -m 0755 -Dt $PKG/usr/bin/ bin/$name
+	install -m 0644 -Dt $PKG/usr/share/man/man1/ doc/$name.1
+}

@@ -1,0 +1,193 @@
+From b6d680585554bed88cd387fea0ecc434d01a90ca Mon Sep 17 00:00:00 2001
+From: AntumDeluge <antumdeluge@gmail.com>
+Date: Sat, 17 Sep 2016 03:56:06 -0700
+Subject: [PATCH] Debianize source.
+
+---
+ debian/changelog     |  5 ++++
+ debian/compat        |  1 +
+ debian/control       | 15 ++++++++++++
+ debian/copyright     | 26 ++++++++++++++++++++
+ debian/ktsuss.1      | 56 ++++++++++++++++++++++++++++++++++++++++++++
+ debian/rules         | 25 ++++++++++++++++++++
+ debian/source/format |  1 +
+ 7 files changed, 129 insertions(+)
+ create mode 100644 debian/changelog
+ create mode 100644 debian/compat
+ create mode 100644 debian/control
+ create mode 100644 debian/copyright
+ create mode 100644 debian/ktsuss.1
+ create mode 100755 debian/rules
+ create mode 100644 debian/source/format
+
+diff --git a/debian/changelog b/debian/changelog
+new file mode 100644
+index 0000000..2390977
+--- /dev/null
++++ b/debian/changelog
+@@ -0,0 +1,5 @@
++ktsuss (2-1) unstable; urgency=medium
++
++  * Initial debianized release
++
++ -- Jordan Irwin <antumdeluge@gmail.com>  Sat, 17 Sep 2016 03:48:05 -0700
+diff --git a/debian/compat b/debian/compat
+new file mode 100644
+index 0000000..ec63514
+--- /dev/null
++++ b/debian/compat
+@@ -0,0 +1 @@
++9
+diff --git a/debian/control b/debian/control
+new file mode 100644
+index 0000000..84b3fda
+--- /dev/null
++++ b/debian/control
+@@ -0,0 +1,15 @@
++Source: ktsuss
++Section: unknown
++Priority: optional
++Maintainer: Jordan Irwin <antumdeluge@gmail.com>
++Build-Depends: debhelper (>=9),autotools-dev
++Standards-Version: 3.9.6
++Homepage: <insert the upstream URL, if relevant>
++#Vcs-Git: git://anonscm.debian.org/collab-maint/ktsuss.git
++#Vcs-Browser: https://anonscm.debian.org/cgit/collab-maint/ktsuss.git
++
++Package: ktsuss
++Architecture: any
++Depends: ${shlibs:Depends}, ${misc:Depends}
++Description: <insert up to 60 chars description>
++ <insert long description, indented with spaces>
+diff --git a/debian/copyright b/debian/copyright
+new file mode 100644
+index 0000000..ece78ac
+--- /dev/null
++++ b/debian/copyright
+@@ -0,0 +1,26 @@
++Copyright (c) 2007-2014, David B. Cortarello
++All rights reserved.
++
++Redistribution and use in source and binary forms, with or without
++modification, are permitted provided that the following conditions are met:
++
++  * Redistributions of source code must retain the above copyright notice
++    and the following disclaimer.
++  * Redistributions in binary form must reproduce the above copyright notice
++    and the following disclaimer in the documentation and/or other materials
++    provided with the distribution.
++  * Neither the name of Kwort nor the names of its contributors may be used
++    to endorse or promote products derived from this software without
++    specific prior written permission.
++
++THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
++AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
++IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
++ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE
++LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
++CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
++SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
++INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++POSSIBILITY OF SUCH DAMAGE.
+diff --git a/debian/ktsuss.1 b/debian/ktsuss.1
+new file mode 100644
+index 0000000..2d9ebae
+--- /dev/null
++++ b/debian/ktsuss.1
+@@ -0,0 +1,56 @@
++.\"                                      Hey, EMACS: -*- nroff -*-
++.\" (C) Copyright 2016 Jordan Irwin <antumdeluge@gmail.com>,
++.\"
++.\" First parameter, NAME, should be all caps
++.\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
++.\" other parameters are allowed: see man(7), man(1)
++.TH Ktsuss SECTION "September 17 2016"
++.\" Please adjust this date whenever revising the manpage.
++.\"
++.\" Some roff macros, for reference:
++.\" .nh        disable hyphenation
++.\" .hy        enable hyphenation
++.\" .ad l      left justify
++.\" .ad b      justify to both left and right margins
++.\" .nf        disable filling
++.\" .fi        enable filling
++.\" .br        insert line break
++.\" .sp <n>    insert n+1 empty lines
++.\" for manpage-specific macros, see man(7)
++.SH NAME
++ktsuss \- program to do something
++.SH SYNOPSIS
++.B ktsuss
++.RI [ options ] " files" ...
++.br
++.B bar
++.RI [ options ] " files" ...
++.SH DESCRIPTION
++This manual page documents briefly the
++.B ktsuss
++and
++.B bar
++commands.
++.PP
++.\" TeX users may be more comfortable with the \fB<whatever>\fP and
++.\" \fI<whatever>\fP escape sequences to invode bold face and italics,
++.\" respectively.
++\fBktsuss\fP is a program that...
++.SH OPTIONS
++These programs follow the usual GNU command line syntax, with long
++options starting with two dashes (`-').
++A summary of options is included below.
++For a complete description, see the Info files.
++.TP
++.B \-h, \-\-help
++Show summary of options.
++.TP
++.B \-v, \-\-version
++Show version of program.
++.SH SEE ALSO
++.BR bar (1),
++.BR baz (1).
++.br
++The programs are documented fully by
++.IR "The Rise and Fall of a Fooish Bar" ,
++available via the Info system.
+diff --git a/debian/rules b/debian/rules
+new file mode 100755
+index 0000000..5b93ed0
+--- /dev/null
++++ b/debian/rules
+@@ -0,0 +1,25 @@
++#!/usr/bin/make -f
++# See debhelper(7) (uncomment to enable)
++# output every command that modifies files on the build system.
++#export DH_VERBOSE = 1
++
++
++# see FEATURE AREAS in dpkg-buildflags(1)
++#export DEB_BUILD_MAINT_OPTIONS = hardening=+all
++
++# see ENVIRONMENT in dpkg-buildflags(1)
++# package maintainers to append CFLAGS
++#export DEB_CFLAGS_MAINT_APPEND  = -Wall -pedantic
++# package maintainers to append LDFLAGS
++#export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
++
++
++%:
++	dh $@  --with autotools_dev
++
++
++# dh_make generated override targets
++# This is example for Cmake (See https://bugs.debian.org/641051 )
++#override_dh_auto_configure:
++#	dh_auto_configure -- #	-DCMAKE_LIBRARY_PATH=$(DEB_HOST_MULTIARCH)
++
+diff --git a/debian/source/format b/debian/source/format
+new file mode 100644
+index 0000000..163aaf8
+--- /dev/null
++++ b/debian/source/format
+@@ -0,0 +1 @@
++3.0 (quilt)

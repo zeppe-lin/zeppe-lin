@@ -1,0 +1,47 @@
+# Description: SQL database server
+# URL:         https://www.mysql.com
+# Depends on:  libaio libtirpc ncurses openssl rpcsvc-proto zlib
+
+name=mysql
+version=5.7.38
+release=2
+source="https://ftp.gwdg.de/pub/misc/mysql/Downloads/MySQL-5.7/$name-boost-$version.tar.gz
+	my.cnf rc.mysqld"
+
+build() {
+	export CXXFLAGS="$CXXFLAGS -Wno-deprecated-declarations"
+
+	cmake -S $name-$version -B build -G Ninja \
+		-D CMAKE_BUILD_TYPE=Release                      \
+		-D CMAKE_C_FLAGS_RELEASE="$CFLAGS -DNDEBUG"      \
+		-D CMAKE_CXX_FLAGS_RELEASE="$CXXFLAGS -DNDEBUG"  \
+		-D CMAKE_INSTALL_PREFIX=/usr                     \
+		-D BUILD_CONFIG=mysql_release                    \
+		-D INSTALL_LAYOUT=RPM                            \
+		-D SYSCONFDIR=/etc                               \
+		-D INSTALL_LIBDIR=lib                            \
+		-D INSTALL_PLUGINDIR=lib/mysql/plugin            \
+		-D INSTALL_MANDIR=share/man                      \
+		-D INSTALL_SECURE_PRIVDIR=/var/lib/mysql-files   \
+		-D WITH_BOOST=$name-$version/boost               \
+		-D WITH_LIBWRAP=0                                \
+		-D WITH_SSL=system                               \
+		-D WITH_ZLIB=system                              \
+		-Wno-dev
+
+	ninja -C build -j ${JOBS:-1} -v
+	DESTDIR=$PKG ninja -C build install
+
+	install -d $PKG/var/lib $PKG/var/log
+	install -m 700 -d $PKG/var/lib/mysql $PKG/var/lib/mysql-files \
+		$PKG/var/log/mysql
+
+	install -D -m 755 $SRC/rc.mysqld $PKG/etc/rc.d/mysqld
+	install -m 600 $SRC/my.cnf $PKG/etc/
+
+	# remove junk
+	rm -r $PKG/usr/share/mysql-test $PKG/usr/share/info
+	rm $PKG/usr/share/mysql/charsets/README
+	find $PKG/usr/share/mysql/* -type d ! -name english ! -name charsets \
+		| xargs rm -rf {} \;
+}

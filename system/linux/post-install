@@ -1,0 +1,15 @@
+#!/bin/sh -ex
+
+# prepare initramfs if tinyramfs is installed
+if pkgman isinst tinyramfs; then
+	_kver=$(pkgman printf "%v" --filter=linux)
+	tinyramfs -o /boot/initramfs-$_kver.img -k $_kver -f
+fi
+
+# update grub configuration file if installed
+if pkgman isinst grub2 || pkgman isinst grub2-efi; then
+	[ -d /boot/grub ] || mkdir -p /boot/grub
+	grub-mkconfig -o /boot/grub/grub.cfg
+fi
+
+# End of file.

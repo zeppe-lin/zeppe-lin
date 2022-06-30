@@ -1,0 +1,8 @@
+#!/bin/sh -e
+
+/usr/bin/update-ca-trust
+
+# wordlistctl, steam and streamlink use this
+[ -e /etc/ssl/certs/ca-certificates.crt ] || ln -s ../cert.pem /etc/ssl/certs/ca-certificates.crt
+
+# End of file.

@@ -1,0 +1,17 @@
+# Description: C library and a set of command-line programs for Linux providing a simple interface to inotify(7)
+# URL:         http://inotify-tools.sourceforge.net/
+
+name=inotify-tools
+version=3.22.6.0
+release=1
+source=http://github.com/rvoicilas/$name/archive/$version/$name-$version.tar.gz
+
+build() {
+	cd $name-$version
+
+	./autogen.sh
+	./configure --prefix=/usr
+
+	make V=1
+	make DESTDIR=$PKG install
+}

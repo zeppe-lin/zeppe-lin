@@ -1,0 +1,30 @@
+# Description: Exploitation Framework for Embedded Devices
+# URL:         https://github.com/threat9/routersploit
+# Depends on:  python3-pip
+
+name=routersploit
+version=3.4.0-3fd3946
+release=1
+source="https://github.com/threat9/$name/archive/${version#*-}/$name-${version#*-}.tar.gz
+	routersploit.sh"
+
+build() {
+	cd $name-${version#*-}*
+
+	install -d $PKG/opt/routersploit $PKG/usr/bin
+
+	/usr/bin/pip3 install . --target $PKG/opt/routersploit
+
+	# create an indirect launcher in /usr/bin
+	install -m 644 rsf.py               $PKG/opt/routersploit/rsf.py
+	install -m 755 $SRC/routersploit.sh $PKG/usr/bin/routersploit
+
+	# fix permissions
+	find $PKG/opt -type f -exec chmod 644 {} \;
+	find $PKG/opt -type d -exec chmod 755 {} \;
+
+	# remove junk
+	rm -r	$PKG/opt/routersploit/*.dist-info \
+		$PKG/opt/routersploit/*.egg-info
+	find $PKG -name README.txt | xargs rm -f
+}

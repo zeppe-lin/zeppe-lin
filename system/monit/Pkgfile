@@ -1,0 +1,21 @@
+# Description: Monitoring daemons running on a Unix system
+# URL:         http://www.tildeslash.com/monit/
+# Depends on:  libnsl linux-pam openssl zlib
+
+name=monit
+version=5.29.0
+release=1
+source="http://mmonit.com/$name/dist/$name-$version.tar.gz
+	rc.monitd"
+
+build() {
+	cd $name-$version
+
+	./configure --prefix=/usr --sysconfdir=/etc
+
+	make V=1
+	make DESTDIR=$PKG install
+
+	install -m 0755 -D $SRC/rc.monitd $PKG/etc/rc.d/monitd
+	install -m 0700 -D monitrc        $PKG/etc/monitrc
+}

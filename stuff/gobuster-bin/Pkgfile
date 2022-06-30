@@ -1,0 +1,18 @@
+# Description: Directory/File, DNS and VHost busting tool
+# URL:         https://github.com/OJ/gobuster
+# Depends on:  p7zip
+
+name=gobuster-bin
+version=3.1.0
+release=1
+source=$name-$version.7z
+
+unpack() {
+	7z x $SRC/$name-$version.7z
+}
+
+build() {
+	cd gobuster-linux-amd64
+
+	install -m 0755 -Dt $PKG/usr/bin/ gobuster
+}

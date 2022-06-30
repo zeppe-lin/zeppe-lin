@@ -1,0 +1,35 @@
+# Description: Curses URL parser for text files
+# URL:         http://packages.qa.debian.org/u/urlview.html
+# Depends on:  ncurses bash
+
+name=urlview
+version=0.9
+release=1
+_patchlevel=22
+source="http://deb.debian.org/debian/pool/main/u/$name/urlview_$version.orig.tar.gz
+	http://deb.debian.org/debian/pool/main/u/$name/urlview_$version-$_patchlevel.diff.gz"
+
+build() {
+	cd $name-$version.orig
+
+	zcat ../urlview_${version}-${_patchlevel}.diff.gz | patch -Np1
+
+	aclocal
+	automake --foreign --ignore-deps --add-missing
+
+	./configure --prefix=/usr
+
+	make V=1
+
+	install -d $PKG/etc/$name/ $PKG/usr/share/man/man1/
+	make prefix=$PKG/usr mandir=$PKG/usr/share/man install
+
+	sed -i 's|/usr/X11R6/bin/netscape|/usr/bin/firefox|g' \
+		url_handler.sh
+	install -m 755 -D url_handler.sh $PKG/etc/$name/url_handler.sh
+	install -m 644 -D sample.$name   $PKG/etc/$name/system.$name
+
+	install -d $PKG/usr/bin
+	ln -fs /etc/$name/url_handler.sh $PKG/usr/bin/url_handler.sh
+
+}

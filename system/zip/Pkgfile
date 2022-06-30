@@ -1,0 +1,17 @@
+# Description: Compression and file packaging/archive utility
+# URL:         http://infozip.sourceforge.net/Zip.html
+# Depends on:  bzip2
+
+name=zip
+version=3.0
+release=1
+_version=$(echo $version | sed 's/\.//g')
+source=http://downloads.sourceforge.net/sourceforge/infozip/${name}${_version}.tar.gz
+
+build() {
+	cd ${name}${_version}
+
+	make -f unix/Makefile LOCAL_ZIP="$CFLAGS" prefix=/usr generic
+	make -f unix/Makefile INSTALL=install prefix=$PKG/usr \
+		MANDIR=$PKG/usr/share/man/man1 install
+}

@@ -1,0 +1,17 @@
+# Description: XCB X protocol descriptions
+# URL:         https://xcb.freedesktop.org/
+# Depends on:  python3
+
+name=xorg-xcb-proto
+version=1.15.2
+release=1
+source=https://xorg.freedesktop.org/archive/individual/proto/xcb-proto-$version.tar.xz
+
+build() {
+	cd xcb-proto-$version
+
+	PYTHON=/usr/bin/python3 ./configure --prefix=/usr
+
+	make V=1
+	make DESTDIR=$PKG install
+}

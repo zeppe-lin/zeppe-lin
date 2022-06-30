@@ -1,0 +1,7 @@
+#!/bin/sh -ex
+
+# Updating Gtk icon cache.
+gtk-update-icon-cache -f -t /usr/share/icons/hicolor/
+
+# End of file.
+

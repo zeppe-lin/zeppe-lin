@@ -1,0 +1,40 @@
+# Description: Original cdrtools supporting CD, DVD and BluRay burning
+# URL:         http://cdrecord.org/
+# Depends on:  acl libcap
+
+name=cdrtools
+version=3.02a09
+release=1
+source="https://downloads.sourceforge.net/$name/$name-$version.tar.bz2
+	tr_invalid_escape_sequence.patch"
+
+build() {
+	cd $name-${version%%a*}
+
+	sed -i 's|/opt/schily|/usr|g'            DEFAULTS/Defaults.linux
+	sed -i 's|DEFINSGRP=.*|DEFINSGRP=root|'  DEFAULTS/Defaults.linux
+
+	# install rscsi to /usr/bin instead of /usr/sbin
+	sed -i 's|INSDIR=.*|INSDIR=bin|'         rscsi/Makefile
+
+	# fix "tr: invalid escape sequence '\-'"
+	patch -p1 -i $SRC/tr_invalid_escape_sequence.patch
+
+	export GMAKE_NOWARN=true
+	make INS_BASE=/usr INS_RBASE=/ VERSION_OS="_Zeppelin" LDOPTX="$LDFLAGS"
+	make INS_BASE=/usr INS_RBASE=/ DESTDIR=$PKG install
+
+	# remove unneeded files that may cause conflicts
+	rm -rf $PKG/usr/include $PKG/usr/lib/*.a $PKG/usr/lib/profiled
+	rm -rf $PKG/usr/share/man/man3
+
+	# remove doc
+	rm -rf $PKG/usr/share/doc
+
+	# create symlinks for cdrkit compatibility
+	cd $PKG/usr/bin
+	ln -s cdrecord wodim
+	ln -s readcd   readom
+	ln -s mkisofs  genisoimage
+	ln -s cdda2wav icedax
+}

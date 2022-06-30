@@ -1,0 +1,22 @@
+README gtk3
+
+  THEME CONFIGURATION
+
+    $ cat ~/.config/gtk-3.0/settings.ini
+
+      [Settings]
+      gtk-icon-theme-name=Trinity
+      gtk-font-name=Sans Mono 9
+      gtk-cursor-theme-size=1
+      gtk-toolbar-style=GTK_TOOLBAR_TEXT
+      gtk-toolbar-icon-size=GTK_ICON_SIZE_SMALL_TOOLBAR
+      gtk-button-images=0
+      gtk-menu-images=0
+      gtk-xft-antialias=1
+      gtk-xft-hinting=1
+      gtk-xft-hintstyle=hintslight
+      gtk-xft-rgba=none
+      gtk-enable-event-sounds=0
+      gtk-enable-input-feedback-sounds=0
+
+End of file.

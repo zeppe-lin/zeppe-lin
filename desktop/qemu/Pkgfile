@@ -1,0 +1,47 @@
+# Description: Fast CPU emulator and virtualizer for the x86 platform
+# URL:         https://www.qemu.org/
+# Depends on:  alsa-lib capstone curl e2fsprogs gnutls gtk3 libaio libseccomp libssh linux-pam usbredir xorg-libxcb libcap-ng
+
+name=qemu
+version=7.0.0
+release=2
+source="https://download.qemu.org/$name-$version.tar.xz
+	qemu-man-$version.tar.xz
+	qemu-5.2.0-disable-keymap.patch"
+
+build() {
+	cd $name-$version
+
+	patch -p1 -i $SRC/qemu-5.2.0-disable-keymap.patch
+
+	# fix include issues with libcap
+	sed -i  -e '/#include "qemu\/xattr.h"/d' \
+		-e 's|#include <sys/resource.h>|#include <sys/resource.h>\r\n#include "qemu\/xattr.h"|g' \
+		fsdev/virtfs-proxy-helper.c
+
+	./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--libexecdir=/usr/lib/qemu \
+		--localstatedir=/var \
+		--disable-docs \
+		--disable-gettext \
+		--disable-sdl \
+		--disable-sdl-image \
+		--disable-xkbcommon \
+		--enable-gtk \
+		--enable-alsa \
+		--enable-usb-redir \
+		--python=/usr/bin/python3 \
+		--enable-virtfs \
+
+	make V=1 ${MAKEFLAGS:=}
+	make DESTDIR=$PKG install
+
+	cp -r $SRC/man $PKG/usr/share
+
+	install -d $PKG/etc/udev/rules.d/
+	cat <<EOF > $PKG/etc/udev/rules.d/60-kvm.rules
+KERNEL=="kvm", NAME="kvm", OWNER="root", GROUP="kvm", MODE="0660"
+EOF
+}

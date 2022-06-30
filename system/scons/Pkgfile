@@ -1,0 +1,22 @@
+# Description: Software construction tool
+# URL:         https://www.scons.org/
+# Depends on:  python3-setuptools
+
+name=scons
+version=4.3.0
+release=1
+source=https://github.com/SCons/scons/archive/$version/$name-$version.tar.gz
+
+build() {
+	cd $name-$version
+
+	# manpage install is completely broken
+	sed -e 's/bdist_wheel/bdist/g' -i SConstruct
+	/usr/bin/python3 scripts/scons.py --include-dir= -j1
+	cp -a build/doc/man/* .
+
+	/usr/bin/python3 setup.py build
+	/usr/bin/python3 setup.py install \
+		--root=$PKG --skip-build  --optimize=1 \
+		--install-data=/usr/share/man/man1/
+}

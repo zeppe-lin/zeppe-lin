@@ -1,0 +1,35 @@
+# Description: Basic networking utilities
+# URL:         https://github.com/iputils/iputils
+# Depends on:  libcap libidn2
+
+name=iputils
+version=20210722
+release=1
+source="https://github.com/$name/$name/archive/$version/$name-$version.tar.gz
+	https://crux.nu/ports/crux-3.6/opt/iputils/$name-man-$version.tar.xz"
+
+build() {
+	meson setup build $name-$version  \
+		--prefix=/usr             \
+		--buildtype=plain         \
+		-D BUILD_MANS=false       \
+		-D BUILD_RARPD=true       \
+		-D BUILD_TRACEROUTE6=true \
+		-D USE_GETTEXT=false      \
+		-D BUILD_TFTPD=false      \
+
+	ninja -C build -j ${JOBS:-1} -v
+	#DESTDIR=$PKG ninja -C build install
+
+	install -m 755 -D build/ping/ping     $PKG/bin/ping
+	install -m 755 -D build/arping        $PKG/sbin/arping
+	install -m 755 -D build/tracepath     $PKG/usr/sbin/tracepath
+	install -m 755 -D build/clockdiff     $PKG/usr/sbin/clockdiff
+	install -m 755 -D build/rdisc         $PKG/usr/sbin/rdisc
+	install -m 755 -D build/rarpd         $PKG/usr/sbin/rarpd
+	install -m 755 -D build/ninfod/ninfod $PKG/usr/sbin/ninfod
+	install -m 755 -D build/traceroute6   $PKG/usr/bin/traceroute6
+	install -m 644 -Dt $PKG/usr/share/man/man8/ $SRC/*.8
+
+	chmod u+s $PKG/bin/ping $PKG/usr/bin/traceroute6
+}

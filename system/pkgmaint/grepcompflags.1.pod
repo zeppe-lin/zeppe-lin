@@ -1,0 +1,48 @@
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+grepcompflags - grep GCC' debug and optimization flags
+
+=head1 SYNOPSIS
+
+B<grepcompflags> [I<OPTION>] I<FILE>>
+
+=head1 DESCRIPTION
+
+B<grepcompflags> looks for optimization and debug flags in the specified file.
+It is mainly used to inspect the pkgman's build log.
+
+The following flags are searched for: C<-pipe>, C<-O1>, C<-O2>, C<-O3>,
+C<-Ofast>, C<-ggdb>, C<-g0>, C<-g1>, C<-g2>, C<-g3>, C<-g>, C<-march=.*?>,
+C<-mtune=.*?>.
+
+Found flags are colored red. False positives (presumably) are colored yellow.
+
+=head1 OPTIONS
+
+=over 8
+
+=item B<-b>, B<--brief>
+
+Print summary instead of colorized captures.
+
+=item B<-v>, B<--version>
+
+Print version and exit.
+
+=item B<-h>, B<--help>
+
+Print help and exit.
+
+=back
+
+=head1 COPYRIGHT
+
+Copyright (c) 2021 Alexandr Savca <https://github.com/zeppe-lin>.
+
+License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.
+
+=cut

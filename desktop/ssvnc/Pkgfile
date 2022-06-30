@@ -1,0 +1,49 @@
+# Description: SSL/SSH VNC viewer
+# URL:         http://www.karlrunge.com/x11vnc/ssvnc.html
+# Depends on:  jdk11-bin libjpeg-turbo tk xorg-libxaw
+
+name=ssvnc
+version=1.0.29
+release=1
+source="http://downloads.sf.net/sourceforge/$name/$name-$version.src.tar.gz
+	Makefile.libvncauth
+	Makefile.vncviewer
+	0001-ssvnc-confusing-help.patch
+	0002-ultraftp-path.patch
+	0003-format-security.patch
+	0004-desktop-auto-scale.patch
+	0005-samemachine-ip6-overflow.patch
+	0006-libvncclient_CVE-2018-20020.patch
+	0007-libvncclient_CVE-2018-20021.patch
+	0008-libvncclient_CVE-2018-20022.patch
+	0009-libvncclient_CVE-2018-20024.patch
+	0010-Makefile.patch
+	0011-openssl1.1.patch"
+
+build() {
+	cd $name-$version
+
+	for f in $SRC/*.patch; do patch -p1 -i $f; done
+
+	sed -i -e "/^LIB/s:lib/:lib/:" Makefile
+
+	# ultraftp
+	if ! pkgman isinst jdk11-bin; then
+		sed -i Makefile -e '/^JSRC/s:=.*:=:'
+	fi
+
+	sed -i -e '/^CC/s:=.*:+= $(CFLAGS) $(CPPFLAGS) $(LDFLAGS):' \
+		vncstorepw/Makefile
+
+	cp $SRC/Makefile.libvncauth vnc_unixsrc/libvncauth/Makefile
+
+	(cd vnc_unixsrc/vncviewer;
+	sed -n '/^SRCS/,/^$/p' Imakefile > Makefile.in
+	cp $SRC/Makefile.vncviewer Makefile)
+
+	make JC_ARGS=' -target 6 -source 6' all
+	make DESTDIR=$PKG PREFIX=/usr install
+
+	# remove junk
+	rm -r $PKG/usr/share/applications
+}

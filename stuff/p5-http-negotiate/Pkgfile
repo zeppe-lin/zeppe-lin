@@ -1,0 +1,28 @@
+# Description: Choose a variant to serve
+# URL:         https://metacpan.org/pod/HTTP::Negotiate
+# Depends on:  p5-http-message
+
+name=p5-http-negotiate
+version=6.01
+release=1
+source=https://cpan.metacpan.org/authors/id/G/GA/GAAS/HTTP-Negotiate-$version.tar.gz
+
+build() {
+	cd HTTP-Negotiate-$version
+
+	perl Makefile.PL INSTALLDIRS=vendor
+
+	make V=1
+	make DESTDIR=$PKG install
+
+	# remove junk
+	find $PKG \( \
+		   -name '.packlist'     \
+		-o -name '*.bs'          \
+		-o -name 'autosplit.ix'  \
+		-o -name 'perllocal.pod' \
+		\) -delete
+
+	# remove empty dirs
+	find $PKG -depth -empty -exec rm -rf {} \;
+}

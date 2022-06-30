@@ -1,0 +1,45 @@
+# Description:  Customizable jukebox for large collections (chinarulezzz's fork)
+# URL:          file:///usr/src/zeppe-lin/desktop/jukebox
+# Depends on:   p5-gtk2 p5-net-dbus
+
+name=jukebox
+version=1.1.15.10
+release=2
+source=.disable_md5sum
+
+build() {
+	cp -a $PKGMK_ROOT/* .
+
+	install -m 0755 -D jukebox.pl $PKG/usr/bin/jukebox
+	install -m 0644 -D jukebox.1  $PKG/usr/share/man/man1/jukebox.1
+	install -m 0755 -D iceserver.pl \
+		$PKG/usr/share/jukebox/iceserver.pl
+	install -m 0644 -Dt $PKG/usr/share/metainfo/ \
+		org.jukebox.Jukebox.metainfo.xml
+	install -m 0644 -Dt $PKG/usr/share/applications/ \
+		jukebox.desktop
+	install -m 0644 -Dt $PKG/usr/share/jukebox/ \
+		*.pm  jukeboxrc.default
+	install -m 0644 -Dt $PKG/usr/share/jukebox/layouts/ \
+		layouts/*.layout
+	install -m 0644 -Dt $PKG/usr/share/jukebox/plugins/ \
+		plugins/*.pm
+	install -m 0644 -Dt $PKG/usr/share/jukebox/pix/Trinity/ \
+		pix/Trinity/*.*
+	install -m 0644 -Dt $PKG/usr/share/jukebox/pix/Papirus-Light/ \
+		pix/Papirus-Light/*.*
+	install -m 0644 -Dt $PKG/usr/share/jukebox/pix/ \
+		pix/*.*
+	install -m 0644 -D pix/jukebox.svg \
+		$PKG/usr/share/icons/hicolor/scalable/apps/jukebox.svg
+	install -m 0644 -D pix/jukebox16x16.svg \
+		$PKG/usr/share/icons/hicolor/16x16/apps/jukebox.svg
+	install -m 0644 -D pix/trayicon.png \
+		$PKG/usr/share/icons/hicolor/20x20/apps/jukebox.png
+	install -m 0644 -D pix/jukebox32x32.svg \
+		$PKG/usr/share/icons/hicolor/32x32/apps/jukebox.svg
+	install -m 0644 -D pix/jukebox48x48.svg \
+		$PKG/usr/share/icons/hicolor/48x48/apps/jukebox.svg
+	install -m 0644 -D pix/jukebox64x64.svg \
+		$PKG/usr/share/icons/hicolor/64x64/apps/jukebox.svg
+}

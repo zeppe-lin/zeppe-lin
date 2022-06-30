@@ -1,0 +1,30 @@
+# Description: X Window System initializer
+# URL:         http://xorg.freedesktop.org
+# Depends on:  xorg-server
+
+name=xorg-xinit
+version=1.4.1
+release=2
+source="https://www.x.org/releases/individual/app/xinit-$version.tar.bz2
+	0001-startx-fix-hostname.patch
+	06_move_serverauthfile_into_tmp.patch"
+
+build() {
+	cd xinit-$version
+
+	patch -Np1 -i $SRC/06_move_serverauthfile_into_tmp.patch
+
+	./configure \
+		--prefix=/usr     \
+		--sysconfdir=/etc \
+
+	make V=1
+	make DESTDIR=$PKG install
+
+	# mcookie hotfix
+	sed -i '/mcookie=`\/usr\/bin`/s/bin/bin\/mcookie/' \
+		$PKG/usr/bin/startx
+
+	# hostname fix (adjust to sbase)
+	patch $PKG/usr/bin/startx $SRC/0001-startx-fix-hostname.patch
+}

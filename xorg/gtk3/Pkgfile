@@ -1,0 +1,66 @@
+# Description: Multi-platform toolkit for creating GUI
+# URL:         https://www.gtk.org
+# Depends on:  atk gdk-pixbuf libepoxy pango xorg-libxcomposite xorg-libxcursor xorg-libxi xorg-libxinerama
+
+name=gtk3
+version=3.24.34
+release=1
+source="https://download.gnome.org/sources/gtk+/3.24/gtk+-$version.tar.xz
+	https://github.com/lah7/gtk3-classic/archive/$version/gtk3-classic-$version.tar.gz
+	gtk.immodules gtk-register-3.sh
+	no-fribidi.patch"
+
+build() {
+	cd gtk+-$version
+
+	# Provide a more traditional experience.
+	while read p; do
+		case $p in \#*) continue ;; esac
+		patch -Np1 -i $SRC/gtk3-classic-$version/$p
+	done < $SRC/gtk3-classic-$version/series
+
+	# Remove fribidi dependency.
+	patch -p1 -i $SRC/no-fribidi.patch
+
+	# Remove 'atk-bridge' dependency which removes the 'dbus' dependency.
+	sed -i 's/ATK_PACKAGES="atk atk-bridge-2.0"/ATK_PACKAGES="atk"/' \
+		configure
+
+	sed -i '/<atk-bridge.h>/d;/atk_bridge_adaptor_init/d' \
+		gtk/a11y/gtkaccessibility.c
+
+	# Don't build GTK examples/demos/testsuite.
+	sed -i 's/demos tests testsuite examples//' Makefile.am Makefile.in
+	sed -i 's/docs m4macros/m4macros/'          Makefile.am Makefile.in
+
+	./configure \
+		--prefix=/usr               \
+		--sysconfdir=/etc           \
+		--localstatedir=/var        \
+		--enable-xkb                \
+		--enable-xinerama           \
+		--enable-xrandr             \
+		--enable-xfixes             \
+		--enable-xcomposite         \
+		--enable-xdamage            \
+		--enable-x11-backend        \
+		--enable-debug=no           \
+		--disable-schemas-compile   \
+		--disable-cups              \
+		--disable-papi              \
+		--disable-cloudprint        \
+		--disable-glibtest          \
+		--disable-nls               \
+		--disable-installed-tests   \
+		--enable-introspection=no   \
+		--enable-colord=no          \
+		--enable-gtk-doc-html=no    \
+
+	make V=1
+	make DESTDIR=$PKG install
+
+	install -m 0644 -D $SRC/gtk.immodules     $PKG/usr/lib/gtk-3.0/3.0.0/immodules.cache
+	install -m 0755    $SRC/gtk-register-3.sh $PKG/usr/bin/gtk-register-3
+
+	rm -r $PKG/usr/share/gtk-3.0
+}

@@ -1,0 +1,14 @@
+# Description:  Trinity gtk2/gtk3 theme
+# URL:          file:///usr/src/zeppe-lin/desktop/trinity-gtk-theme
+# Depends on:   gtk-engines
+
+name=trinity-gtk-theme
+version=0.1
+release=2
+source=ABOUT
+
+build() {
+	install -d $PKG/usr/share/themes/trinity
+	cp -r $PKGMK_ROOT/gtk-2.0 $PKGMK_ROOT/gtk-3.0 \
+		$PKG/usr/share/themes/trinity
+}

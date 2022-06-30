@@ -1,0 +1,28 @@
+# Description: Simple terminal emulator for X (chinarulezzz's fork)
+# URL:         https://st.suckless.org/
+# Depends on:  fontconfig freetype xorg-libx11 xorg-libxext xorg-libxft
+
+name=st084cf
+version=0.8.4
+release=1
+source="Makefile
+	arg.h
+	config.h
+	config.mk
+	normalMode.c
+	normalMode.h
+	st.1
+	st.c
+	st.h
+	st.info
+	utils.h
+	win.h
+	x.c"
+
+build() {
+	sed -i '/tic/d' Makefile
+	make all X11INC=/usr/include/X11 X11LIB=/usr/lib PREFIX=/usr
+
+	install -m 0755 -D st   $PKG/usr/bin/$name
+	install -m 0644 -D st.1 $PKG/usr/share/man/man1/$name.1
+}

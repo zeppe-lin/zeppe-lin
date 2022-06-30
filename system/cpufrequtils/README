@@ -1,0 +1,9 @@
+README cpufrequtils
+
+    KERNEL MODULES
+
+    Add the following modules to /etc/rc.modules:
+        cpufreq_powersave
+        cpufreq_userspace
+
+End of file.

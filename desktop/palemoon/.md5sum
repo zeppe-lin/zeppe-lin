@@ -1,0 +1,4 @@
+893990af992f942b0c8684b66f28b218  29.4.0.2_Release.tar.gz
+f17eb6761d123ca8943153a6935373e5  RELBASE_20210823.tar.gz
+d4383ee4ccd16cf8edd07f271f44472c  fix_build_with_gcc11.patch
+e980c26c6b8be4cad216b12a655e95d4  mozconfig.in

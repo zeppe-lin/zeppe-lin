@@ -1,0 +1,37 @@
+# Description: Simple Authentication and Security Layer
+# URL:         https://www.cyrusimap.org/sasl/
+# Depends on:  db linux-pam openssl
+
+name=cyrus-sasl
+version=2.1.28
+release=2
+source="https://github.com/cyrusimap/$name/releases/download/$name-$version/$name-$version.tar.gz
+	rc.saslauthd"
+
+build() {
+	cd $name-$version
+
+	# fix compilation issues with software that use cyrus-sasl
+	sed -i -r -e 's|^(#include.*)|#include <sys/types.h>\n\1|' include/sasl.h
+
+	./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc/sasl \
+		--mandir=/usr/share/man \
+		--with-plugindir=/usr/lib/sasl2 \
+		--with-saslauthd=/var/run/saslauthd \
+		--with-dbpath=/etc/sasl/sasldb2 \
+		--with-dblib=berkeley \
+		--with-bdb-incdir=/usr/include \
+		--with-bdb-libdir=/usr/lib \
+		--with-openssl=/usr \
+		--enable-login \
+		--enable-cram \
+		--enable-digest \
+		--enable-shared \
+
+	make CFLAGS="$CFLAGS -fPIC" V=1
+	make DESTDIR=$PKG install
+
+	install -m 755 -D $SRC/rc.saslauthd $PKG/etc/rc.d/saslauthd
+}

@@ -1,0 +1,216 @@
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+pkgmk.conf - configuration file for pkgmk
+
+=head1 SYNOPSIS
+
+B</etc/pkgmk.conf>
+
+=head1 DESCRIPTION
+
+This manual page describes the format of the F<pkgmk.conf> file.  This
+file is a simple shell file that configures
+L<pkgmk(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgmk.8.pod>.
+The file consists of a number of variable assignments of the form
+C<option=value>.  Comments can be specified by putting a hash (C<#>)
+symbol as the first character on the line.
+
+If some option is not used (commented out or not included in the
+configuration file at all)
+L<pkgmk(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgmk.8.pod>
+will take a default action.
+
+The different configuration options are:
+
+=over 8
+
+=item B<export CFLAGS="STRING">
+
+Set C compiler options.
+
+Default: none.
+
+=item B<export CXXFLAGS="STRING">
+
+Set C++ compiler options.
+
+Default: none.
+
+=item B<export JOBS='NUMBER'>
+
+Set the number of commands to run simultaneously when building a
+package.
+
+Default: none.
+
+=item B<export MAKEFLAGS="STRING">
+
+Set L<make(1)> options.
+
+Default: none.
+
+=item B<PKGMK_SOURCE_MIRRORS=("STRING")>
+
+Set mirrors to check and download source archives from.
+
+Default: none.
+
+=item B<PKGMK_SOURCE_DIR="STRING">
+
+Set directory for downloaded source archives.
+
+Default: directory of Pkgfile.
+
+=item B<PKGMK_PACKAGE_DIR="STRING">
+
+Set directory for built packages.
+
+Default: directory of Pkgfile.
+
+=item B<PKGMK_WORK_DIR="STRING">
+
+Set directory for building packages.
+
+Default: '\fBfoo\fP/work', where \fBfoo\fP is the directory of the
+Pkgfile.
+
+=item B<PKGMK_DOWNLOAD="STRING">
+
+If set to C<yes>, 
+L<pkgmk(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgmk.8.pod>
+will download the source archives if necessary.  Valid strings are
+C<yes> and C<no>.
+
+Default: no.
+
+=item B<PKGMK_DOWNLOAD_PROG="STRING">
+
+Use specified program to download source archives.  Valid strings are
+C<aria2c>, C<curl> and C<wget>.
+
+Default: C<wget>.
+
+=item B<PKGMK_ARIA2C_OPTS="STRING">
+
+Additional options for L<aria2c(1)>, which is used by
+L<pkgmk(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgmk.8.pod>
+to download all files.
+
+Default: none.
+
+=item B<PKGMK_CURL_OPTS="STRING">
+
+Additional options for
+L<curl(1)|https://www.mankier.com/1/curl>, which is used by
+L<pkgmk(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgmk.8.pod>
+to download all files.
+
+Default: none.
+
+=item B<PKGMK_WGET_OPTS="STRING">
+
+Additional options for
+L<wget(1)|https://www.mankier.com/1/wget>, which is used by
+L<pkgmk(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgmk.8.pod>
+to download all files.
+
+Default: none.
+
+=item B<PKGMK_IGNORE_FOOTPRINT="STRING">
+
+If set to C<yes>, 
+L<pkgmk(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgmk.8.pod>
+will not perform a footprint check of the built package.  Valid string
+are C<yes> and C<no>.
+
+Default: C<no>.
+
+=item B<PKGMK_IGNORE_MD5SUM="STRING">
+
+If set to C<yes>, 
+L<pkgmk(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgmk.8.pod>
+will not perform a md5sum check of the source archives.  Valid string
+are C<yes> and C<no>.
+
+Default: C<no>.
+
+=item B<PKGMK_IGNORE_NEW="STRING">
+
+If set to C<yes>,
+L<pkgmk(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgmk.8.pod>
+will ignore new files in a footprint mismatch.  Valid string are
+C<yes> and C<no>.
+
+Default: C<no>.
+
+=item B<PKGMK_NO_STRIP="STRING">
+
+If set to C<no>, 
+L<pkgmk(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgmk.8.pod>
+will strip built binaries.  Valid string are C<yes> and C<no>.
+
+Default: C<no>.
+
+=item B<PKGMK_COMPRESSION_MODE="STRING">
+
+Option to select the mode used to compress the packages.
+Valid strings are C<gz>, C<bz2>, C<xz> and C<lz>.
+
+Default: C<gz>.
+
+=back
+
+=head1 EXAMPLE
+
+  #
+  # /etc/pgkmk.conf: pkgmk(8) configuration
+  #
+  # See pkgmk.conf(5) manual page for more information.
+  #
+
+  export CFLAGS="-O2 -march=x86-64 -pipe -fdiagnostics-color=always"
+  export CXXFLAGS="$CFLAGS"
+  export JOBS=$(ncpu)
+  export MAKEFLAGS="-j $JOBS"
+
+  case $PKGMK_ARCH in
+  "64"|"")
+          ;;
+  "32")
+          export CFLAGS="$CFLAGS -m32"
+          export CXXFLAGS="$CXXFLAGS -m32"
+          export LDFLAGS="$LDFLAGS -m32"
+          export PKG_CONFIG_LIBDIR="/usr/lib32/pkgconfig"
+          ;;
+  *)
+          echo "Unknown architecture selected! Exiting."
+          exit 1
+          ;;
+  esac
+
+  # End of file.
+
+=head1 FILES
+
+=over 8
+
+=item F</etc/pkgmk.conf>
+
+Configuration file for
+L<pkgmk(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgmk.8.pod>.
+
+=back
+
+=head1 SEE ALSO
+
+L<pkgmk(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgmk.8.pod>,
+L<Pkgfile(5)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/Pkgfile.5.pod>
+
+=cut
+
+# vim:sw=2:ts=2:sts=2:et:cc=72
+# End of file.

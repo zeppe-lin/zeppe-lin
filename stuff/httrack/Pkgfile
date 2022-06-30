@@ -1,0 +1,29 @@
+# Description: Easy-to-use offline browser utility
+# URL:         https://www.httrack.com/
+# Depends on:  openssl zlib
+
+name=httrack
+version=3.49.2
+release=1
+source=https://mirror.httrack.com/historical/$name-$version.tar.gz
+
+build() {
+	cd $name-$version
+
+	./configure \
+		--prefix=/usr \
+		--enable-https=yes \
+		--enable-online-unit-tests=no \
+
+	make V=1
+	make DESTDIR=$PKG install
+
+	# remove junk
+	rm -rf  $PKG/usr/share/doc/ \
+		$PKG/usr/share/pixmaps \
+		$PKG/usr/share/applications \
+		$PKG/usr/share/icons \
+
+	find $PKG/usr/share/$name/lang/ -type f -not \
+		-name English.txt -delete
+}

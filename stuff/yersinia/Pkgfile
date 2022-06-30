@@ -1,0 +1,30 @@
+# Description:  Framework for layer 2 attacks
+# URL:          https://github.com/tomac/yersinia
+# Depends on:   gtk libnet libpcap
+
+name=yersinia
+version=0.8.2-d91bbf6
+release=1
+source="https://github.com/tomac/$name/archive/${version##*-}/$name-${version##*-}.tar.gz
+	yersinia-su
+	0001-gtk-interface.c-respect-system-font.patch"
+
+build() {
+	cd $name-${version##*-}*
+
+	patch -p1 -i $SRC/0001-gtk-interface.c-respect-system-font.patch
+
+	# remove default debug flag
+	sed -i "/CFLAGS=\"/s/-O3 -Wall -g/$CFLAGS -O3 -Wall -fcommon/g" \
+		configure.ac
+
+	./autogen.sh \
+		--prefix=/usr \
+		--disable-nls \
+		--disable-admin # Disable the remote admin interface
+
+	make V=1
+	make DESTDIR=$PKG install
+
+	install -m 755 -D -t $PKG/usr/sbin/ $SRC/$name-su
+}

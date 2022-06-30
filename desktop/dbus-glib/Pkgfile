@@ -1,0 +1,25 @@
+# Description: D-Bus GLib bindings
+# URL:         http://freedesktop.org/wiki/Software/DBusBindings
+# Depends on:  dbus glib
+
+name=dbus-glib
+version=0.112
+release=1
+source=https://dbus.freedesktop.org/releases/$name/$name-$version.tar.gz
+
+build() {
+	cd $name-$version
+
+	./configure \
+		--prefix=/usr \
+		--libexecdir=/usr/lib \
+		--disable-static \
+		--enable-bash-completion=no \
+		--disable-tests \
+		--disable-checks \
+
+	make V=1
+	make DESTDIR=$PKG install
+
+	rm -r $PKG/usr/share/gtk-doc/
+}

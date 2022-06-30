@@ -1,0 +1,18 @@
+# Description: Check for missing libraries of installed packages
+# URL:         file:///usr/src/zeppe-lin/core/revdep
+# Depends on:  elfutils
+
+name=revdep
+version=2.0.1
+release=1
+source="$(ls -1 *.cpp *.h *.pod) config.mk Makefile bash_completion"
+
+build() {
+	export CXXFLAGS="$CXXFLAGS -O3"
+
+	make VERSION=$version DESTDIR=$PKG PREFIX=/usr install
+
+	# bash-completion
+	install -m 0644 -D bash_completion \
+		$PKG/usr/share/bash-completion/completions/$name
+}

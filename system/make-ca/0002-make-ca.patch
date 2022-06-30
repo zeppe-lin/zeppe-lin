@@ -1,0 +1,44 @@
+--- a/make-ca	2021-06-29 15:28:59.928956750 +0300
++++ b/make-ca	2021-06-29 15:29:54.314955335 +0300
+@@ -703,8 +703,8 @@
+ 
+ # Install anchors in $ANCHORDIR
+ test -d "${DESTDIR}${ANCHORDIR}" && rm -rf "${DESTDIR}${ANCHORDIR}"
+-install -dm755 "${DESTDIR}${ANCHORDIR}" > /dev/null 2>&1
+-install -m644 "${TEMPDIR}"/pki/anchors/*.pem "${DESTDIR}${ANCHORDIR}"
++install -m 755 -d "${DESTDIR}${ANCHORDIR}" > /dev/null 2>&1
++install -m 644 "${TEMPDIR}"/pki/anchors/*.pem "${DESTDIR}${ANCHORDIR}"
+ 
+ # Install NSS Shared DB
+ if test "${WITH_NSS}" == "1"; then
+@@ -713,8 +713,8 @@
+       -e 's/Flags=internal/Flags=internal,moduleDBOnly/' \
+       -i "${TEMPDIR}/pki/nssdb/pkcs11.txt"
+   test -d "${DESTDIR}${NSSDB}" && rm -rf "${DESTDIR}${NSSDB}"
+-  install -dm755 "${DESTDIR}${NSSDB}" > /dev/null 2>&1
+-  install -m644 "${TEMPDIR}"/pki/nssdb/{cert9.db,key4.db,pkcs11.txt} \
++  install -m 755 -d "${DESTDIR}${NSSDB}" > /dev/null 2>&1
++  install -m 644 "${TEMPDIR}"/pki/nssdb/{cert9.db,key4.db,pkcs11.txt} \
+                  "${DESTDIR}${NSSDB}"
+ fi
+ 
+@@ -722,7 +722,7 @@
+ if test "${WITH_P12}" == "1"; then
+   test -f "${DESTDIR}${KEYSTORE}/cacerts.p12" &&
+           rm -f "${DESTDIR}${KEYSTORE}/cacerts.p12"
+-  install -dm644 "${TEMPDIR}/ssl/java/cacerts.p12" \
++  install -m 644 -d "${TEMPDIR}/ssl/java/cacerts.p12" \
+                  "${DESTDIR}${KEYSTORE}/cacerts.p12"
+ fi
+ 
+@@ -809,8 +809,8 @@
+ 
+ # Install certdata.txt
+ if test "${REBUILD}" == "0"; then
+-  install -vdm755 "${DESTDIR}${SSLDIR}"
+-  install -m644 "${WORKDIR}/certdata.txt" "${DESTDIR}${SSLDIR}/certdata.txt"
++  install -m 755 -d "${DESTDIR}${SSLDIR}"
++  install -m 644 "${WORKDIR}/certdata.txt" "${DESTDIR}${SSLDIR}/certdata.txt"
+ fi
+ 
+ # Clean up the mess

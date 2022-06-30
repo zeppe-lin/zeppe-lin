@@ -1,0 +1,23 @@
+# Description: Download videos from YouTube and others site
+# URL:         https://youtube-dl.org
+# Depends on:  python3-setuptools
+
+name=youtube-dl
+version=2021.12.17
+release=2
+source=https://youtube-dl.org/downloads/$version/$name-$version.tar.gz
+
+build() {
+	cd $name
+
+	sed -i -e 's|etc/bash_completion.d|share/bash-completion/completions|' setup.py
+
+	/usr/bin/python3 setup.py build
+	/usr/bin/python3 setup.py install --root=$PKG --optimize=1
+
+	mv $PKG/usr/share/bash-completion/completions/$name.bash-completion \
+		$PKG/usr/share/bash-completion/completions/$name
+
+	# remove junk
+	rm -r $PKG/usr/share/doc/ $PKG/usr/etc/
+}

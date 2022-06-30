@@ -1,0 +1,27 @@
+# Description: Standard theme engines for GTK+2 (only HC)
+# URL:         https://wiki.gnome.org/action/show/Design?action=show&redirect=GnomeArt
+# Depends on:  gtk
+
+name=gtk-engines
+version=2.20.2
+release=3
+source=http://ftp.gnome.org/pub/GNOME/sources/$name/2.20/$name-$version.tar.bz2
+
+build() {
+	cd $name-$version
+
+	export LINGUAS=' '
+
+	sed -i 's|<glib/.*\.h>|<glib.h>|' engines/clearlooks/src/animation.c
+
+	# disable all, but "hc" (it is needed for trinity-gtk-theme)
+	./configure \
+		--prefix=/usr \
+		--enable-animation \
+		--enable-hc \
+		--disable-all \
+		--disable-nls \
+
+	make V=1
+	make DESTDIR=$PKG install
+}

@@ -1,0 +1,134 @@
+# Bash programmable completion for pkgman(8)
+#
+# See files COPYRIGHT and COPYING for copyright and license information.
+
+_pkgman()
+{
+  local cur prev
+  COMPREPLY=()
+  cur=${COMP_WORDS[COMP_CWORD]}
+  prev=${COMP_WORDS[COMP_CWORD-1]}
+
+  case "$prev" in
+    -h|--help)
+      return 0
+      ;;
+    -V | --version )
+      return 0
+      ;;
+  esac
+
+  if [ $COMP_CWORD -eq 1 ]; then
+    COMPREPLY=( $( compgen -W '-h --help -V --version \
+      dumpconfig list list-dup list-nodependents list-locked \
+      list-orphans printf info readme path isinst current diff mdep dep rdep search dsearch \
+      fsearch install update remove sysup lock unlock ls cat edit' -- $cur ))
+  fi
+
+  if [ $COMP_CWORD '>' 1 ]; then
+    if [[ "$cur" != -* ]]; then
+      case ${COMP_WORDS[1]} in
+      install | info | readme | path | isinst | ls | dep )
+        plist=$(pkgman list --all)
+        if [ "$plist" != "" ]; then
+          COMPREPLY=( $( compgen -W '$plist' $cur ) )
+        fi
+        ;;
+      cat | edit )
+        if [ $COMP_CWORD '>' 2 ]; then
+          plist=$(pkgman ls ${COMP_WORDS[2]})
+          COMPREPLY=( $( compgen -W '$plist' $cur ) )
+        else
+          plist=$(pkgman list --all)
+          if [ "$plist" != "" ]; then
+            COMPREPLY=( $( compgen -W '$plist' $cur ) )
+          fi
+        fi
+        ;;
+      current | lock | remove )
+        plist=$(pkgman list)
+        COMPREPLY=( $( compgen -W '$plist' $cur ) )
+        ;;
+      update )
+        plist=$(pkgman diff)
+        COMPREPLY=( $( compgen -W '$plist' $cur ) )
+        ;;
+      esac
+    else
+      common_opts='-h --help --no-std-config --config= --config-set= --config-append='
+      #common_opts=" "
+      case ${COMP_WORDS[1]} in
+      ls )
+        COMPREPLY=( $( compgen -W '--path \
+          $common_opts' -- $cur ) )
+        ;;
+      list-orphans )
+        COMPREPLY=( $( compgen -W '-v \
+          $common_opts' -- $cur ) )
+        ;;
+      info )
+        COMPREPLY=( $( compgen -W '-v -vv \
+          $common_opts' -- $cur ) )
+        ;;
+      list-nodependents | list-locked )
+        COMPREPLY=( $( compgen -W '-v -vv --path \
+          $common_opts' -- $cur ) )
+        ;;
+      search | dsearch )
+        COMPREPLY=( $( compgen -W '-v -vv --path --regex \
+          $common_opts' -- $cur ) )
+        ;;
+      fsearch )
+        COMPREPLY=( $( compgen -W '-v -vv --path --regex --full \
+          $common_opts' -- $cur ) )
+        ;;
+      list )
+        COMPREPLY=( $( compgen -W '-v -vv --path --all --depsort --regex --filter= \
+          $common_opts' -- $cur ) )
+        ;;
+      list-dup )
+        COMPREPLY=( $( compgen -W '--prefer-higher --strict-diff \
+          $common_opts' -- $cur ) )
+        ;;
+      printf )
+        COMPREPLY=( $( compgen -W '--sort= --regex --filter= \
+          $common_opts' -- $cur ) )
+        ;;
+      diff )
+        COMPREPLY=( $( compgen -W '--all --deps --full --prefer-higher= --regex --filter \
+          $common_opts' -- $cur ) )
+        ;;
+      dep | rdep )
+        COMPREPLY=( $( compgen -W '-v -vv --path --all --tree --recursive --full \
+          $common_opts' -- $cur ) )
+        ;;
+      install | update )
+        COMPREPLY=( $( compgen -W '-v -vv --test --log --deps --force --group --margs= \
+          -fr -um -im -uf -if -ns -kw --aargs= -f -i --ignore= --install-scripts \
+          --pre-install --post-install \
+          $common_opts' -- $cur ) )
+        ;;
+      remove )
+        COMPREPLY=( $( compgen -W '-v -vv --test --log --deps --group --rargs= --ignore= \
+          --remove-scripts --pre-remove --post-remove \
+          $common_opts' -- $cur ) )
+        ;;
+      sysup )
+        COMPREPLY=( $( compgen -W '-v -vv --test --log --deps --depsort --group --margs= \
+          -fr -um -im -uf -if -ns -kw --aargs= -f -i --ignore= --install-scripts \
+          --pre-install --post-install \
+          $common_opts' -- $cur ) )
+        ;;
+      * )
+        COMPREPLY=( $( compgen -W '--no-std-config --config= --config-set= --config-append= \
+          --config-prepend= --root=' -- $cur ) )
+        ;;
+      esac
+    fi
+  fi
+  return 0
+}
+complete -F _pkgman pkgman
+
+# vim:ft=bash:sw=2:ts=2:sts=2:et:cc=99
+# End of file.

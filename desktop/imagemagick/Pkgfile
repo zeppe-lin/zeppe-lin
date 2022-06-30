@@ -1,0 +1,43 @@
+# Description: Image manipulation wizard
+# URL:         http://www.imagemagick.org/
+# Depends on:  chrpath libbsd libjpeg-turbo libpng libtool libxml2 perl xorg-libxext xorg-libxt
+
+name=imagemagick
+version=7.1.0-39
+release=1
+source=https://imagemagick.org/archive/releases/ImageMagick-$version.tar.xz
+
+build() {
+	cd ImageMagick-$version
+
+	./configure \
+		--prefix=/usr \
+		--enable-shared \
+		--with-modules \
+		--with-perl=yes \
+		--with-lcms=no \
+		--without-pango \
+		--without-fontconfig \
+		--without-freetype \
+		--without-raqm \
+		--without-zstd \
+		--without-tiff \
+		--without-webp \
+		--without-djvu \
+		--without-fpx \
+		--without-gdi32 \
+		--without-dps \
+		--without-flif \
+
+	make V=1
+	make DESTDIR=$PKG install
+
+	# remove bogus workdir rpath from perl modules
+	find $PKG/usr/lib/perl5 -name '*.so' -exec chrpath -d {} +
+
+	# cleanup
+	rm -r $PKG/usr/share/doc
+	find $PKG -regex '.*\(ChangeLog\|LICENSE\|NEWS\.txt\)$'   -delete
+	find $PKG -regex '.*\(\.packlist\|perllocal.pod\|\.bs\)$' -delete
+	find $PKG -type d -empty -delete
+}

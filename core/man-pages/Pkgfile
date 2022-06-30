@@ -1,0 +1,21 @@
+# Description: Collection of Linux man pages
+# URL:         https://www.kernel.org/doc/man-pages/
+
+name=man-pages
+version=5.13
+release=1
+source="http://www.kernel.org/pub/linux/docs/$name/$name-$version.tar.xz"
+
+build() {
+	cd $name-$version
+
+	# provided by sbase package
+	rm man1/time.1
+
+	# provided by shadow package
+	rm man5/passwd.5
+
+	install -d $PKG/usr/share/man
+	cp -r man1 man2 man3 man4 man5 man6 man7 man8 \
+		$PKG/usr/share/man/
+}

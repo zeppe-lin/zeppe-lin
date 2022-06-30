@@ -1,0 +1,39 @@
+# Description: CLI Tox client
+# URL:         https://github.com/JFreegman/toxic
+# Depends on:  curl libbsd libconfig toxcore xorg-libx11
+# Optional:    libnotify qrencode openal freealut python3 asciidoc
+
+name=toxic
+version=0.11.3
+release=1
+source=https://github.com/JFreegman/$name/archive/v$version/$name-$version.tar.gz
+
+build() {
+	cd $name-$version
+
+	# Set install directory to /usr.
+	sed -i -e "s,/usr/local,${EPREFIX}/usr,g" cfg/global_vars.mk
+
+	# Verbose build.
+	sed -i -e 's,@$(CC) ,$(CC) ,g' Makefile
+
+	export USER_CFLAGS="$CFLAGS"
+	export USER_LDFLAGS="$LDFLAGS -pthread"
+
+	# Disable optional features.
+	export DISABLE_GAMES=1           # games
+	export DISABLE_QRCODE=1          # qrcode
+	export DISABLE_QRPNG=1           # qrcode
+	export DISABLE_DESKTOP_NOTIFY=1  # dbus
+	export DISABLE_AV=1              # sound
+	export DISABLE_SOUND_NOTIFY=1    # sound
+	export DISABLE_VI=1              # video
+
+	make PREFIX=/usr
+	make DESTDIR=$PKG install
+
+	# remove junk
+	rm -f  $PKG/usr/share/toxic/toxic.conf.example
+	rm -rf $PKG/usr/share/toxic/sounds
+	rm -rf $PKG/usr/share/applications
+}

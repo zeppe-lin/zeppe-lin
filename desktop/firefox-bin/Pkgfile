@@ -1,0 +1,34 @@
+# Description: Firefox web browser
+# URL:         http://www.mozilla.com
+# Depends on:  alsa-lib dbus-glib gtk3 nss xorg-libxtst
+
+name=firefox-bin
+version=101.0
+release=2
+source="http://ftp.mozilla.org/pub/firefox/releases/$version/linux-x86_64/en-US/firefox-$version.tar.bz2
+	policies.json firefox.desktop firefox.sh"
+
+build() {
+	cd firefox
+
+	install -d $PKG/opt $PKG/usr/bin
+	mv $SRC/firefox $PKG/opt/firefox
+	install -m 755 $SRC/firefox.sh $PKG/usr/bin/firefox
+
+	mkdir -p $PKG/etc/revdep.d
+	echo "/opt/firefox" > $PKG/etc/revdep.d/$name
+
+	# we don't want these 'features'
+	rm -r $PKG/opt/firefox/browser/features
+
+	# disable autoupdate
+	mkdir $PKG/opt/firefox/distribution
+
+	install -m 644 $SRC/policies.json \
+		$PKG/opt/firefox/distribution/
+	install -m 644 -D $SRC/firefox.desktop \
+		$PKG/usr/share/applications/firefox.desktop
+	install -m 755 -d $PKG/usr/share/pixmaps
+	ln -s /opt/firefox/browser/chrome/icons/default/default32.png \
+		$PKG/usr/share/pixmaps/firefox.png
+}

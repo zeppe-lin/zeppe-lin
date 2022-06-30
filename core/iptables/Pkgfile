@@ -1,0 +1,21 @@
+# Description: Linux IPv[46] packet filtering ruleset
+# URL:         http://www.iptables.org/
+# Depends on:  libnfnetlink
+
+name=iptables
+version=1.8.8
+release=1
+source=https://www.netfilter.org/projects/$name/files/$name-$version.tar.bz2
+
+build() {
+	cd $name-$version
+
+	./configure \
+		--prefix=/usr \
+		--libexecdir=/usr/lib \
+		--enable-libipq \
+		--disable-nftables \
+
+	make V=1
+	make DESTDIR=$PKG install
+}

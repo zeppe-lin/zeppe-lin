@@ -1,0 +1,21 @@
+# Description: ID3 tag manipulation library
+# URL:         https://github.com/tenacityteam/libid3tag
+# Depends on:  zlib
+
+name=libid3tag
+version=0.16.2
+release=1
+source=https://github.com/tenacityteam/$name/archive/$version/$name-$version.tar.gz
+
+build() {
+	cmake -S $name-$version -B build -G Ninja       \
+		-D CMAKE_INSTALL_PREFIX=/usr            \
+		-D CMAKE_INSTALL_LIBDIR=lib             \
+		-D CMAKE_BUILD_TYPE=Release             \
+		-D CMAKE_CXX_FLAGS_RELEASE="$CXXFLAGS"  \
+		-D CMAKE_C_FLAGS_RELEASE="$CFLAGS"      \
+		-Wno-dev                                \
+
+	ninja -C build -j ${JOBS:-1} -v
+	DESTDIR=$PKG ninja -C build install
+}

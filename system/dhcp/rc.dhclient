@@ -1,0 +1,26 @@
+#!/bin/sh -e
+#
+# /etc/rc.d/dhcpcd: start/stop dhclient(8) daemon
+#
+
+case $1 in
+start)
+	/usr/sbin/dhclient
+	;;
+stop)
+	kill $(cat /var/run/dhclient.pid)
+	;;
+restart)
+	$0 stop
+	sleep 2
+	$0 start
+	;;
+reload)
+	kill -HUP $(cat /var/run/dhclient.pid)
+	;;
+*)
+	echo "usage: $0 [start|stop|restart|reload]"
+	;;
+esac
+
+# End of file.

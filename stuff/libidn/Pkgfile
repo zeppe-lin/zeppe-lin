@@ -1,0 +1,23 @@
+# Description: Provides support for IETF Internationalized Domain Names (IDN)
+# URL:         http://www.gnu.org/software/libidn/
+
+name=libidn
+version=1.40
+release=1
+source=http://ftp.gnu.org/gnu/$name/$name-$version.tar.gz
+
+build() {
+	cd $name-$version
+
+	./configure --prefix=/usr --disable-nls
+
+	make V=1
+	make DESTDIR=$PKG install
+
+	# install man-pages manually
+	install -m 0644 -Dt $PKG/usr/share/man/man1/ doc/*.1
+	install -m 0644 -Dt $PKG/usr/share/man/man3/ doc/man/*.3
+
+	# remove junk
+	rm -r $PKG/usr/share/info $PKG/usr/share/emacs
+}

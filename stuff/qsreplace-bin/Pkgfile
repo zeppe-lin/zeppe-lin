@@ -1,0 +1,17 @@
+# Description: Accept URLs on stdin, replace all query string values with a user-supplied value
+# URL:         https://github.com/tomnomnom/qsreplace
+
+name=qsreplace-bin
+version=0.0.3
+release=1
+source="https://github.com/tomnomnom/qsreplace/releases/download/v$version/qsreplace-linux-amd64-$version.tgz
+	qsreplace.1.pod"
+
+build() {
+	ls -la
+
+	install -d $PKG/usr/bin $PKG/usr/share/man/man1
+	install -m 755 qsreplace $PKG/usr/bin/
+	pod2man --nourls -r $version -c ' ' -n qsreplace -s 1 \
+		qsreplace.1.pod > $PKG/usr/share/man/man1/qsreplace.1
+}

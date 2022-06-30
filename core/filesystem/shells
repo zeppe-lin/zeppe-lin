@@ -1,0 +1,10 @@
+#
+# /etc/shells: defines valid login shells
+#
+# See shells(5) for more information.
+#
+
+/bin/sh
+/bin/bash
+
+# End of file.

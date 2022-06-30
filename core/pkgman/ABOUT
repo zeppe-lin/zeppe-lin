@@ -1,0 +1,31 @@
+ABOUT pkgman
+
+
+  This directory contains pkgman, the tool which provides additional
+  functionality to basic package management utilities (pkgutils).
+
+  It appeared in an attempt to rewrite the prt-get tool, which is used
+  by CRUX.
+
+  Original sources can be downloaded from:
+
+    1. https://crux.nu/gitweb/?p=tools/prt-get.git;a=summary
+    2. git://crux.nu/tools/prt-get.git
+
+
+  DEPENDENCIES
+
+    * gcc8+
+    * make(1p)
+    * pod2man(1pm)
+
+  LICENSE
+
+  pkgman is licensed through the GNU General Public License v2 or later
+  <https://gnu.org/licenses/gpl.html>.
+
+  Read the COPYING file for the complete license.
+  Read the COPYRIGHT file for the copyright notices.
+
+
+End of file.

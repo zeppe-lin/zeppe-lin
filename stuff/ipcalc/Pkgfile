@@ -1,0 +1,35 @@
+# Description: Calculate broadcast, network and host range
+# URL:         http://jodies.de/ipcalc
+
+# FIXME
+# 1. man page is terrible.
+
+name=ipcalc
+version=1.0.1
+release=1
+source=https://gitlab.com/$name/$name/-/archive/$version/$name-$version.tar.bz2
+
+build() {
+	cd $name-$version
+
+	meson setup build
+	ninja -C build -j ${JOBS:-1} -v
+
+	cat > ./ipcalc.1 <<- \!
+.Dd January 4, 2021
+.Dt IPCALC 1
+.Os
+.
+.Sh NAME
+.Nm ipcalc
+.Nd Calculate IP broadcast, host range etc
+.
+.Bd -literal
+!
+
+	cat ipcalc.1.md >> ./ipcalc.1
+	echo '.Ed' >> ./ipcalc.1
+
+	install -D -m 0755 build/ipcalc $PKG/usr/bin/ipcalc
+	install -D -m 0644 ipcalc.1 $PKG/usr/share/man/man1/ipcalc.1
+}

@@ -1,0 +1,24 @@
+# Description: BitTorrent client/daemon with command-line and web user interface
+# URL:         https://transmissionbt.com/
+# Depends on:  curl libevent
+
+name=transmission
+version=3.00
+release=1
+source=$name-$version.tar.xz
+
+build() {
+	cd $name-$version
+
+	./configure \
+		--prefix=/usr    \
+		--disable-nls    \
+		--enable-cli     \
+		--enable-daemon  \
+		--without-gtk    \
+
+	make V=1
+	make DESTDIR=$PKG install
+
+	rm $PKG/usr/share/transmission/web/LICENSE
+}

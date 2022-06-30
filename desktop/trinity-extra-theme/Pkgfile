@@ -1,0 +1,20 @@
+# Description: Trinity extra themes
+# URL:         file:///usr/src/zeppe-lin/desktop/trinity-extra-theme
+
+name=trinity-extra-theme
+version=0.1
+release=2
+source="dircolors
+	dunst
+	gitk
+	hexchat
+	newsboat
+	vifm
+	vim
+	wireshark
+	xresources
+	zathura"
+
+build() {
+	install -m 644 -Dt $PKG/usr/share/trinity/ *
+}

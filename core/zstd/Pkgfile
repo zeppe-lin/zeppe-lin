@@ -1,0 +1,15 @@
+# Description: Real-time compression algorithm with high compression ratios
+# URL:         https://facebook.github.io/zstd/
+# Depends on:  lz4 xz zlib
+
+name=zstd
+version=1.5.2
+release=1
+source=https://github.com/facebook/zstd/releases/download/v$version/zstd-$version.tar.gz
+
+build() {
+	cd $name-$version
+
+	make HAVE_THREAD=1 V=1
+	PREFIX=/usr make V=1 DESTDIR=$PKG install
+}

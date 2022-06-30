@@ -1,0 +1,11 @@
+--- /usr/bin/startx	2021-06-16 11:45:07.000000000 +0300
++++ startx	2021-06-18 17:30:29.914000000 +0300
+@@ -153,7 +153,7 @@ if [ x"$enable_xauth" = x1 ] ; then
+     # set up default Xauth info for this machine
+     case `uname` in
+     Linux*)
+-        if [ -z "`hostname --version 2>&1 | grep GNU`" ]; then
++        if hostname --version 2>&1 | grep GNU; then
+             hostname=`hostname -f`
+         else
+             hostname=`hostname`

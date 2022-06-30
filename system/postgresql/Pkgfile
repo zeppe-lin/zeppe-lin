@@ -1,0 +1,36 @@
+# Description: Sophisticated Object-Relational DBMS
+# URL:         https://www.postgresql.org
+# Depends on:  linux-pam openssl readline zlib
+
+name=postgresql
+version=14.2
+release=1
+source="https://ftp.$name.org/pub/source/v$version/$name-$version.tar.bz2
+	rc.$name pam.$name
+	postgresql-perl-rpath.patch
+	postgresql-run-socket.patch"
+
+build() {
+	cd $name-$version
+
+	patch -Np1 -i $SRC/postgresql-run-socket.patch
+	patch -Np1 -i $SRC/postgresql-perl-rpath.patch
+
+	./configure \
+		--prefix=/usr   \
+		--with-openssl  \
+		--with-pam      \
+		--disable-nls   \
+		--disable-rpath \
+
+	make V=1
+	make DESTDIR=$PKG install
+
+	cd doc/src/sgml
+	make DESTDIR=$PKG install-man
+
+	install -m 755 -D $SRC/rc.$name   $PKG/etc/rc.d/$name
+	install -m 755 -D $SRC/pam.$name  $PKG/etc/pam.d/$name
+
+	rm -rf $PKG/usr/share/doc
+}

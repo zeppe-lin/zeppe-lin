@@ -1,0 +1,21 @@
+# Description: Modern whois client
+# URL:         http://www.linux.it/~md/software/
+# Depends on:  libidn2
+
+name=whois
+version=5.5.13
+release=1
+source=http://ftp.debian.org/debian/pool/main/w/$name/${name}_$version.tar.xz
+
+build() {
+	cd $name
+
+	sed -i "/^CFLAGS/s/=.*$/=$CFLAGS/" Makefile
+
+	make CONFIG_FILE='/etc/whois.conf' whois
+
+	install -m 755 -Dt $PKG/usr/bin/             $name
+	install -m 644 -Dt $PKG/usr/share/man/man1/  $name.1
+	install -m 644 -Dt $PKG/usr/share/man/man5/  $name.conf.5
+	install -m 644 -Dt $PKG/etc/                 $name.conf
+}

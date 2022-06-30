@@ -1,0 +1,17 @@
+# Description: Root window parameter setting utility for X
+# URL:         http://xorg.freedesktop.org
+# Depends on:  xorg-server xorg-xbitmaps
+
+name=xorg-xsetroot
+version=1.1.2
+release=1
+source=https://www.x.org/releases/individual/app/xsetroot-$version.tar.bz2
+
+build() {
+	cd xsetroot-$version
+
+	./configure --prefix=/usr
+
+	make V=1
+	make DESTDIR=$PKG install
+}

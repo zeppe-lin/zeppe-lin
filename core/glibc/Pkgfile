@@ -1,0 +1,69 @@
+# Description: GNU C Library
+# URL:         http://www.gnu.org/software/libc/
+
+name=glibc
+version=2.34
+release=1
+source="https://ftp.gnu.org/gnu/$name/$name-$version.tar.xz
+	https://www.kernel.org/pub/linux/kernel/v5.x/linux-5.4.72.tar.xz
+	hosts resolv.conf nsswitch.conf host.conf ld.so.conf
+	$name-$version-1.patch"
+
+build() {
+	# install kernel headers
+	cd linux-5.4.72
+	make mrproper
+	# The headers require rsync for installation, this command
+	# simply does the equivalent using find.
+	#make headers_check
+	#make INSTALL_HDR_PATH=$PKG/usr headers_install
+	#chown root:root $PKG/usr
+	make headers
+	find usr/include -name \*.h -type f | while read -r file; do
+		install -g root -o root -m 644 -D $file $PKG/$file
+	done
+
+	patch -p1 -d $SRC/$name-$version -i $SRC/$name-$version-1.patch
+
+	mkdir $SRC/build
+	cd $SRC/build
+
+	../$name-$version/configure \
+		--prefix=/usr                   \
+		--libexecdir=/usr/lib           \
+		--with-headers=$PKG/usr/include \
+		--enable-kernel=4.9             \
+		--enable-add-ons                \
+		--enable-stack-protector=strong \
+		--disable-profile               \
+		--disable-werror                \
+		--without-gd                    \
+		--enable-multi-arch             \
+
+	make V=1
+	#make check
+	make install_root=$PKG install
+
+	install -m 0644 -Dt $PKG/etc/ \
+		$SRC/$name-$version/nscd/nscd.conf \
+		$SRC/hosts \
+		$SRC/resolv.conf \
+		$SRC/nsswitch.conf \
+		$SRC/host.conf \
+		$SRC/ld.so.conf
+
+	install -d $PKG/var/db/nscd
+
+	ln -sf ../usr/share/zoneinfo/UTC   $PKG/etc/localtime
+	install -d $PKG/etc/ld.so.conf.d   $PKG/usr/lib/locale
+	touch $PKG/etc/ld.so.cache
+
+	localedef -i POSIX -f UTF-8 $PKG/usr/lib/locale/C.UTF-8 2> /dev/null || true
+
+	# remove junk
+	rm -r $PKG/usr/share/locale $PKG/usr/bin/tzselect \
+		$PKG/usr/bin/zdump $PKG/usr/sbin/zic
+
+	find $PKG -name "*install.cmd" -delete
+	find $PKG -name ".\install"    -delete
+}

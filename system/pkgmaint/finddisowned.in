@@ -1,0 +1,95 @@
+#!/bin/sh
+# See files COPYRIGHT and COPYING for copyright and license information.
+
+finddisowned() {
+	echo "Get all known files..." 1>&2
+
+	sort -u "$ROOT/var/lib/pkg/db" > "$TMPFILE1"
+
+	PATHS=$(xargs < "$(readlink -f "$WHITELIST")")
+
+	echo "Get paths from whitelist..." 1>&2
+
+	(cd "${ROOT:-/}" || exit 1
+	# Intentional
+	# shellcheck disable=2086
+	find $PATHS \( -type d -printf '%p/\n' -o -print \) | sort > "$TMPFILE2")
+
+	comm -23 "$TMPFILE2" "$TMPFILE1"
+}
+
+print_help() {
+	cat <<EOF
+Usage: finddisowned [OPTION]
+Find files that are disowned by package manager.
+
+  -r, --root PATH        specify alternative root directory
+  -w, --whitelist FILE   use an alternate whitelist file
+  -v, --version          print version and exit
+  -h, --help             print help and exit
+EOF
+}
+
+main() {
+	while [ "$1" ]; do
+		case $1 in
+		-r|--root)
+			if [ ! "$2" ]; then
+				echo "finddisowned: option $1 requires an argument"
+				exit 1
+			fi
+			ROOT=$2
+			shift
+			;;
+		-w|--whitelist)
+			if [ ! "$2" ]; then
+				echo "finddisowned: option $1 requires an argument"
+				exit 1
+			fi
+			WHITELIST=$2
+			shift
+			;;
+		-v|--version)
+			echo "finddisowned (pkgmaint) @VERSION@"
+			exit 0
+			;;
+		-h|--help)
+			print_help
+			exit 0
+			;;
+		*)
+			echo "finddisowned: invalid option $1"
+			exit 1
+			;;
+		esac
+		shift
+	done
+	WHITELIST=${WHITELIST:-"$ROOT/etc/finddisowned.whitelist"}
+	if [ ! -e "$WHITELIST" ]; then
+		echo "finddisowned: can't find whitelist in specified root"
+		exit 2
+	fi
+	finddisowned
+}
+
+interrupted() {
+	echo "=======> Aborted."
+	exit 1
+}
+
+atexit() {
+	[ -f "$TMPFILE1" ] && rm "$TMPFILE1"
+	[ -f "$TMPFILE2" ] && rm "$TMPFILE2"
+}
+
+trap "interrupted" HUP INT QUIT TERM
+trap "atexit" EXIT
+
+export LC_ALL=POSIX
+
+TMPFILE1=$(mktemp)
+TMPFILE2=$(mktemp)
+
+main "$@"
+
+# End of file.

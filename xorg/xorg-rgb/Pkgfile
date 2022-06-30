@@ -1,0 +1,17 @@
+# Description: X Window System RGB database
+# URL:         http://xorg.freedesktop.org
+# Depends on:  xorg-xorgproto
+
+name=xorg-rgb
+version=1.0.6
+release=1
+source=https://www.x.org/releases/individual/app/rgb-$version.tar.bz2
+
+build() {
+	cd rgb-$version
+
+	./configure --prefix=/usr
+
+	make V=1
+	make DESTDIR=$PKG install
+}

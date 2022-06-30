@@ -1,0 +1,19 @@
+# Description: Portable and efficient API to determine the call-chain of a program
+# URL:         https://savannah.nongnu.org/projects/libunwind
+# Depends on:  xz
+# Optional:    texlive
+
+name=libunwind
+version=1.6.2
+release=1
+source=https://download.savannah.gnu.org/releases/$name/$name-$version.tar.gz
+
+build() {
+	cd $name-$version
+
+	./configure --prefix=/usr --enable-documentation
+	sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
+
+	make V=1
+	make DESTDIR=$PKG install
+}

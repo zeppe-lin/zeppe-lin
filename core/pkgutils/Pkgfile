@@ -1,0 +1,18 @@
+# Description: Set of utilities to manage software packages 
+# URL:         file://usr/src/zeppe-lin/core/pkgutils
+# Depends on:  libarchive
+
+name=pkgutils
+version=5.41.1
+release=1
+source="$(ls -1 *.cc *.h *.pod) config.mk Makefile bash_completion
+	pkgadd.conf"
+
+build() {
+	make VERSION=$version PREFIX=/usr DESTDIR=$PKG install
+	install -m 644 -Dt $PKG/etc/ $SRC/pkgadd.conf
+
+	# bash-completion
+	install -m 0644 -D bash_completion \
+		$PKG/usr/share/bash-completion/completions/$name
+}

@@ -1,0 +1,12 @@
+# Description: Patched Iosevka font with Nerd Glyphs
+# URL:         https://github.com/ryanoasis/nerd-fonts
+
+name=xorg-font-iosevka-nerd-ttf
+version=2.1.0-38f76ec
+release=1
+source=README
+
+build() {
+	install -m 644 -Dt $PKG/usr/share/fonts/TTF/ \
+		$PKGMK_ROOT/ttfs/*.ttf
+}

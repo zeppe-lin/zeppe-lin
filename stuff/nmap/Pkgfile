@@ -1,0 +1,73 @@
+# Description: Network exploration of security auditing + unofficial nse scripts
+# URL:         https://nmap.org
+# Depends on:  libpcap pygtk ktsuss
+
+name=nmap
+version=7.92
+release=1
+source="https://nmap.org/dist/nmap-$version.tar.bz2
+	zenmap-su
+	0001-fix-hardcoded-monospace-font.patch
+	0002-fix-highlight.patch
+	unofficial-nses/*.nse"
+
+build() {
+	cd $name-$version
+
+	for f in $SRC/*.patch; do patch -p1 -i $f; done
+
+	# remove default debug and optimization flags
+	sed -i  \
+		-e '/CFLAGS\s*=\s*/s/-g//;s/-O2//'   \
+		-e '/CXXFLAGS\s*=\s*/s/-g//;s/-O2//' \
+		nping/configure                      \
+		libpcre/configure                    \
+		libssh2/configure                    \
+		ncat/configure                       \
+		nsock/src/configure                  \
+		configure                            \
+		liblua/Makefile                      \
+		nbase/configure                      \
+		libdnet-stripped/configure           \
+		libpcap/configure                    \
+
+	./configure \
+		--prefix=/usr          \
+		--libexecdir=/usr/lib  \
+		--with-libpcap=/usr    \
+		--with-libpcre=/usr    \
+		--with-zlib=/usr       \
+		--without-nmap-update  \
+		--disable-nls          \
+
+	make V=1
+	make DESTDIR=$PKG install
+
+	install -m 755 -D $SRC/zenmap-su $PKG/usr/bin/zenmap-su
+
+	# add unofficial nse scripts
+	for nse in $SRC/*.nse; do
+		install -m 644 -D $nse $PKG/usr/share/nmap/scripts/${nse#*-}
+		categories="$(grep -Eo 'categories[[:space:]]+=[[:space:]]{.*}' $nse ||:)"
+		if [ -n "$categories" ]; then
+			cat >> $PKG/usr/share/nmap/scripts/script.db <<EOF
+Entry { filename = "${nse#*-}", ${categories} }
+EOF
+		else
+			echo "WARNING: $nse missing categories!"
+		fi
+	done
+
+	# fix "PangoFc will not work correctly"
+	mkdir -p $PKG/usr/etc/pango
+	pango-querymodules > $PKG/usr/etc/pango/pango.modules
+
+	# remove junk
+	rm -f  $PKG/usr/share/nmap/nselib/data/psexec/README
+	rm -f  $PKG/usr/share/nmap/nselib/data/jdwp-class/README.txt
+	rm -rf $PKG/usr/share/zenmap/locale
+	rm -rf $PKG/usr/share/zenmap/docs
+	rm -rf $PKG/usr/share/applications
+	rm -f  $PKG/usr/bin/uninstall_zenmap
+	rm -f  $PKG/usr/bin/uninstall_ndiff
+}

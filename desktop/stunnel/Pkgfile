@@ -1,0 +1,36 @@
+# Description: Wraps normal socket connections with SSL/TLS
+# URL:         https://www.stunnel.org
+# Depends on:  libnsl openssl
+
+name=stunnel
+version=5.64
+release=2
+source="https://ftp.nluug.nl/pub/networking/$name/archive/${version%%.*}.x/$name-$version.tar.gz
+	rc.$name $name.conf"
+
+build() {
+	cd $name-$version
+
+	./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--with-ssl=/usr \
+		--disable-fips \
+		--disable-systemd \
+		--disable-libwrap \
+		--enable-ipv6 \
+
+	make V=1
+
+	install -m 0755 -Dt $PKG/usr/sbin/            src/$name
+	install -m 0644 -Dt $PKG/usr/share/man/man8/  doc/$name.8
+	install -m 0644 -Dt $PKG/etc/                 $SRC/$name.conf
+
+	# service
+	install -m 0755 -D $SRC/rc.$name $PKG/etc/rc.d/$name
+
+	install -d $PKG/etc/ssl/certs $PKG/etc/ssl/keys
+	touch $PKG/etc/ssl/certs/stunnel.crt $PKG/etc/ssl/keys/stunnel.key
+	chmod 0600 $PKG/etc/ssl/keys/stunnel.key
+}

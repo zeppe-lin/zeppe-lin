@@ -1,0 +1,35 @@
+README xorg-font-iosevka-nerd-ttf
+
+
+  ABOUT
+
+    This directory contains patched Iosevka font with extra Glyphs
+    from "Nerd Fonts" project.
+
+    Sources are available from
+    https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/Iosevka
+
+
+  PREPARE THE PACKAGE SOURCE
+
+    First, clone patched Iosevka font from "Nerd Fonts" project if you
+    haven't already:
+
+    $ cd ~/your/work/dir
+    $ git clone --filter=blob:none --sparse https://github.com/ryanoasis/nerd-fonts
+    $ git sparse-checkout add patched-fonts/Iosevka
+
+    Next, copy a *.ttf and LICENSE files to the package source
+    directory, into ttfs/ subdirectory:
+
+    $ find patched-fonts/Iosevka/ \
+      \( -iname "*.ttf" -o -name LICENSE.md \) \
+      -not -iname "*Windows Compatible.ttf" \
+      -not -iname "*Mono.ttf" \
+      -execdir install -m 644 -D {} \
+      "/usr/src/zeppe-lin/extra/xorg-font-iosevka-nerd-ttf/ttfs/{}" \;
+
+    That's it.
+
+
+End of file.

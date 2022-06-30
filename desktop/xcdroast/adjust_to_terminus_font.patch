@@ -1,0 +1,16 @@
+diff '--color=always' -pruN '--color=never' /var/cache/pkgmk/sources/xcdroast-1.19.orig/src/xcdroast.h /var/cache/pkgmk/sources/xcdroast-1.19/src/xcdroast.h
+--- /var/cache/pkgmk/sources/xcdroast-1.19.orig/src/xcdroast.h	2022-05-26 18:31:42.367810399 +0300
++++ /var/cache/pkgmk/sources/xcdroast-1.19/src/xcdroast.h	2022-05-26 18:33:11.975808067 +0300
+@@ -222,9 +222,9 @@
+ /*
+  * font definitions
+  */
+-#define PANGO_MONOSPACE "Monospace 10"
+-#define PANGO_BOLD "Normal Bold"
+-#define PANGO_BIG "Normal 18"
++#define PANGO_MONOSPACE "xos4 terminus 9"
++#define PANGO_BOLD "Regular Bold"
++#define PANGO_BIG "Regular 9"
+ #define PANGO_ITALIC "Italic"
+ 
+ /*

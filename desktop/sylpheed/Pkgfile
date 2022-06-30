@@ -1,0 +1,35 @@
+# Description: GTK+ email client and news reader
+# URL:         http://sylpheed.sraoss.jp/en/
+# Depends on:  gpgme gtk xorg-libxdamage
+
+name=sylpheed
+version=3.7.0
+release=3
+source="https://sylpheed.sraoss.jp/$name/v${version%.*}/$name-$version.tar.xz
+	0001-fix_widget_style_for_dark_theme.patch
+	0001-trinity-icon-theme.patch
+	0002-fix_summary_font_size_4_8px.patch"
+
+build() {
+	cd $name-$version
+
+	patch -p1 -i $SRC/0001-fix_widget_style_for_dark_theme.patch
+	patch -p1 -i $SRC/0001-trinity-icon-theme.patch
+	patch -p1 -i $SRC/0002-fix_summary_font_size_4_8px.patch
+
+	./configure \
+		--prefix=/usr \
+		--disable-glibtest \
+		--disable-gtktest \
+		--disable-updatecheck \
+		--disable-updatecheckplugin \
+
+	make V=1
+	make DESTDIR=$PKG install
+
+	sed -ri '/\[.+\]=/d' sylpheed.desktop
+	install -m 0644 -Dt $PKG/usr/share/applications/ $name.desktop
+	install -m 0644 -Dt $PKG/usr/share/pixmaps/      $name.png
+
+	rm -r $PKG/usr/share/locale
+}

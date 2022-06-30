@@ -1,0 +1,15 @@
+# Description: ASN.1 library with a focus on performance and a pythonic API
+# URL:         https://pypi.org/project/asn1crypto/
+# Depends on:  python3-setuptools
+
+name=python3-asn1crypto
+version=1.5.1
+release=1
+source=https://files.pythonhosted.org/packages/source/a/${name#*-}/${name#*-}-$version.tar.gz
+
+build() {
+	cd ${name#*-}-$version
+
+	/usr/bin/python3 setup.py build
+	/usr/bin/python3 setup.py install --prefix=/usr --root=$PKG --optimize=1
+}

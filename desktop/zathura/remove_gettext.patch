@@ -1,0 +1,41 @@
+diff '--color=always' -pruN '--color=never' /var/cache/pkgmk/sources/zathura-0.4.9.orig/data/meson.build /var/cache/pkgmk/sources/zathura-0.4.9/data/meson.build
+--- data/meson.build	2022-05-13 20:05:18.127889731 +0300
++++ data/meson.build	2022-05-13 20:08:55.116884085 +0300
+@@ -16,26 +16,6 @@ if rsvg_convert.found()
+   endforeach
+ endif
+ 
+-i18n = import('i18n')
+-podir = join_paths(meson.project_source_root(), 'po')
+-
+-desktop = i18n.merge_file(
+-  input: 'org.pwmt.zathura.desktop.in',
+-  output: 'org.pwmt.zathura.desktop',
+-  install: true,
+-  install_dir: desktopdir,
+-  po_dir: podir,
+-  type: 'desktop'
+-)
+-
+-appdata = i18n.merge_file(
+-  input: 'org.pwmt.zathura.appdata.xml.in',
+-  output: 'org.pwmt.zathura.appdata.xml',
+-  install: true,
+-  install_dir: metainfodir,
+-  po_dir: podir,
+-)
+-
+ desktop_file_validate = find_program('desktop-file-validate', required: get_option('tests'), native: true)
+ if desktop_file_validate.found()
+   test('validate-desktop',
+diff '--color=always' -pruN '--color=never' /var/cache/pkgmk/sources/zathura-0.4.9.orig/meson.build /var/cache/pkgmk/sources/zathura-0.4.9/meson.build
+--- meson.build	2022-05-13 20:05:18.127889731 +0300
++++ meson.build	2022-05-13 20:09:04.067883852 +0300
+@@ -117,7 +117,6 @@ include_directories = [
+ ]
+ 
+ subdir('data')
+-subdir('po')
+ 
+ # source files
+ sources = files(

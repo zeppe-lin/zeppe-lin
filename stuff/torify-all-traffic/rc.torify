@@ -1,0 +1,304 @@
+#!/bin/sh -x
+#
+# /etc/rc.d/torify: redirect all traffic through tor network
+#
+# Huge thanks to sepehrdad.dev@gmail.com.
+#
+# TODO: save default sysctl settings? (maybe reboot is enough)
+
+SSD=/sbin/start-stop-daemon
+PROG=/usr/bin/tor
+PROG_UID=$(id -u tor)
+PID=/var/run/torify.pid
+CONFIG=/etc/tor/torifyrc
+PASSWORD="t0r1fym3"
+OPTS="-f $CONFIG"
+
+# Exclude locals
+TOR_EXCLUDE="192.168.0.0/16 172.16.0.0/12 10.0.0.0/8"
+
+# Check for configuration files
+if [ ! -f $CONFIG ]; then
+	echo "Configuration file '$CONFIG' missing. Exiting."
+	exit 1
+fi
+
+case $1 in
+start)
+	cat <<EOF
+WARNING:
+WARNING:  Make sure you back up the following files:
+WARNING:   /etc/resolv.conf, /etc/resolv.conf.head, /etc/resolv.conf.tail,
+WARNING:   /etc/sysctl.conf.
+WARNING:  Also, save iptables rules if you have any:
+WARNING:   iptables-save > /etc/iptables-rules.bak
+WARNING:
+WARNING:  All of the above files will be overwritten.
+WARNING:
+EOF
+	read -p "Continue? (y/n)" -n 1 -r
+	echo
+	if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+		if [[ "$0" = "$BASH_SOURCE" ]]; then
+			exit 1
+		else
+			# handle exits from shell or function but don't exit interactive shell
+			return 1
+		fi
+	fi
+
+	# Check if already started
+	if /bin/ps aux | grep -q "[/]usr/bin/tor -f /etc/tor/torifyrc"; then
+		echo "'/usr/bin/tor -f /etc/tor/torifyrc' already running. Exiting."
+		exit 1
+	fi
+
+	# Check if another tor instance is running
+	if /bin/ps aux | grep -q "[/]usr/bin/tor"; then
+		echo "Another Tor instance is running. Exiting."
+		exit 1
+	fi
+
+	# Creating new resolv.conf
+	/bin/echo "nameserver 127.0.0.1" > /etc/resolv.conf
+
+	########################
+	## Set iptables rules ##
+	########################
+
+	# Flush iptables
+	/usr/sbin/iptables -F
+	/usr/sbin/iptables -F -t nat
+
+	# Set iptables nat
+	/usr/sbin/iptables -t nat -A OUTPUT -m owner --uid-owner $PROG_UID -j RETURN
+
+	# Set dns redirect
+	/usr/sbin/iptables -t nat -A OUTPUT -p udp --dport 53 -j REDIRECT --to-ports 9053 
+	/usr/sbin/iptables -t nat -A OUTPUT -p tcp --dport 53 -j REDIRECT --to-ports 9053
+	/usr/sbin/iptables -t nat -A OUTPUT -p udp -m owner --uid-owner $PROG_UID -m udp \
+						   --dport 53 -j REDIRECT --to-ports 9053
+
+	# Resolve .onion domains mapping 10.192.0.0/10 address space
+	/usr/sbin/iptables -t nat -A OUTPUT -p tcp -d 10.192.0.0/10 -j REDIRECT --to-ports 9040
+	/usr/sbin/iptables -t nat -A OUTPUT -p udp -d 10.192.0.0/10 -j REDIRECT --to-ports 9040
+	
+	# Exclude locals
+	for NET in $TOR_EXCLUDE 127.0.0.0/9 127.128.0.0/10; do
+		/usr/sbin/iptables -t nat -A OUTPUT -d $NET -j RETURN
+		/usr/sbin/iptables        -A OUTPUT -d $NET -j ACCEPT
+	done
+	
+	# Redirect all other output through tor
+	/usr/sbin/iptables -t nat -A OUTPUT -p tcp --syn -j REDIRECT --to-ports 9040
+	/usr/sbin/iptables -t nat -A OUTPUT -p udp       -j REDIRECT --to-ports 9040
+	/usr/sbin/iptables -t nat -A OUTPUT -p icmp      -j REDIRECT --to-ports 9040
+	
+	# Accept already established connections
+	/usr/sbin/iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+	
+	# Allow only tor output
+	/usr/sbin/iptables -A OUTPUT -m owner --uid-owner $PROG_UID -j ACCEPT
+	/usr/sbin/iptables -A OUTPUT -j REJECT
+
+	############################
+	## Apply new sysctl rules ##
+	############################
+
+	# Swappiness
+	/sbin/sysctl -w vm.dirty_ratio=10                        1>/dev/null 2>&1
+	/sbin/sysctl -w vm.dirty_background_ratio=5              1>/dev/null 2>&1
+	/sbin/sysctl -w vm.dirty_expire_centisecs=2000           1>/dev/null 2>&1
+	/sbin/sysctl -w vm.dirty_writeback_centisecs=1000        1>/dev/null 2>&1
+	/sbin/sysctl -w vm.swappiness=10                         1>/dev/null 2>&1
+	/sbin/sysctl -w vm.vfs_cache_pressure=70                 1>/dev/null 2>&1
+
+	# Disable Explicit Congestion Notification in TCP
+	/sbin/sysctl -w net.ipv4.tcp_ecn=0                       1>/dev/null 2>&1
+
+	# Window scaling
+	/sbin/sysctl -w net.ipv4.tcp_window_scaling=1            1>/dev/null 2>&1
+
+	# Increase linux autotuning tcp buffer limits
+	/sbin/sysctl -w net.ipv4.tcp_rmem="8192 87380 16777216"  1>/dev/null 2>&1
+	/sbin/sysctl -w net.ipv4.tcp_wmem="8192 65536 16777216"  1>/dev/null 2>&1
+
+	# Increase TCP max buffer size
+	/sbin/sysctl -w net.core.rmem_max=16777216               1>/dev/null 2>&1
+	/sbin/sysctl -w net.core.wmem_max=16777216               1>/dev/null 2>&1
+
+	# Increase number of incoming connections backlog
+	/sbin/sysctl -w net.core.netdev_max_backlog=16384        1>/dev/null 2>&1
+	/sbin/sysctl -w net.core.dev_weight=64                   1>/dev/null 2>&1
+
+	# Increase number of incoming connections
+	/sbin/sysctl -w net.core.somaxconn=32768                 1>/dev/null 2>&1
+
+	# Increase the maximum amount of option memory buffers
+	/sbin/sysctl -w net.core.optmem_max=65535                1>/dev/null 2>&1
+
+	# Increase the tcp-time-wait buckets pool size to prevent simple DOS attacks
+	/sbin/sysctl -w net.ipv4.tcp_max_tw_buckets=1440000      1>/dev/null 2>&1
+
+	# try to reuse time-wait connections, but don't recycle them
+	# (recycle can break clients behind NAT)
+	/sbin/sysctl -w net.ipv4.tcp_tw_reuse=1                  1>/dev/null 2>&1
+
+	# Limit number of orphans, each orphan can eat up to 16M (max wmem)
+	# of unswappable memory
+	/sbin/sysctl -w net.ipv4.tcp_max_orphans=16384           1>/dev/null 2>&1
+	/sbin/sysctl -w net.ipv4.tcp_orphan_retries=0            1>/dev/null 2>&1
+
+	# Don't cache ssthresh from previous connection
+	/sbin/sysctl -w net.ipv4.tcp_no_metrics_save=1           1>/dev/null 2>&1
+	/sbin/sysctl -w net.ipv4.tcp_moderate_rcvbuf=1           1>/dev/null 2>&1
+
+	# Increase size of RPC datagram queue length
+	/sbin/sysctl -w net.unix.max_dgram_qlen=50               1>/dev/null 2>&1
+
+	# Don't allow the arp table to become bigger than this
+	/sbin/sysctl -w net.ipv4.neigh.default.gc_thresh3=2048   1>/dev/null 2>&1
+
+	# Tell the gc when to become aggressive with arp table cleaning.
+	# Adjust this based on size of the LAN. 1024 is suitable for most
+	# /24 networks
+	/sbin/sysctl -w net.ipv4.neigh.default.gc_thresh2=1024   1>/dev/null 2>&1
+
+	# Adjust where the gc will leave arp table alone - set to 32.
+	/sbin/sysctl -w net.ipv4.neigh.default.gc_thresh1=32     1>/dev/null 2>&1
+
+	# Adjust to arp table gc to clean-up more often
+	/sbin/sysctl -w net.ipv4.neigh.default.gc_interval=30    1>/dev/null 2>&1
+
+	# Increase TCP queue length
+	/sbin/sysctl -w net.ipv4.neigh.default.proxy_qlen=96     1>/dev/null 2>&1
+	/sbin/sysctl -w net.ipv4.neigh.default.unres_qlen=6      1>/dev/null 2>&1
+
+	# Enable Explicit Congestion Notification (RFC 3168), disable it
+	# if it doesn't work for you
+	/sbin/sysctl -w net.ipv4.tcp_ecn=1                       1>/dev/null 2>&1
+	/sbin/sysctl -w net.ipv4.tcp_reordering=3                1>/dev/null 2>&1
+
+	# How many times to retry killing an alive TCP connection
+	/sbin/sysctl -w net.ipv4.tcp_retries2=15                 1>/dev/null 2>&1
+	/sbin/sysctl -w net.ipv4.tcp_retries1=3                  1>/dev/null 2>&1
+
+	# Avoid falling back to slow start after a connection goes idle
+	# keeps our cwnd large with the keep alive connections (kernel > 3.6)
+	/sbin/sysctl -w net.ipv4.tcp_slow_start_after_idle=0     1>/dev/null 2>&1
+
+	# Allow the TCP fastopen flag to be used,
+	# beware some firewalls do not like TFO! (kernel > 3.7)
+	/sbin/sysctl -w net.ipv4.tcp_fastopen=3                  1>/dev/null 2>&1
+
+	# This will ensure that immediately subsequent connections use the new values
+	/sbin/sysctl -w net.ipv4.route.flush=1                   1>/dev/null 2>&1
+	/sbin/sysctl -w net.ipv6.route.flush=1                   1>/dev/null 2>&1
+
+	# TCP SYN cookie protection
+	/sbin/sysctl -w net.ipv4.tcp_syncookies=1                1>/dev/null 2>&1
+
+	# TCP rfc1337
+	/sbin/sysctl -w net.ipv4.tcp_rfc1337=1                   1>/dev/null 2>&1
+
+	# Reverse path filtering
+	/sbin/sysctl -w net.ipv4.conf.default.rp_filter=1        1>/dev/null 2>&1
+	/sbin/sysctl -w net.ipv4.conf.all.rp_filter=1            1>/dev/null 2>&1
+
+	# Log martian packets
+	/sbin/sysctl -w net.ipv4.conf.default.log_martians=1     1>/dev/null 2>&1
+	/sbin/sysctl -w net.ipv4.conf.all.log_martians=1         1>/dev/null 2>&1
+
+	# Disable ICMP redirecting
+	/sbin/sysctl -w net.ipv4.conf.all.accept_redirects=0     1>/dev/null 2>&1
+	/sbin/sysctl -w net.ipv4.conf.default.accept_redirects=0 1>/dev/null 2>&1
+	/sbin/sysctl -w net.ipv4.conf.all.secure_redirects=0     1>/dev/null 2>&1
+	/sbin/sysctl -w net.ipv4.conf.default.secure_redirects=0 1>/dev/null 2>&1
+	/sbin/sysctl -w net.ipv6.conf.all.accept_redirects=0     1>/dev/null 2>&1
+	/sbin/sysctl -w net.ipv6.conf.default.accept_redirects=0 1>/dev/null 2>&1
+	/sbin/sysctl -w net.ipv4.conf.all.send_redirects=0       1>/dev/null 2>&1
+	/sbin/sysctl -w net.ipv4.conf.default.send_redirects=0   1>/dev/null 2>&1
+
+	# Enable Ignoring to ICMP Request
+	/sbin/sysctl -w net.ipv4.icmp_echo_ignore_all=1          1>/dev/null 2>&1
+
+	# Disable IPv6
+	/sbin/sysctl -w net.ipv6.conf.all.disable_ipv6=1         1>/dev/null 2>&1
+	/sbin/sysctl -w net.ipv6.conf.default.disable_ipv6=1     1>/dev/null 2>&1
+
+	#######################
+	## Tor Configuration ##
+	#######################
+
+	# Generate the config file with control password
+	/bin/cat >/etc/tor/torifyrc.control <<EOF
+CookieAuthentication 0
+HashedControlPassword \
+$(/usr/bin/sudo -u "#$PROG_UID" $PROG --hash-password $PASSWORD)
+EOF
+
+	$SSD --start --background --chuid tor:tor --make-pidfile --pidfile $PID \
+		--exec $PROG -- $OPTS
+	;;
+stop)
+	# Check if already stopped
+	if ! /bin/ps aux | grep -q "[/]usr/bin/tor -f /etc/tor/torifyrc"; then
+		echo "'/usr/bin/tor -f /etc/tor/torifyrc' already running. Exiting."
+		exit 1
+	fi
+
+	cat <<EOF
+INFO:
+INFO:  Now you can restore backup files like:
+INFO:   /etc/resolv.conf, /etc/resolv.conf.head, /etc/resolv.conf.tail,
+INFO:   /etc/sysctl.conf.
+INFO:
+INFO:  To restore sysctl.conf settings, execute:
+INFO:   /sbin/sysctl --quiet --system
+INFO:
+INFO:  To restore saved iptables rules, execute:
+INFO:   iptables-restore < /etc/iptables-rules
+INFO:
+EOF
+
+	# Flush iptables rules
+	/usr/sbin/iptables -F
+	/usr/sbin/iptables -F -t nat
+
+	# Restore iptables rules
+	if [ -f /etc/iptables-rules ]; then
+		/usr/sbin/iptables-restore < /etc/iptables-rules
+	fi
+
+	# Shutting down Tor daemon
+	$SSD --stop --remove-pidfile --pidfile $PID --retry 10
+	;;
+reload)
+	$SSD --stop --signal HUP --pidfile $PID
+	;;
+restart)
+	$0 stop
+	$0 start
+	;;
+check-config)
+	/usr/bin/sudo -u "#$PROG_UID" $PROG -f $CONFIG --verify-config
+	;;
+whoami)
+	MYIP=$(/usr/bin/wget -qO- http://ipecho.net/plain)
+	ADDRINFO=$(/usr/bin/wget -qO- https://ipinfo.io/$MYIP)
+	echo "$ADDRINFO"
+	;;
+newnym)
+	(
+	echo "authenticate \"$PASSWORD\""
+	echo "signal newnym"
+	echo "quit"
+	) | nc 127.0.0.1 9051
+	;;
+*)
+	/bin/echo "usage: $0 [start|stop|reload|restart|check-config|whoami|newnym]"
+	exit 1
+	;;
+esac
+
+# End of file.

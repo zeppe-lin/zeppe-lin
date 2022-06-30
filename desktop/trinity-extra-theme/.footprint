@@ -1,0 +1,13 @@
+drwxr-xr-x	root/root	usr/
+drwxr-xr-x	root/root	usr/share/
+drwxr-xr-x	root/root	usr/share/trinity/
+-rw-r--r--	root/root	usr/share/trinity/dircolors
+-rw-r--r--	root/root	usr/share/trinity/dunst
+-rw-r--r--	root/root	usr/share/trinity/gitk
+-rw-r--r--	root/root	usr/share/trinity/hexchat
+-rw-r--r--	root/root	usr/share/trinity/newsboat
+-rw-r--r--	root/root	usr/share/trinity/vifm
+-rw-r--r--	root/root	usr/share/trinity/vim
+-rw-r--r--	root/root	usr/share/trinity/wireshark
+-rw-r--r--	root/root	usr/share/trinity/xresources
+-rw-r--r--	root/root	usr/share/trinity/zathura

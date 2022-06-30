@@ -1,0 +1,18 @@
+# Description: Line breaking for unicode strings
+# URL:         https://github.com/adah1972/libunibreak
+
+name=libunibreak
+version=5.0
+release=1
+_ver=$(echo $version | sed 's/\./_/')
+source=https://github.com/adah1972/$name/archive/${name}_$_ver.tar.gz
+
+build() {
+	cd ${name}-${name}_${_ver}
+
+	./bootstrap
+	./configure --prefix=/usr
+
+	make V=1
+	make DESTDIR=$PKG install
+}

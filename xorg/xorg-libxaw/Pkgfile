@@ -1,0 +1,21 @@
+# Description: X Athena Widgets toolkit
+# URL:         http://xorg.freedesktop.org
+# Depends on:  xorg-libxmu xorg-libxpm
+
+name=xorg-libxaw
+version=1.0.14
+release=1
+source=https://www.x.org/releases/individual/lib/libXaw-$version.tar.bz2
+
+build() {
+	cd libXaw-$version
+
+	./configure \
+		--prefix=/usr    \
+		--disable-specs  \
+		--disable-static \
+		--without-fop    \
+
+	make V=1
+	make DESTDIR=$PKG install
+}

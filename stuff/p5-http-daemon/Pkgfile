@@ -1,0 +1,29 @@
+# Description: Simple http server class
+# URL:         https://metacpan.org/pod/HTTP::Daemon
+# Depends on:  p5-module-build-tiny p5-http-date p5-http-message p5-lwp-mediatypes
+
+name=p5-http-daemon
+version=6.14
+release=1
+source=https://cpan.metacpan.org/authors/id/O/OA/OALDERS/HTTP-Daemon-$version.tar.gz
+
+build() {
+	cd HTTP-Daemon-$version
+
+	export PERL_MM_FALLBACK_SILENCE_WARNING=1
+	perl Makefile.PL INSTALLDIRS=vendor
+
+	make V=1
+	make DESTDIR=$PKG install
+
+	# remove perlcrap
+	find $PKG \( \
+		   -name '.packlist'     \
+		-o -name '*.bs'          \
+		-o -name 'autosplit.ix'  \
+		-o -name 'perllocal.pod' \
+		\) -exec rm {} \;
+
+	# remove empty dirs
+	find $PKG -depth -empty -exec rm -rf {} \;
+}

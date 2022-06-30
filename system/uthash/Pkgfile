@@ -1,0 +1,12 @@
+# Description: C preprocessor implementations of a hash table & linked list
+# URL:         http://troydhanson.github.io/uthash/index.html
+
+name=uthash
+version=2.3.0
+release=1
+source=https://github.com/troydhanson/$name/archive/v$version/$name-$version.tar.gz
+
+build() {
+	cd $name-$version/src
+	install -m 0644 -Dt $PKG/usr/include/ *.h
+}

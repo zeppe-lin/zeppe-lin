@@ -1,0 +1,15 @@
+# Description: Credit card numbers generator
+# URL:         https://github.com/chinarulezzz/gencc
+
+name=gencc
+version=0.1
+release=1
+source=https://github.com/chinarulezzz/gencc/archive/v$version/$name-$version.tar.gz
+
+build() {
+	cd $name-$version
+
+	make
+	install -m 755 -Dt $PKG/usr/bin/            gencc
+	install -m 755 -Dt $PKG/usr/share/man/man1/ gencc.1
+}

@@ -1,0 +1,85 @@
+# Description: Complete solution to record, convert and stream audio and video
+# URL:         http://ffmpeg.org/
+# Depends on:  alsa-lib dav1d fdk-aac gnutls gsm lame libass libtheora libva libvdpau opus x264 xorg-libxv
+
+name=ffmpeg
+version=4.4.2
+release=1
+source="https://ffmpeg.org/releases/$name-$version.tar.bz2
+	ffmpeg-x264-10bit.sh CVE-2018-6621.patch"
+
+build() {
+	cd $name-$version
+
+	#https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-6621
+	patch -p1 -i $SRC/CVE-2018-6621.patch
+
+	pkgman isinst ffnvcodec-headers && \
+	PKGMK_FFMPEG="$PKGMK_FFMPEG --enable-nvdec --enable-nvenc"
+
+	pkgman isinst libvdpau && \
+	PKGMK_FFMPEG="$PKGMK_FFMPEG --enable-vdpau"
+
+	pkgman isinst x264 && \
+	PKGMK_FFMPEG="$PKGMK_FFMPEG --enable-libx264"
+
+	pkgman isinst libass && \
+	PKGMK_FFMPEG="$PKGMK_FFMPEG --enable-libass"
+
+	pkgman isinst gsm && \
+	PKGMK_FFMPEG="$PKGMK_FFMPEG --enable-libgsm"
+
+	pkgman isinst lame && \
+	PKGMK_FFMPEG="$PKGMK_FFMPEG --enable-libmp3lame"
+
+	pkgman isinst opus && \
+	PKGMK_FFMPEG="$PKGMK_FFMPEG --enable-libopus"
+
+	pkgman isinst libvorbis && \
+	PKGMK_FFMPEG="$PKGMK_FFMPEG --enable-libvorbis"
+
+	pkgman isinst libtheora && \
+	PKGMK_FFMPEG="$PKGMK_FFMPEG --enable-libtheora"
+
+	pkgman isinst fdk-aac && \
+	PKGMK_FFMPEG="$PKGMK_FFMPEG --enable-libfdk-aac --enable-nonfree"
+
+	pkgman isinst dav1d && \
+	PKGMK_FFMPEG="$PKGMK_FFMPEG --enable-libdav1d"
+
+	pkgman isinst gnutls && \
+	PKGMK_FFMPEG="$PKGMK_FFMPEG --enable-gnutls" || \
+	PKGMK_FFMPEG="$PKGMK_FFMPEG --enable-openssl --enable-nonfree"
+
+	./configure ${PKGMK_FFMPEG} \
+		--prefix=/usr \
+		--disable-debug \
+		--disable-doc \
+		--enable-gpl \
+		--enable-version3 \
+		--enable-shared \
+		--enable-pic \
+		--enable-ffplay \
+		--enable-avfilter \
+		--enable-postproc \
+		--enable-pthreads \
+		--enable-swresample \
+		--enable-avresample \
+		--disable-libfreetype \
+		--disable-libfribidi \
+		--disable-libfontconfig \
+		--disable-libxcb \
+		--disable-libxcb-shm \
+		--disable-libxcb-xfixes \
+		--disable-libxcb-shape \
+
+	make V=1
+	make DESTDIR=$PKG install install-man
+
+	if pkgman isinst x264; then
+		install -m 0755 -D $SRC/ffmpeg-x264-10bit.sh \
+			$PKG/usr/bin/ffmpeg-x264-10bit
+	fi
+
+	rm -r $PKG/usr/share/ffmpeg/examples
+}

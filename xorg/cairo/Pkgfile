@@ -1,0 +1,31 @@
+# Description: 2D graphics library with support for multiple output devices
+# URL:         https://www.cairographics.org
+# Depends on:  fontconfig glib lzo xorg-libpixman xorg-libxext xorg-libxrender
+
+name=cairo
+version=1.17.6
+release=1
+source="https://gitlab.freedesktop.org/cairo/cairo/-/archive/$version/$name-$version.tar.bz2
+	fix-cairo-sphinx.patch"
+
+build() {
+	patch -p1 -d $name-$version -i $SRC/fix-cairo-sphinx.patch
+
+	pkgman isinst wayland-protocols mesa && \
+		PKGMK_CAIRO+=' -D gl-backend=glesv3 -D glesv3=enabled'
+
+	meson setup build $name-$version \
+		--prefix=/usr \
+		--buildtype=plain\
+		--wrap-mode nodownload \
+		-D b_lto=true \
+		-D b_pie=true \
+		-D tee=enabled \
+		-D spectre=disabled \
+		-D tests=disabled \
+
+	ninja -C build -j ${JOBS:-1} -v
+	DESTDIR=$PKG ninja -C build install
+
+	chmod +x $PKG/usr/bin/cairo-trace
+}

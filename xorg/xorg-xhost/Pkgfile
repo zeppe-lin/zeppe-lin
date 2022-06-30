@@ -1,0 +1,17 @@
+# Description: X server access control program
+# URL:         http://xorg.freedesktop.org
+# Depends on:  xorg-libxmu
+
+name=xorg-xhost
+version=1.0.8
+release=1
+source=https://www.x.org/releases/individual/app/xhost-$version.tar.bz2
+
+build() {
+	cd xhost-$version
+
+	./configure --prefix=/usr
+
+	make V=1
+	make DESTDIR=$PKG install
+}

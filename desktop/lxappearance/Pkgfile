@@ -1,0 +1,32 @@
+# Description: Enables change of themes, icons, and fonts used by applications easily
+# URL:         https://wiki.lxde.org/en/LXAppearance
+# Depends on:  gtk gtk3
+
+name=lxappearance
+version=0.6.3
+release=5
+source=http://downloads.sourceforge.net/sourceforge/lxde/$name-$version.tar.xz
+
+build() {
+	# disable i18n
+	export LINGUAS=' '
+
+	for _dir in gtk2 gtk3; do
+		mkdir $_dir
+		cd $_dir
+
+		../$name-$version/configure \
+			--prefix=/usr \
+			--sysconfdir=/etc \
+			--disable-nls \
+			$([ "$_dir" = gtk3 ] && echo --enable-gtk3)
+
+		make V=1
+		case $_dir in
+		gtk3) install -m 755 src/$name $PKG/usr/bin/${name}3 ;;
+		   *) make DESTDIR=$PKG install ;;
+		esac
+
+		cd -
+	done
+}

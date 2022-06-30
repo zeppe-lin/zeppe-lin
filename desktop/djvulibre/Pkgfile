@@ -1,0 +1,33 @@
+# Description: DjVu format reader
+# URL:         http://djvu.sourceforge.net/
+# Depends on:  libjpeg-turbo
+
+name=djvulibre
+version=3.5.28
+release=1
+source=http://download.sourceforge.net/djvu/$name-$version.tar.gz
+
+build() {
+	cd $name-$version
+
+	autoreconf -fiv
+	./configure \
+		--prefix=/usr  \
+		--disable-i18n \
+		--without-tiff \
+		--disable-desktopfiles \
+
+	# remove default debug flag
+	find . -name Makefile -exec sed -i '/C\(XX\)?FLAGS = /s/-g//g' {} \;
+
+	make V=1
+	make DESTDIR=$PKG install
+
+	# remove junk
+	rm -rf  $PKG/usr/share/djvu/osi/cs \
+		$PKG/usr/share/djvu/osi/de \
+		$PKG/usr/share/djvu/osi/fr \
+		$PKG/usr/share/djvu/osi/ja \
+		$PKG/usr/share/djvu/osi/zh \
+		$PKG/usr/share/icons/
+}

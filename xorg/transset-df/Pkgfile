@@ -1,0 +1,17 @@
+# Description: Patched version of xorg's transset
+# URL:         https://forchheimer.se/transset-df
+# Depends on:  xorg-libxcomposite xorg-libxdamage xorg-libxrender
+
+name=transset-df
+version=6
+release=1
+
+#https://forchheimer.se/$name/$name-$version.tar.gz
+source=$name-$version.tar.gz
+
+build() {
+	cd $name-$version
+
+	make CFLAGS="$CFLAGS -Wall"
+	install -m 755 -Dt $PKG/usr/bin/ $name
+}

@@ -1,0 +1,53 @@
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+findredundantdeps - find (un)necessary dependencies of a package source
+
+=head1 SYNOPSIS
+
+B<findredundantdeps> [I<OPTION>] I<PKGNAME>
+
+=head1 DESCRIPTION
+
+B<findredundantdeps> print the full recursive dependencies of a given package
+displaying the dependencies that are already contained in the depending
+package.
+
+B<findredundantdeps> operates on packages sources in the pkgsrc tree and
+requires
+L<pkgman(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/pkgman/pkgman.1.pod>.
+
+=head1 OPTIONS
+
+=over 8
+
+=item B<-u>, B<--unique>
+
+Sort and display only unique (required) packages.
+
+=item B<-v>, B<--version>
+
+Print version and exit.
+
+=item B<-h>, B<--help>
+
+Print help and exit.
+
+=back
+
+=head1 COPYRIGHT
+
+Copyright (c) 2021 Alexandr Savca <https://github.com/zeppe-lin>.
+
+License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.
+
+=head1 SEE ALSO
+
+L<finddeps(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/pkgmaint/finddeps.1.pod>,
+L<finddisappeared(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/pkgmaint/finddisappeared.1.pod>,
+L<finddisowned(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/pkgmaint/finddisowned.1.pod>
+
+=cut

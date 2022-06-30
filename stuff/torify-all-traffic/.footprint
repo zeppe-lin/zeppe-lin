@@ -1,0 +1,6 @@
+drwxr-xr-x	root/root	etc/
+drwxr-xr-x	root/root	etc/rc.d/
+-rwxr-x---	root/root	etc/rc.d/torify
+drwxr-xr-x	root/root	etc/tor/
+-rw-------	tor/tor	etc/tor/torifyrc
+-rw-------	tor/tor	etc/tor/torifyrc.control (EMPTY)

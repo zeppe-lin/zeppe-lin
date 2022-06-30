@@ -1,0 +1,17 @@
+# Description: Keyboard input driver
+# URL:         http://xorg.freedesktop.org
+# Depends on:  xorg-server
+
+name=xorg-xf86-input-keyboard
+version=1.9.0
+release=1
+source=https://www.x.org/releases/individual/driver/${name#*-}-$version.tar.bz2
+
+build() {
+	cd ${name#*-}-$version
+
+	./configure --prefix=/usr
+
+	make V=1
+	make DESTDIR=$PKG install
+}

@@ -1,0 +1,10 @@
+README git
+
+
+  GIT-DAEMON
+
+    If you want to run git-daemon for serving git repos, make sure to create a
+    dedicated user like, first.
+
+
+End of file.

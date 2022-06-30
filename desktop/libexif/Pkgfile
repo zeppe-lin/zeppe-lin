@@ -1,0 +1,22 @@
+# Description: EXIF tag parsing library
+# URL:         https://libexif.github.io/
+
+name=libexif
+version=0.6.24
+release=1
+source=https://github.com/$name/$name/releases/download/v$version/$name-$version.tar.bz2
+
+build() {
+	cd $name-$version
+
+	./configure \
+		--prefix=/usr \
+		--disable-nls \
+		ac_cv_path_DOXYGEN=false \
+
+	make V=1
+	make DESTDIR=$PKG install
+
+	rm -r $PKG/usr/share/doc
+	rmdir $PKG/usr/share/
+}

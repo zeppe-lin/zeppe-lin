@@ -1,0 +1,12 @@
+#!/bin/sh
+
+/usr/bin/getent group polipo  || /usr/sbin/groupadd -r polipo
+/usr/bin/getent passwd polipo || /usr/sbin/useradd \
+	-g polipo -d /var/empty -s /bin/sh polipo
+
+/usr/bin/passwd -l polipo
+
+/bin/chown polipo:polipo /var/cache/polipo
+/bin/chown polipo:polipo /var/log/polipo
+
+# End of file.

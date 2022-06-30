@@ -1,0 +1,425 @@
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+Pkgfile - build file for pkgmk
+
+=head1 SYNOPSIS
+
+B<Pkgfile>
+
+=head1 DESCRIPTION
+
+This manual page describes the format of the F<Pkgfile> file.  The
+file is a L<sh(1)|https://www.mankier.com/1/sh> script, which defines
+a number of variables (I<name>, I<version>, I<release> and I<source>)
+and a function (I<build>) that should be executed in order to compile
+a package.
+
+=head2 General guidelines
+
+The name of a package should always be lowercase (e.g. B<name=eterm>
+and not B<name=Eterm>.  Dashes are also allowed.
+
+In case the package is added to the packages sources tree the exact
+same name should be used for the name of the directory in the packages
+sources structure, i.e. I</usr/src/zeppe-lin/???/eterm>.
+
+Do not combine several separately distributed programs/libraries into
+one package.  Make several packages instead.
+
+=head2 Directories
+
+In general packages should install files in these directories.
+Exceptions are of course allowed if there is a good reason.  But try
+to follow the following directory structure as close as possible.
+
+=begin man
+
+.TS
+center, box, line, tab (|) ;
+l                  | l
+l                  | l.
+Directory          | Description
+_
+.SP
+/usr/bin/          | User command/application binaries
+/usr/sbin/         | System binaries (e.g. daemons)
+/usr/lib/          | Libraries
+/usr/include/      | Header files
+/usr/lib/<prog>/   | Plug-ins, addons, etc
+/usr/share/man/    | Man pages
+/usr/share/<prog>/ | Data files
+/usr/etc/<prog>/   | Configuration files
+/etc/              | Configuration files for system software (daemons, etc)
+.TE
+
+=end man
+
+=begin html
+
+ <table>
+  <tr>
+   <th style="text-align:left;">Directory</th>
+   <th style="text-align:left;">Description</th>
+  </tr>
+  <tr>
+   <td>/usr/bin/</td>
+   <td>User command/application binaries</td>
+  </tr>
+  <tr>
+   <td>/usr/sbin</td>
+   <td>System binaries</td>
+  </tr>
+  <tr>
+   <td>/usr/lib/</td>
+   <td>Libraries</td>
+  </tr>
+  <tr>
+   <td>/usr/include/</td>
+   <td>Header files</td>
+  </tr>
+  <tr>
+   <td>/usr/lib/&lt;prog&gt;/</td>
+   <td>Plug-ins, addons, etc</td>
+  </tr>
+  <tr>
+   <td>/usr/share/man/</td>
+   <td>Man pages</td>
+  </tr>
+  <tr>
+   <td>/usr/share/&lt;prog&gt;/</td>
+   <td>Data files</td>
+  </tr>
+  <tr>
+   <td>/usr/etc/&lt;prog&gt;/</td>
+   <td>Configuration files</td>
+  </tr>
+  <tr>
+   <td>/etc/</td>
+   <td>Configuration files for system software (daemons, etc)</td>
+  </tr>
+ </table>
+
+=end html
+
+=begin text
+
+    Directory          | Description
+    -------------------|------------------------------------------------------
+    /usr/bin/          | User command/application binaries
+    /usr/sbin/         | System binaries (e.g. daemons)
+    /usr/lib/          | Libraries
+    /usr/include/      | Header files
+    /usr/lib/<prog>/   | Plug-ins, addons, etc
+    /usr/share/man/    | Man pages
+    /usr/share/<prog>/ | Data files
+    /usr/etc/<prog>/   | Configuration files
+    /etc/              | Configuration files for system software (daemons, etc)
+    
+=end text
+
+I</opt> directory is reserved for manually compiled/installed
+applications, or binary distributable packages.  Good packages (built
+from sources) should never place anything there.
+
+I</usr/libexec/> is not used, thus packages should never install
+anything there.  Use I</usr/lib/E<lt>progE<gt>/> instead.
+
+=head2 Junk files
+
+Packages should not contain "junk files".  This includes info pages
+and other online documentation, man pages excluded (e.g.
+I</usr/doc/*>, I<README>, I<*.info>, I<*.html>, etc).
+
+Also should be removed:
+
+=over
+
+=item *
+
+Files related to NLS (national language support), always use
+B<--disable-nls> when available and remove I</usr/share/locale/*> when
+not.
+
+=item *
+
+Useless or obsolete binaries (e.g. F</usr/games/banner> and
+F</sbin/mkfs.minix>).
+
+=back
+
+=head2 Variable names
+
+Do not add new variables to the F<Pkgfile>.  Only in very few cases
+does this actually improve the readability or the quality of the
+package.  Further, the only variables that are guaranteed to work with
+future versions of
+L<pkgmk(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgmk.8.pod>
+are I<name>, I<version>, I<release> and I<source>.  Other names could
+be in conflict with internal variables in
+L<pkgmk(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgmk.8.pod>.
+
+Use the I<$name> and I<$version> variables to make the package easier
+to update/maintain.  For example,
+
+  source=http://xyz.org/$name-$version.tar.gz
+
+is better than
+
+  source=http://xyz.org/prog-1.0.3.tar.gz
+
+since the URL will automatically updated when you modify the
+I<$version> variable.
+
+Note that I<source> variable is a string, where each item is separated
+by a whitespace.  If you want to specify multiple files, use quotes:
+
+  source="http://xyz.org/$name-$version.tar.gz
+          http://xyz.org/$name-$version.patch"
+
+=head2 Header
+
+Provide a header including the following fields:
+
+=begin man
+
+.TS
+center, box, line, tab (|) ;
+l            | l
+l            | l.
+Name         | Meaning
+_
+.SP
+Description  | A short description of the package (keep it factual)
+Maintainer   | Your full name and e-mail address, obfuscated if you want
+URL          | A webpage with more information on this software package
+Depends on   | A list of dependencies, separated either by spaces
+.TE
+
+=end man
+
+=begin html
+
+ <table>
+  <tr>
+   <th style="text-align:left;">Name</th>
+   <th style="text-align:left;">Meaning</th>
+  </tr>
+  <tr>
+   <td>Description</td>
+   <td>A short description of the package (keep it factual)</td>
+  </tr>
+  <tr>
+   <td>Maintainer</td>
+   <td>Your full name and e-mail address, obfuscated if you want</td>
+  </tr>
+  <tr>
+   <td>URL</td>
+   <td>A webpage with more information on this software package</td>
+  </tr>
+  <tr>
+   <td>Depends on</td>
+   <td>A list of dependencies, separated either by spaces</td>
+  </tr>
+ </table>
+
+=end html
+
+=begin text
+
+    Name         | Meaning
+    -------------|----------------------------------------------------------
+    Description  | A short description of the package (keep it factual)
+    Maintainer   | Your full name and e-mail address, obfuscated if you want
+    URL          | A webpage with more information on this software package
+    Depends on   | A list of dependencies, separated either by spaces
+    
+=end text
+
+I<Depends on> can be omitted if there are no dependencies.
+
+=head2 Dependencies
+
+Dependencies are supported by
+L<pkgman(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgman/pkgman.1.pod>.
+The following rules should be respected:
+
+=over
+
+=item *
+
+We list all linked runtime dependencies except for gcc (libstdc++),
+glibc, binutils and the package itself (to prevent cyclic dependencies).
+
+=item *
+
+B<core> contains essential packages for a system, and our scripts and
+source packages expect the programs provided by B<core> to be installed.
+This means that:
+
+=over
+
+=item *
+
+Build dependencies provided by core are not listed in the dependency
+header.
+
+=item *
+
+Runtime dependencies from B<core> which aren't dynamically linked in
+are not to be listed I<with one exception>: if the package provides a
+library for Perl/Python and contains a specific interpreter version in
+its F<.footprint>.
+
+=back
+
+=back
+
+Examples:
+
+=over
+
+=item F<core/automake>
+
+Does B<not> list perl, because the program is a perl script (there is
+no binary that links to libperl).
+
+=item F<core/bc>
+
+B<Does> list readline, because bc is linked to readline.
+
+=item F<core/python3-setuptools>
+
+B<Does> list python3, because the package contains the specific
+interpreter version in its F<.footprint>.
+
+=back
+
+The reasoning for this policy is that you can use
+L<revdep(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/revdep/revdep.1.pod>
+to find packages that need to be updated if one of the dependent
+libraries has become binary incompatible.  To find out what libraries
+a binary is linked to, use L<ldd(1)|https://www.mankier.com/1/ldd> or
+L<finddeps(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/system/pkgmaint/finddeps.1.pod>.
+
+Also, in the case of updating the major version of Perl/Python, it
+will be useful that the libraries or programs that create Perl/Python
+bindings have a dependency on them.  We will have to rebuild
+everything that depends on Perl/Python with one command (see
+L<pkgman-rdep(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgman/pkgman-rdep.1.pod>).
+
+=head2 The rc.d scripts
+
+The actual scripts that control services should be named
+C<< rc.<prog> >>, and installed to F<< /etc/rc.d/<prog> >>.
+
+See L<EXAMPLES/"rc.d script"> for template script for a package.
+
+=head1 ENVIRONMENT
+
+The I<build> function should use the C<$SRC> variable whenever it
+needs to access the files listed in the C<source> variable, and the
+C<$PKG> variable as the root destination of the output files.
+
+Being a shell script executed in the context of
+L<pkgmk(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgmk.8.pod>
+, the entire F<Pkgfile> file has access to the variables initialized
+in F<pkgmk.conf> and the default values set by
+L<pkgmk(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgmk.8.pod>.
+Also, as an undocumented side effect of how it is used by
+L<pkgmk(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgmk.8.pod>,
+it can also change the behaviour of
+L<pkgmk(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgmk.8.pod>
+by rewriting some of its functions and variables while the current
+package is built.  However, the I<build> function has only read access
+to these mentioned above.
+
+=head1 ERROR HANDLING
+
+Most of the command failures in I<build> function will stop the build
+process.  There is no need to explicitly check the return codes.  If
+you need/want to handle a command failure you should use constructs
+like:
+
+  if ! command ... ; then ... ; fi
+
+  command || ...
+
+=head1 EXAMPLES
+
+=head2 Pkgfile
+
+  # Description: Clear and concise description without articles
+  # URL:         http://www.gnu.org/software/somelib/index.html
+  # Maintainer:  Joe Maintainer, joe at myfantasticisp dot net
+  # Depends on:  someotherlib coolness
+
+  name=somelib
+  version=1.2.3
+  release=1
+  source="ftp://ftp.gnu.org/gnu/$name/$name-$version.tar.gz
+          Makefile.in.patch"
+
+  build() {
+          cd $name-$version
+
+          patch -p1 -i ../Makefile.in.patch
+
+          ./configure --prefix=/usr
+
+          make V=1
+          make DESTDIR=$PKG install
+
+          rm -rf $PKG/usr/info
+  }
+
+=head2 rc.d script
+
+  #!/bin/sh
+  #
+  # /etc/rc.d/example: start/stop example(8) daemon
+  #
+
+  SSD=/sbin/start-stop-daemon
+  PROG=/usr/sbin/exampled
+  PID=/var/run/exampled.pid
+  OPTS="--exampled-opts"
+
+  case $1 in
+  start)
+          $SSD --start --pidfile $PID --exec $PROG -- $OPTS
+          ;;
+  stop)
+          $SSD --stop --pidfile $PID --retry 10
+          ;;
+  restart)
+          $0 stop
+          $0 start
+          ;;
+  status)
+          $SSD --status --pidfile $PID
+          case $? in
+          0) echo "$PROG is running with pid $(cat $PID)" ;;
+          1) echo "$PROG is not running but the pid file $PID exists" ;;
+          3) echo "$PROG is not running" ;;
+          4) echo "Unable to determine the program status" ;;
+          esac
+  *)
+          echo "usage: $0 [start|stop|restart|status]"
+          ;;
+  esac
+
+  # End of file.
+
+=head1 SEE ALSO
+
+L<pkgmk(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgmk.8.pod>,
+L<pkgmk.conf(5)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgmk.conf.5.pod>
+
+=cut
+
+# vim:sw=2:ts=2:sts=2:et:cc=72
+# End of file.

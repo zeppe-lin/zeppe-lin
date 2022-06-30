@@ -1,0 +1,21 @@
+# Description: Clean, fixed width bitmap font, designed for long work
+# URL:         http://terminus-font.sourceforge.net/
+# Depends on:  python3
+
+name=console-font-terminus
+version=4.49.1
+release=1
+source=http://downloads.sourceforge.net/terminus-font/terminus-font-$version.tar.gz
+
+build() {
+	cd terminus-font-$version
+
+	chmod +x configure
+	./configure --prefix=/usr --psfdir=/usr/share/kbd/consolefonts
+
+	make psf
+	make DESTDIR=$PKG install-psf
+
+	find $PKG/usr/share/kbd/consolefonts/ -type f \
+		-not -name 'ter-v*' -delete
+}

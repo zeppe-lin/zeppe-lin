@@ -1,0 +1,21 @@
+README lm-sensors
+
+    KERNEL CONFIGURATION
+
+  - Enable "I2C support" (CONFIG_I2C=y or m).  On many motherboards,
+    the sensor chip is connected to the SMBus, which is supported by
+    I2C in the Linux kernel.
+
+  - Enable "I2C device interface" (CONFIG_I2C_CHARDEV=m).
+    sensors-detect needs this to probe for SMBus hardware monitoring
+    chips.
+
+  - In "I2C Hardware Bus support", enable all drivers you might need,
+    preferably as modules. If you're not sure, select them all.
+
+  - Enable "Hardware Monitoring support" (CONFIG_HWMON=y or m).
+
+  - Enable all hardware monitoring drivers you might need, preferably
+    as modules.
+
+End of file.

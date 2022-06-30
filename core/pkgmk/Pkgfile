@@ -1,0 +1,29 @@
+# Description: Package management utility which makes a software package
+# URL:         file:///usr/src/zeppe-lin/core/pkgmk
+
+name=pkgmk
+version=5.41.1
+release=1
+source="bash_completion
+	Makefile
+	Pkgfile.5.pod
+	pkgmk.8.pod
+	pkgmk.conf
+	pkgmk.conf.5.pod
+	pkgmk.in"
+
+build() {
+	make VERSION=$version PREFIX=/usr DESTDIR=$PKG install
+	install -m 644 -Dt $PKG/etc/ $SRC/pkgmk.conf
+
+	# bash-comppletion
+	install -m 644 -D bash_completion \
+		$PKG/usr/share/bash-completion/completions/$name
+
+	# system dirs
+	install -d $PKG/var/cache
+	install -o pkgmk -g pkgmk -d $PKG/var/cache/pkgmk \
+		$PKG/var/cache/pkgmk/sources \
+		$PKG/var/cache/pkgmk/packages \
+		$PKG/var/cache/pkgmk/work
+}

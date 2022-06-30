@@ -1,0 +1,53 @@
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+pkgman-fsearch - search the packages sources for a file in footprint
+
+=head1 SYNOPSIS
+
+B<pkgman> fsearch [B<-v>|B<-vv>] [B<--path>] [B<--regex>] [B<--full>]
+I<EXPR>
+
+=head1 DESCRIPTION
+
+Search the packages sources directories for I<EXPR> in packages'
+F<.footprint> files.  It looks in all directories specified in
+F</etc/pkgman.conf> as C<pkgsrcdir> directories.
+
+=head1 OPTIONS
+
+=over 8
+
+=item B<-v>
+
+Show version in the listing.
+
+=item B<-vv>
+
+Show version and description in the listing.
+
+=item B<--path>
+
+Show package source path in the listing.
+
+=item B<--regex>
+
+Interpret I<EXPR> as regular expression.
+
+=item B<--full>
+
+Full path search (e.g. C<pkgman fsearch --full /usr/bin/gcc>).
+
+=item I<EXPR>
+
+String, wildcard or regular expression.
+
+=back
+
+=cut
+
+# vim:sw=2:ts=2:sts=2:et:cc=72
+# End of file.

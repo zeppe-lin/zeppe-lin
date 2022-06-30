@@ -1,0 +1,101 @@
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+rejmerge.conf - configuration file for rejmerge
+
+=head1 SYNOPSIS
+
+B</etc/rejmerge.conf>
+
+=head1 DESCRIPTION
+
+This manual page describes the format of the F<rejmerge.conf> file.
+This file can be used to alter the way
+L<rejmerge(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/rejmerge/rejmerge.8.pod>
+displays file differences and performs file merges.  Changing the
+default behaviour is done by re-defining the shell functions
+I<rejmerge_diff>, I<rejmerge_merge> and shell variables I<EDITOR>,
+I<PAGER>.
+
+=head2 I<rejmerge_diff>
+
+This function is executed once for each rejected file.  Arguments
+I<$1> and I<$2> contains the path to a temporary file where this
+function should write its result.  The contents of the temporary file
+will later be presented to the user as the difference between the two
+files.
+
+=head2 I<rejmerge_merge>
+
+This function is executed when the user chooses to merge two files.
+Argument I<$1> and I<$2> contains the paths to the installed and
+rejected files.  Argument I<$3> contains the path to a temporary file
+where this function should write its result.  The contents of the
+temporary file will later be presented to the user as the merge result.
+
+This function also has the option to set the variable
+I<REJMERGE_MERGE_INFO>.  The contents of this variable will be
+displayed as informational text after a merge has been performed.  Its
+purpose is to provide information about the merge, e.g.
+"5 merge conflicts found".
+
+=head2 I<EDITOR>
+
+This variable defines the editor used in merge operation.
+
+F</bin/vi> if unset.
+
+=head2 I<PAGER>
+
+This variable defines the pager used in C<diff> and C<merge> operations.
+
+F</bin/more> if unset.
+
+=head1 EXAMPLE
+
+  #
+  # /etc/rejmerge.conf: rejmerge(8) configuration
+  #
+  # See rejmerge.conf(5) manual page for more information.
+  #
+
+  # Use diff(1) to produce side-by-side output.
+  rejmerge_diff() { diff -y $1 $2 > $3 ; }
+  # or ...
+  # Use diff(1) to produce unified and colorized output.
+  rejmerge_diff() { diff -u --color=always $1 $2 > $3 ; }
+
+  # Use sdiff(1) to merge instead of the default diff(1).
+  rejmerge_merge() { sdiff -o $3 $1 $2 ; }
+
+  # Use vim(1) as editor instead of the default vi(1).
+  EDITOR="/usr/bin/vim"
+
+  # Use less(1) as pager instead of the default more(1).
+  # -R option is required if diffs above produces raw control chars.
+  PAGER="/usr/bin/less -R"
+
+  # End of file.
+
+=head1 FILES
+
+=over 8
+
+=item F</etc/rejmerge.conf>
+
+Configuration file for
+L<rejmerge(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/rejmerge/rejmerge.8.pod>.
+
+=back
+
+=head1 SEE ALSO
+
+L<rejmerge(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/rejmerge/rejmerge.8.pod>
+
+=cut
+
+# vim:sw=2:ts=2:sts=2:et:cc=72
+# End of file.

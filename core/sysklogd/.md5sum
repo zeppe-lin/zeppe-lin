@@ -1,0 +1,5 @@
+52b2544aedf0ed90007ce936b63aa975  cron.syslog
+d106972de0057fa830dca552bf94f17d  rc.sysklogd
+1d9c9b348bce976b3a2a6f23f01a827c  rotatelog
+802ac25d7edd9f3356f990584385bc0e  sysklogd-2.4.0.tar.gz
+db08d2611d892d1c50373aa2d1ee14f1  syslog.conf

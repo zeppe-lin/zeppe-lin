@@ -1,0 +1,22 @@
+--- pinentry-1.1.0.orig/gtk+-2/pinentry-gtk-2.c	2017-12-03 18:13:05.000000000 +0200
++++ pinentry-1.1.0/gtk+-2/pinentry-gtk-2.c	2020-11-23 17:17:58.550000000 +0200
+@@ -487,7 +487,8 @@ show_hide_button_toggled (GtkWidget *wid
+ 
+   if (!gtk_toggle_button_get_active (button) || !confirm_unhiding ())
+     {
+-      text = "<span font=\"Monospace\" size=\"xx-small\">abc</span>";
++      //text = "<span font=\"Monospace\" size=\"xx-small\">abc</span>";
++      text = "abc";
+       tooltip = pinentry_utf8_validate (pinentry->default_tt_visi);
+       if (!tooltip)
+         {
+@@ -498,7 +499,8 @@ show_hide_button_toggled (GtkWidget *wid
+     }
+   else
+     {
+-      text = "<span font=\"Monospace\" size=\"xx-small\">***</span>";
++      //text = "<span font=\"Monospace\" size=\"xx-small\">***</span>";
++      text = "***";
+       tooltip = pinentry_utf8_validate (pinentry->default_tt_hide);
+       if (!tooltip)
+         {

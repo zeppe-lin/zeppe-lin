@@ -1,0 +1,38 @@
+#!/bin/sh -e
+#
+# /etc/rc.d/transmissiond: start/stop transmission-daemon(8)
+#
+
+RUN_AS_USER=me
+USER=transmission
+PASS=letmein1337
+LOGFILE=/var/log/transmission.log
+
+
+case $1 in
+start)
+	[ -f $LOGFILE ] || touch $LOGFILE && chown $RUN_AS_USER $LOGFILE
+	su - $RUN_AS_USER -c \
+		"/usr/bin/transmission-daemon \
+			--allowed '127.0.0.*,192.168.100.*' \
+			--rpc-bind-address 0.0.0.0          \
+			--port 9091                         \
+			--auth                              \
+			--username $USER                    \
+			--password $PASS                    \
+			--logfile  $LOGFILE"
+	;;
+stop)
+	killall -q /usr/bin/transmission-daemon
+	;;
+restart)
+	$0 stop
+	sleep 2
+	$0 start
+	;;
+*)
+	echo "usage: $0 [start|stp[|restart]"
+	;;
+esac	
+
+# End of file.

@@ -1,0 +1,47 @@
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+pkgmkbuildtime - display total and average build time of selected packages
+
+=head1 SYNOPSIS
+
+B<pkgmkbuildtime> [I<OPTION>] I<PKGNAME>...
+
+=head1 DESCRIPTION
+
+B<pkgmkbuildtime> display total and average build time of selected packages.
+
+B<pkgmkbuildtime> operates on installed packages and requires log files
+created by
+L<pkgman(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/pkgman/pkgman.1.pod>.
+
+=head1 OPTIONS
+
+Mandatory arguments to long options are mandatory for short options too.
+
+=over 8
+
+=item B<-r>, B<--root> I<PATH>
+
+Specify alternate root directory.
+
+=item B<-v>, B<--version>
+
+Print version and exit.
+
+=item B<-h>, B<--help>
+
+Print help and exit.
+
+=back
+
+=head1 COPYRIGHT
+
+Copyright (c) 2021 Alexandr Savca <https://github.com/zeppe-lin>.
+
+License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.
+
+=cut

@@ -1,0 +1,26 @@
+#!/bin/sh
+#
+# /etc/rc.d/monitd: start/stop monit(1) daemon
+#
+
+PID=/var/run/monit.pid
+OPTS="-c /etc/monitrc -p $PID"
+
+case $1 in
+start)
+	/usr/bin/monit $OPTS
+	;;
+stop)
+	kill "$(cat $PID)"
+	;;
+restart)
+	$0 stop
+	sleep 2
+	$0 start
+	;;
+*)
+	echo "usage: $0 [start|stop|restart]"
+	;;
+esac
+
+# End of file.

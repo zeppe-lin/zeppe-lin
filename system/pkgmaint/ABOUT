@@ -1,0 +1,36 @@
+ABOUT pkgmaint
+
+
+  This directory contains a collection of scripts for zeppe-lin,
+  mainly oriented towards package management and maintaining.
+
+
+  DEPENDENCIES
+
+  * make(1p)
+  * findutils
+  * POSIX utilities
+  * awk
+  * perl
+  * pkgutils
+  * pkgman
+  * pkgmk
+
+
+  LICENSE
+
+  pkgmaint is licensed through the GNU General Public License v3 or
+  later <https://gnu.org/licenses/gpl.html>.
+
+  Read the COPYING file for the complete license.
+  Read the COPYRIGHT file for the copyright notice.
+
+                         !!! EXCEPTIONS !!!
+
+  * finddisappeared.in was initially developed by Martin Opel by
+    unknown license.
+
+  * lafilefixer is licensed through the MIT/X11 License.
+
+
+End of file.

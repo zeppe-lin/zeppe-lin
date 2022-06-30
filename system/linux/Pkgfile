@@ -1,0 +1,94 @@
+# Description: Linux kernel
+# URL:         https://www.kernel.org
+
+name=linux
+version=5.4.191
+release=1
+source="https://cdn.kernel.org/pub/linux/kernel/v5.x/$name-$version.tar.xz
+	x86_64-dotconfig
+	0000-arch-x86-Makefile-ln-fsn.patch
+	0001-fix-QoS-overwriting.patch
+	0002-fix-the-channel-changing-of-the-monitor-interface.patch
+	0003-fix-injecting-fragments-on-rtl8187-based-wifi-cards.patch
+	0004-skip-frame-ACKing-renumbering-handle-sequence-by-use.patch
+	0005-Enable-monitoring-and-injection-for-the-Zydax-1211rw.patch
+	0006-Override-regdomain-hardcoded-in-EEPROM-with-custom-v.patch
+	0007-carl9170-Enable-sniffer-mode-promisc-flag-to-fix-inj.patch
+	0008-mac80211-ignore-AP-power-level-when-tx-power-type-is.patch
+	0009-ath9k-override-regdomain-hardcoded-in-EEPROM-with-cu.patch"
+
+build() {
+	__kver=
+	__karch=
+	__imageloc=
+	unset LDFLAGS HOSTCFLAGS HOSTCXXFLAGS HOSTLDFLAGS
+
+	case $version in
+	*.*.*)	__kver=$version   ;;
+	*.*)	__kver=$version.0 ;;
+	esac
+
+	case "$(uname -m)" in
+	x86_64)
+		__karch=x86_64
+		__imageloc=arch/x86/boot/bzImage
+		;;
+	i386)
+		__karch=i386
+		__imageloc=arch/x86/boot/bzImage
+		;;
+	arm64)
+		__karch=arm64
+		__imageloc=arch/arm64/boot/Image
+		;;
+	arm)
+		__karch=arm
+		__imageloc=arch/arm/boot/zImage
+		;;
+	*)
+		echo "Unsupported architecture $(uname -m)"
+		exit 1
+		;;
+	esac
+
+	cd $name-$version
+
+	# Apply patches.
+	for f in $SRC/*.patch; do patch -p1 -i $f; done
+
+	make mrproper V=1
+
+	if [ -f $SRC/$__karch-dotconfig ]; then
+		cp $SRC/$__karch-dotconfig .config
+		yes | make -j ${JOBS:-1} ARCH=$__karch oldconfig
+	else
+		make -j ${JOBS:-1} ARCH=$__karch ${__karch}_defconfig
+	fi
+
+	# XXX HOTFIX
+	# *** [kernel/Makefile:151: kernel/kheaders_data.tar.xz] Error 2
+	./scripts/config --disable CONFIG_IKHEADERS
+
+	# Enable CONFIG_UEVENT_HELPER=y needed for smdev
+	./scripts/config --set-str UEVENT_HELPER_PATH ""
+	./scripts/config --enable CONFIG_UEVENT_HELPER
+
+	make -j ${JOBS:-1} V=1 all
+	make -j1 V=1 ARCH=$__karch INSTALL_MOD_STRIP=1 \
+		INSTALL_MOD_PATH=$PKG modules_install
+
+	depmod -a -b $PKG $__kver
+
+	case "$__karch" in
+	arm64|arm)
+		make -j1 ARCH=$__karch INSTALL_DTBS_PATH=$PKG/boot/dtbs \
+			dtbs_install
+		;;
+	esac
+
+	install -m 644 -D $__imageloc $PKG/boot/vmlinuz-$version
+	install -m 644 -D .config     $PKG/boot/config-$version
+
+	unlink $PKG/lib/modules/$__kver/build
+	unlink $PKG/lib/modules/$__kver/source
+}

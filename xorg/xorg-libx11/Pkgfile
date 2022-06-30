@@ -1,0 +1,22 @@
+# Description: X client library
+# URL:         http://xorg.freedesktop.org
+# Depends on:  xorg-libxcb xorg-xtrans
+
+name=xorg-libx11
+version=1.8.1
+release=1
+source=https://www.x.org/releases/individual/lib/libX11-$version.tar.xz
+
+build() {
+	cd libX11-$version
+
+	./configure --prefix=/usr
+
+	make V=1
+	make DESTDIR=$PKG install
+
+	# conflict with xorg-xorgproto
+	rm $PKG/usr/include/X11/extensions/XKBgeom.h
+
+	rm -r $PKG/usr/share/doc/
+}

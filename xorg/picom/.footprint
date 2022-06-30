@@ -1,0 +1,13 @@
+drwxr-xr-x	root/root	etc/
+drwxr-xr-x	root/root	etc/xdg/
+-rw-r--r--	root/root	etc/xdg/picom.conf
+-rw-r--r--	root/root	etc/xdg/picom.conf.example
+drwxr-xr-x	root/root	usr/
+drwxr-xr-x	root/root	usr/bin/
+-rwxr-xr-x	root/root	usr/bin/picom
+-rwxr-xr-x	root/root	usr/bin/picom-trans
+drwxr-xr-x	root/root	usr/share/
+drwxr-xr-x	root/root	usr/share/man/
+drwxr-xr-x	root/root	usr/share/man/man1/
+-rw-r--r--	root/root	usr/share/man/man1/picom-trans.1.gz
+-rw-r--r--	root/root	usr/share/man/man1/picom.1.gz

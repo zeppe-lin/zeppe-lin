@@ -1,0 +1,2039 @@
+=pod
+
+=begin comment
+
+  =======================================================================
+  = AFTER EDITING THIS HANDBOOK, DO NOT FORGET TO UPDATE THE VERSION OF =
+  = ITS PACKAGE IN  core/zhandbook.  JUST BUMP THE RELEASE VARIABLE.    =
+  =======================================================================
+
+=end comment
+
+=begin man
+
+=head1 NAME
+
+handbook -- Zeppe-Lin Handbook
+
+=end man
+
+=head1 PREFACE
+
+This handbook (as a whole B<zeppe-lin>) is inspired and based on the
+B<CRUX>' handbook (L<https://crux.nu/Main/Documentation>).
+
+=head1 INTRODUCTION
+
+=begin comment
+
+=head2 What is zeppe-lin?
+
+=end comment
+
+B<zeppe-lin> is a lightweight GNU/Linux distribution for the x86-64
+architecture targeted at experienced users.  It is forked from CRUX
+and the primary focus of this distribution is "keep it simple" too.
+
+The KISS principle reflects in a simple tar.gz-based package system,
+BSD-style initscripts, and a relative small collection of trimmed
+packages.
+
+The secondary focus is utilization of new GNU/Linux features and
+recent tools and libraries.
+
+=begin comment
+
+=head2 Why use zeppe-lin?
+
+In short, B<zeppe-lin> might suit you very well if you are:
+
+=over
+
+=item *
+
+an experienced user who wants a clean and simple GNU/Linux
+distribution as a foundation of your installation;
+
+=item *
+
+a person who prefers editing configuration files with an editor to
+using GUI;
+
+=item *
+
+someone who does not hesitate to download and compile programs from
+the source;
+
+=item *
+
+someone who wants a KISS GNU/Linux distribution as a foundation of
+your own distro;
+
+=back
+
+=end comment
+
+=head1 LICENSE
+
+=head2 Packages
+
+Since B<zeppe-lin> is a GNU/Linux distribution, it contains software
+written by a lot of different people.  Each software package comes
+with its own license, chosen by its author(s).  To find out how a
+particular package is licensed, have a look at its source code.
+
+=head2 Build scripts
+
+All package build scripts in B<zeppe-lin> are Copyright (c) 2000-2021
+by Per Liden and the CRUX development team and CRUX contrib team and
+are released under the GNU General Public License version 3.
+See L<https://gnu.org/licenses/gpl.html> for more information about
+this license.
+
+=head2 NO WARRANTY
+
+B<zeppe-lin> is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  Use it at
+YOUR OWN RISK.
+
+=head1 INSTALL ZEPPE-LIN
+
+=head2 Supported hardware / Requirements
+
+Packages on the official B<rootfs> image are compiled with
+optimization for x86-64 (AMD Athlon 64, Intel Core, Intel Atom) or
+newer processors.  Do not try install it on an i686 (Pentium Pro,
+Celeron, Pentium-III) or lower processor, it simply will not work.
+
+Since B<zeppe-lin> is distributed in the form a compiled tarball
+containing a root filesystem, the installation requires a LiveCD with
+any GNU/Linux.
+
+=head2 Install from rootfs image
+
+In this chapter is described how-to install B<zeppe-lin> on UEFI LUKS
+partition and LVM volume group.
+
+Let's go.
+
+Boot from the LiveCD, open a terminal and get root privileges
+(e.g. C<sudo su>).
+
+=head3 Disk partitions
+
+=head4 Partition scheme
+
+This is a quite simple partition scheme used in this handbook.  There
+is a SCSI disk C</dev/sda>, but if you have an NVME disk
+(like C</dev/nvme0n1>) or another SCSI disk (like C</dev/sdb>), its
+simple as run C<sed 's/sda/sdb/g'>.
+
+=begin man
+
+.TS
+center, box, line, tab (|) ;
+l | l | l | l
+l | l | l | l.
+Partition|Filesystem|Size|Description
+_
+.SP
+/dev/sda1|fat32|512MB|boot partition
+/dev/sda2|luks|rest of the disk|luks partition
+.TE
+
+=end man
+
+=begin text
+
+    |-----------|------------|------------------|----------------|
+    | Partition | Filesystem | Size             | Description    |
+    |-----------|------------|------------------|----------------|
+    | /dev/sda1 | fat32      | 512MB            | boot partition |
+    | /dev/sda2 | luks       | rest of the disk | luks partition |
+    |-----------|------------|------------------|----------------|
+
+=end text
+
+=begin html
+
+  <table>
+    <tr>
+      <th>Partition</th>
+      <th>Filesystem</th>
+      <th>Size</th>
+      <th>Description</th>
+    </tr>
+    <tr>
+      <td>/dev/sda1</td>
+      <td>fat32</td>
+      <td>512MB</td>
+      <td>boot partition</td>
+    </tr>
+    <tr>
+      <td>/dev/sda2</td>
+      <td>luks</td>
+      <td>rest of the disk</td>
+      <td>luks partition</td>
+    </tr>
+  </table>
+
+=end html
+
+=head4 Create the partitions
+
+Using
+L<parted(8)|https://www.mankier.com/8/parted>
+utility we can create all required partitions.
+
+  # parted /dev/sda
+  (parted) mklabel gpt
+  (parted) mkpart ESP fat32 1MiB 513MiB
+  (parted) set 1 boot on
+  (parted) name 1 efi_part
+  (parted) mkpart primary 513MiB 100%
+  (parted) name 2 lvm_part
+  (parted) quit
+
+=head3 Boot partition filesystem
+
+Create fat32 filesystem for first (boot) partition:
+
+  # mkfs.vfat -F32 /dev/sda1
+
+=head3 Encrypt LUKS partition
+
+Encrypt the second (luks) partition with LUKS and open LUKS device:
+
+  # cryptsetup luksFormat /dev/sda2
+  # cryptsetup luksOpen /dev/sda2 crypt
+
+=head3 LVM inside LUKS device
+
+=head4 Create the physical volume
+
+  # pvcreate /dev/mapper/crypt
+
+=head4 Create the volume group
+
+  # vgcreate zpln /dev/mapper/crypt
+
+=head4 Create the logical volume
+
+This is quiet simple logical volumes scheme used in this handbook.
+
+=begin man
+
+.TS
+center, box, line, tab (|) ;
+l | l | l | l
+l | l | l | l.
+Volume name | Filesystem | Size | Description
+_
+.SP
+swap | swap | 2 * RAM | swap area
+root | ext4 | rest of the disk | root fs
+.TE
+
+=end man
+
+=begin text
+
+    |-------------|------------|------------------|----------------|
+    | Volume name | Filesystem | Size             | Description    |
+    |-------------|------------|------------------|----------------|
+    | swap        | swap       | 2 * RAM          | swap area      |
+    | root        | ext4       | rest of the disk | root fs        |
+    |-------------|------------|------------------|----------------|
+
+=end text
+
+=begin html
+
+  <table>
+    <tr>
+      <th>Volume name</th>
+      <th>Filesystem</th>
+      <th>Size</th>
+      <th>Description</th>
+    </tr>
+    <tr>
+      <td>swap</td>
+      <td>swap</td>
+      <td>2 * RAM</td>
+      <td>swap area</td>
+    <tr>
+      <td>root</td>
+      <td>ext4</td>
+      <td>rest of the disk</td>
+      <td>root fs</td>
+    </tr>
+  </table>
+
+=end html
+
+To see the actual amount of RAM, type the following command:
+
+  # free -m
+
+For example, we have 4GB RAM. Swap will have 8GB.
+Let's create the aforementioned two logical volumes:
+
+  # lvcreate -L 8G -n swap zpln
+  # lvcreate -l 100%FREE -n root zpln
+
+=head3 Create root filesystem and setup swap area
+
+  # mkfs.ext4 /dev/zpln/root
+  # mkswap /dev/zpln/swap
+  # swapon /dev/zpln/swap
+
+=head3 Mount prepared partitions
+
+In this handbook, the C</mnt> directory is used as a default
+mountpoint.
+
+  # mount /dev/zpln/root /mnt
+  # mkdir /mnt/boot
+  # mount /dev/sda1 /mnt/boot
+
+=head3 Download rootfs tarball
+
+  # cd /mnt
+  # wget -c https://github.com/zeppe-lin/zeppe-lin/releases/download/\
+    2022-05-13/rootfs-2022-05-13-x86_64.tar.xz{,.sig}
+
+=head4 Signature verification
+
+  # gpg --keyserver keyserver.ubuntu.com --recv-keys 59ec1986fbd902cf
+  # gpg --verify rootfs-2022-05-13-x86_64.tar.xz.sig \
+    rootfs-2022-05-13-x86_64.tar.xz
+
+=head3 Extract rootfs tarball
+
+  # tar -xvf rootfs-2022-05-13-x86_64.tar.xz -C .
+
+=head3 Chroot
+
+Copy DNS configuration to have the availability to use the network from
+chrooted root:
+
+  # cp /etc/resolv.conf etc/resolv.conf
+
+Mount Linux' pseudo-filesystems:
+
+  # mount -B /dev /mnt/dev
+  # mount -B /tmp /mnt/tmp
+  # mount -B /run /mnt/run
+  # mount -t proc proc /mnt/proc
+  # mount -t sysfs none /mnt/sys
+  # mount -t devpts -o noexec,nosuid,gid=tty,mode=0620 devpts \
+    /mnt/dev/pts
+
+  (UEFI only)
+  # mount -B /sys/firmware/efi/efivars /mnt/sys/firmware/efi/efivars
+
+  # chroot /mnt /bin/bash
+
+=head3 Configure the base system configs
+
+Set the root password:
+
+  (chrooted) # passwd root
+
+Make sure files have proper ownership and permissions:
+
+  (chrooted) # chown root:root /
+  (chrooted) # chmod 755 /
+
+Prepare locale (add C<LANG=en_US.UTF-8> to F</etc/profile>):
+
+  (chrooted) # localedef -i en_US -f UTF-8 en_US.UTF-8
+
+Edit F</etc/fstab> to configure your filesystems
+(add something like this):
+
+  /dev/zpln/root  /      ext4  defaults,noatime,nodiratime  1 2
+  /dev/sda1       /boot  vfat  defaults,noatime,nodiratime  1 2
+  /dev/zpln/swap  swap   swap  defaults                     0 0
+
+Note, you can use C</dev/disk/by-uuid/*> or C<UUID=xxx> instead of
+C</dev/*> described above to prevent boot failures on machines with
+multiple disks.  Use L<blkid(8)> to verify the disk's UUID.
+
+Mount C</var/cache/pkgmk/work> (if you set to build packages in RAM),
+and C</dev/shm>:
+
+  (chrooted) # mount /var/cache/pkgmk/work
+  (chrooted) # mount /dev/shm
+
+Edit F</etc/rc.conf> to configure font, keyboard, timezone, hostname
+and services.  See
+L<rc.conf(5)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/rc/rc.conf.5.pod>
+for more info.
+
+Edit F</etc/rc.d/net>, F</etc/hosts> and F</etc/resolv.conf> to
+configure your network (ip-address/gateway/hostname/domain/dns).
+
+=head3 Prepare the package sources
+
+  (chrooted) # cd /usr/src/
+  (chrooted) # git clone https://github.com/zeppe-lin/zeppe-lin
+
+=head4 Update the core packages
+
+  (chrooted) # pkgman sysup --deps --depsort --group
+
+=head3 Install bare metal packages
+
+  (chrooted) # pkgman install --deps --group \
+    cryptsetup e2fsprogs dosfstools grub2 grub2-efi iw gnupg lvm2 \
+    pinentry wireless-tools wpa-supplicant dhcpcd iputils
+
+Edit C</etc/rc.d/dhcpcd> and C</etc/rc.d/wpa_supplicant> if needed.
+
+=head3 Install the kernel
+
+=head4 Package
+
+Zeppe-lin provides a package with the kernel and non-free firmware:
+
+  (chrooted) # pkgman install --deps --group \
+    --config-append="runscripts no" linux linux-firmware
+
+The B<linux> package has B<post-install> script that executes
+B<tinyramfs> and updates the grub config.  We turn off the execution
+of this script, because we'll do it manually.  It is useful when
+regularly updating the system.
+
+If you installed the kernel package through a package manager, you can
+jump over the next paragraph, to the B<Install tinyramfs>.
+
+=head4 Manually
+
+Since the
+L<pkgman(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgman/pkgman.1.pod>
+build the package that contains only the binaries (kernel and modules),
+you may want to build your own kernel.  For example, you do not need
+such a fat kernel, which goes by default, or you need the sources of
+the running kernel, because you want to build the nvidia driver and/or
+virtualbox.
+
+In this case, it is recommended to use the kernel from package sources.
+
+So, let's download the linux' source:
+
+  (chrooted) # pkgman install -do linux
+
+The C<-do> option means C<download-only>.  The source is downloaded
+to F</var/cache/pkgmk/sources> if you have not changed the
+F<PKGMK_SOURCE_DIR> location in F</etc/pkgmk.conf>. Unpack it:
+
+  (chrooted) # tar -xvf /var/cache/pkgmk/sources/linux-5.4.X.tar.?z \
+    -C /usr/src/
+
+You may want to enable the zeppe-lin's patches:
+
+  (chrooted) # cd linux-5.4.X
+  (chrooted) # for p in $(pkgman path linux)/*.patch; do \
+    patch -Np1 -i $p; done
+
+If you're downloaded non-packaged kernel, you can print the results of
+applying the patches without actually changing any files.  Just add
+C<--dry-run> option.
+
+Next, you can create your own, minimal config and adjust it to your
+system:
+
+  (chrooted) # make menuconfig
+
+Or you can use the C<all-inclusive> config from the package:
+
+  (chrooted) # cp $(pkgman path linux)/x86_64-dotconfig .config
+  (chrooted) # make oldconfig
+
+Build the kernel and modules:
+
+  (chrooted) # make -j$(nproc) all
+
+Install the kernel and modules:
+
+  (chrooted) # KV=$(make kernelversion)
+  (chrooted) # cp arch/x86/boot/bzImage /boot/vmlinuz-$KV
+  (chrooted) # cp .config /boot/config-$KV
+  (chrooted) # make modules_install
+
+You may still need to install the kernel non-free firmwares:
+
+  (chrooted) # pkgman install --deps linux-firmware
+
+Next, we need to prepare the initramfs and update our bootloader.
+
+=head3 Install tinyramfs
+
+  (chrooted) # pkgman install --deps tinyramfs
+
+Add tinyramfs' configuration file (F</etc/tinyramfs/config>) with the
+following content:
+
+  #
+  # /etc/tinyramfs/config: tinyramfs(8) configuration
+  #
+  # See tinyramfs.config(5) for more information.
+  #
+
+  hostonly=1 #(optional)
+  compress="gzip --fast"
+  hooks="eudev luks lvm resume"
+  root=/dev/zpln/root
+  root_type=ext4
+  resume=/dev/zpln/swap
+  luks_name=crypt
+  luks_root=/dev/sda2
+
+  # End of file.
+
+See
+L<tinyramfs.config(5)|https://github.com/zeppe-lin/zeppe-lin/blob/master/system/tinyramfs/tinyramfs.config.5.pod>
+for more information.
+
+Note that you can use C</dev/disk/by-uuid/*> instead of C</dev/*>
+paths to prevent boot hanging in case you have multiple drives on
+machine.  Use L<blkid(8)> to obtain C<UUID>.
+
+Now, prepare an initramfs.  If you installed the kernel C<linux>
+manually, you have already set C<KV> set.  Else, type:
+
+  (chrooted) # KV=$(pkgman printf "%v" --filter=linux)
+
+Now, generate an initramfs image:
+
+  (chrooted) # tinyramfs -o /boot/initramfs-$KV.img -k $KV
+
+=head3 Configure GRUB
+
+Create F</etc/default/grub> file with the following content:
+
+  GRUB_TIMEOUT=3
+  GRUB_DISTRIBUTOR=ZPLN
+  GRUB_CMDLINE_LINUX_DEFAULT="quiet resume=/dev/zpln/swap"
+
+Next, install GRUB:
+
+  (chrooted) # grub-install --target=x86_64-efi \
+    --efi-directory=/boot /dev/sda
+
+Update GRUB configuration file:
+
+  (chrooted) # grub-mkconfig -o /boot/grub/grub.cfg
+
+=head3 Exit from chroot and umount /mnt and reboot
+
+  (chrooted) # exit
+  # cd /
+  # umount -R /mnt
+  # shutdown -r now
+
+=head2 Post Installation Notes
+
+=head3 Install xorg
+
+See the available xorg video and input drivers, and choose the right
+one:
+
+  # pkgman search -vv xf86-
+
+Next, install xorg and the drivers you wish:
+
+  # pkgman install --deps --group xorg ...
+
+=head1 THE PACKAGE SYSTEM
+
+=head2 Introduction
+
+=head3 Basic package management tools
+
+The package system (B<pkgutils>) is a fork of CRUX' pkgutils.
+It is made with simplicity in mind, where all packages are plain
+I<tar.gz files> (i.e. without any kind of meta data).
+
+Packages follow the naming convention
+I<name#version-release.pkg.tar.gz>, where I<name> is the name of the
+program, I<version> is the version number of the program, and
+I<release> is the version number of the package.
+
+The I<pkg.tar.gz> extension is used (instead of just I<tar.gz>) to
+indicate that this is not just any I<tar.gz> file, but a I<tar.gz>
+that is meant to be installed using
+L<pkgadd(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgutils/pkgadd.8.pod>.
+This helps distinguish packages from other I<tar.gz> files.  Note that
+L<pkgmk(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgmk.8.pod>
+supports additional compression schemes like B<bzip2> with the
+I<tar.bz2> extension or B<XZ> ending with I<tar.xz>.
+
+L<pkgadd(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgutils/pkgadd.8.pod>,
+L<pkgrm(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgutils/pkgrm.8.pod>,
+L<pkginfo(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgutils/pkginfo.8.pod>
+are the basic package management utilities and are the part of the
+package B<pkgutils>.  In addition to them, the package management
+includes utilities such as
+L<pkgmk(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgmk.8.pod>,
+L<rejmerge(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/rejmerge/rejmerge.8.pod>,
+L<revdep(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/revdep/revdep.1.pod>.
+
+They could also be considered basic, but they are placed in separate
+packages, so that changes in one utility do not require rebuilding all
+of them. 
+
+With these utilities you can install, uninstall, inspect, make
+packages, query the package database, merge files that were rejected
+during package upgrades, and check for missing libraries of installed
+packages.
+
+When a new package is installed using
+L<pkgadd(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgutils/pkgadd.8.pod>,
+a new record is added to the package database
+(stored in F</var/lib/pkg/db>).
+The basic package system does not have any kind of dependency
+checking, this it will not warn you if you install a package that
+requires other packages to be installed.  The included
+L<pkgman(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgman/pkgman.1.pod>
+tool (B<pkgman>), however, does support dependencies.
+
+The following sections will in describe in short how to use the
+package utilities.  Additional information about these utilities can
+be found on their respective man page.
+
+=head2 Using the Package System
+
+=head3 Installing a Package
+
+Installing a package is done by using
+L<pkgadd(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgutils/pkgadd.8.pod>.
+This utility requires at least one argument, the package you want to
+install.  Example:
+
+  # pkgadd bash#5.0.18-1.pkg.tar.gz
+
+When installing a package the package manager will ensure that no
+previously installed files are overwritten.  If conflicts are found,
+an error message will be printed and
+L<pkgadd(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgutils/pkgadd.8.pod>
+will abort without installing the package.  The error message will
+contain the names of the conflicting files.  Example:
+
+  # pkgadd bash#5.0.18-1.pkg.tar.gz
+  bin/sh
+  usr/man/man1/sh.1.gz
+  pkgadd error: listed file(s) already installed (use -f to ignore and overwrite)
+
+To force the installation and overwrite the conflicting files, you
+can use the option B<-f> (or B<--force>).  Example:
+
+  # pkgadd -f bash#5.0.18-1.pkg.tar.gz
+
+The package system allows a file to be owned by exactly one package.
+When forcing an installation the ownership of the conflicting files
+will be transferred to the package that is currently being installed.
+Directories can however be owned by more then one package.
+
+=begin man
+
+.TS
+center, box, line, tab (|) ;
+c
+c.
+<WARNING>
+_
+.SP
+It is often not a good idea to force the installation unless you really
+know what you are doing. If a package conflicts with already installed
+files it could be a sign that the package is broken and installs
+unexpected files. Use this option with extreme care, preferably not at
+all.
+.TE
+
+=end man
+
+=begin text
+
+  |------------------------------------------------------------------|
+  |                          <WARNING>                               |
+  |------------------------------------------------------------------|
+  | It is often not a good idea to force the installation unless you |
+  | really know what you are doing.  If a package conflicts with     |
+  | already installed files it could be a sign that the package is   |
+  | broken and installs unexpected files.  Use this option with      |
+  | extreme care, preferably not at all.                             |
+  |------------------------------------------------------------------|
+
+=end text
+
+=begin html
+
+  <table>
+    <tr>
+      <th>WARNING</th>
+    </tr>
+    <tr>
+      <td>It is often not a good idea to force the installation unless
+      you really know what you are doing.  If a package conflicts with
+      already installed files it could be a sign that the package is
+      broken and installs unexpected files.  Use this option with
+      extreme care, preferably not at all.
+      </td>
+    </tr>
+  </table>
+
+=end html
+
+As earlier, the package file itself does not contain any meta data.
+Instead, the
+L<pkgadd(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgutils/pkgadd.8.pod>
+uses the package filename to determine the package name and version.
+Thus, when installing a package file named
+I<bash#5.0.18-1.pkg.tar.gz>,
+L<pkgadd(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgutils/pkgadd.8.pod>
+will interpret this as a package named I<bash> at version I<5.0.18-1>.
+If
+L<pkgadd(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgutils/pkgadd.8.pod>
+is unable to interpret the filename
+(e.g. # is missing or the filename does not end with .pkg.tar.gz)
+an error message will be printed and
+L<pkgadd(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgutils/pkgadd.8.pod>
+will abort without installing the package.
+
+=head3 Upgrading a Package
+
+Upgrading a package is done using
+L<pkgadd(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgutils/pkgadd.8.pod>
+with the B<-u> option.  Example:
+
+  # pkgadd -u bash#5.0.18-1.pkg.tar.gz
+
+This will replace the previously installed bash package with the new
+one.  If you have not previously installed bash,
+L<pkgadd(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgutils/pkgadd.8.pod>
+will print an error message.
+L<pkgadd(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgadd.8.pod>
+does not care about the version number of the package in that you can
+"upgrade" version 2.05-1 with version 2.04-1
+(or even with version 2.05-1 itself).  The installed package will be
+replaced with the specified package.
+
+Upgrading a package is equivalent to executing
+L<pkgrm(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgutils/pkgrm.8.pod>
+followed by
+L<pkgadd(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgutils/pkgadd.8.pod>
+with one (big) exception. When upgrading a package (with C<pkgadd -u>)
+you have the option to prevent some of the already installed files
+from getting replaced.  This is typically useful when you want to
+preserve configuration and log files.
+
+When executing
+L<pkgadd(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgutils/pkgadd.8.pod>
+the file F</etc/pkgadd.conf> will be read.  This file can contain
+rules describing how
+L<pkgadd(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgutils/pkgadd.8.pod>
+should behave when doing upgrades.  A rule is built out of three
+fragments: I<event>, I<pattern> and I<action>.
+The I<event> describes in what kind of situation this rule applies.
+Currently only one type of event is supported, that is UPGRADE.  The
+I<pattern> is a filename pattern expressed as a regular expression and
+the I<action> applicable to the UPGRADE event is YES or NO.  More than
+one rule of the same event type is allowed, in which case the first
+rule will have the lowest priority and the last rule will have the
+highest priority.  Example:
+
+  #
+  # /etc/pkgadd.conf: pkgadd(8) configuration
+  #
+
+  UPGRADE         ^etc/.*$                NO
+  UPGRADE         ^var/log/.*$            NO
+  UPGRADE         ^etc/X11/.*$            YES
+  UPGRADE         ^etc/X11/xorg.conf$     NO
+
+  # End of file.
+
+The above example will cause
+L<pkgadd(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgutils/pkgadd.8.pod>
+to never upgrade anything in F</etc/> or F</var/log/>
+(subdirectories included), except files in F</etc/X11/>
+(subdirectories included), unless it's the file F</etc/X11/xorg.conf>.
+The default rule is to upgrade everything, rules in this file are
+exceptions to that rule.
+
+B<NOTE:> A pattern should never contain an initial "/" since you are
+referring to the files in the package, not the files on the disk.
+
+=head4 rejmerge
+
+If
+L<pkgadd(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgutils/pkgadd.8.pod>
+finds that a specific file should not be upgraded, it will install it
+under
+F</var/lib/pkg/rejected/>.  Files in this directory are never added
+to the package database.  The user is then free to examine, use and/or
+remove that file manually.  Another option is to use
+L<rejmerge(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/rejmerge/rejmerge.8.pod>.
+For each rejected file found in F</var/lib/pkg/rejected/>,
+L<rejmerge(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/rejmerge/rejmerge.8.pod>
+will display the difference between the installed version and the
+rejected version.  The user can then choose to keep the installed
+version, upgrade to the rejected version or perform a merge of the
+two.  Example (using the above F</etc/pkgadd.conf>):
+
+  # pkgadd -u bash#5.0.18-1.pkg.tar.gz
+  pkgadd: rejecting etc/profile, keeping existing version
+  # ls /var/lib/pkg/rejected/
+  etc/
+  # ls /var/lib/pkg/rejected/etc/
+  profile
+
+=head3 Removing a package
+
+Removing a package is done by using
+L<pkgrm(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgutils/pkgrm.8.pod>.
+This utility requires one argument, the name of the package you want
+to remove.  Example:
+
+  # pkgrm bash
+
+=begin man
+
+.TS
+center, box, line, tab (|) ;
+c
+c.
+<WARNING>
+_
+.SP
+This will remove all files owned by the package, no questions asked.
+Think twice before doing it and make sure that you did not misspell
+the package name since that could remove something completely
+different (e.g. think about what could happen if you misspelled glib
+as glibc).
+.TE
+
+=end man
+
+=begin text
+
+  |------------------------------------------------------------------|
+  |                          <WARNING>                               |
+  |------------------------------------------------------------------|
+  |  This will remove all files owned by the package, no questions   |
+  |  asked.  Think twice before doing it and make sure that you did  |
+  |  not mispell the package name since that could remove something  |
+  |  completely different (e.g. think about what could happen if you |
+  |  misspelled glib as glibc).                                      |
+  |------------------------------------------------------------------|
+
+=end text
+
+=begin html
+
+  <table>
+    <tr>
+      <th>WARNING</th>
+    </tr>
+    <tr>
+      <td>
+      This will remove all files owned by the package, no questions
+      asked.  Think twice before doing it and make sure that you did
+      not misspell the package name since that could remove something
+      completely different (e.g. think about what could happen if you
+      misspelled glib as glibc).
+      </td>
+    </tr>
+  </table>
+
+=end html
+
+=head3 Querying the Package Database
+
+Querying the package database is done using
+L<pkginfo(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgutils/pkginfo.8.pod>.
+This utility has a few options to answer different queries.
+
+=begin man
+
+.TS
+center, box, line, tab (@) ;
+l | l
+l | l.
+Option @ Description
+_
+-i, --installed @ List installed packages and their version.
+-l, --list PACKAGE|FILE @ List files in PACKAGE or FILE.
+-o, --owner PATTERN @ List owner(s) of file(s) matching PATTERN.
+-f, --footprint FILE @ Print footprint for FILE.
+-r, --root PATH @ Specify alternative installation root.
+.TE
+
+=end man
+
+=begin text
+
+    |-------------------------|--------------------------------------|
+    | Option                  | Description                          |
+    |-------------------------|--------------------------------------|
+    | -i, --installed         | List installed packages and their    |
+    |                         | version.                             |
+    | -l, --list PACKAGE|FILE | List files in PACKAGE or FILE.       |
+    | -o, --owner PATTERN     | List owner(s) of file(s) matching    |
+    |                         | PATTERN.                             |
+    | -f, --footprint FILE    | Print footprint for FILE.            |
+    | -r, --root PATH         | Specify alternative installation     |
+    |                         | root.                                |
+    |-------------------------|--------------------------------------|
+
+=end text
+
+=begin html
+
+  <table>
+    <tr>
+      <th>Option</th>
+      <th>Description</th>
+    </tr>
+    <tr>
+      <td>-i, --installed</td>
+      <td>List installed packages and their version.</td>
+    </tr>
+    <tr>
+      <td>-l, --list PACKAGE|FILE</td>
+      <td>List files in PACKAGE or FILE.</td>
+    </tr>
+    <tr>
+      <td>-o, --owner PATTERN</td>
+      <td>List owner(s) of file(s) matching PATTERN.</td>
+    </tr>
+    <tr>
+      <td>-f, --footprint FILE</td>
+      <td>Print footprint for FILE.</td>
+    </tr>
+    <tr>
+      <td>-r, --root PATH</td>
+      <td>Specify alternative installation root.</td>
+    </tr>
+  </table>
+
+=end html
+
+Examples.
+
+List installed packages and their version.
+
+  $ pkginfo -i
+  audiofile 0.2.3-1
+  autoconf 2.52-1
+  automake 1.5-1
+  <...>
+  xmms 1.2.7-1
+  zip 2.3-1
+  zlib 1.1.4-1
+
+List files in PACKAGE or FILE:
+
+  $ pkginfo -l bash
+  bin/
+  bin/bash
+  bin/sh
+  etc/
+  etc/profile
+  usr/
+  usr/man/
+  usr/man/man1/
+  usr/man/man1/bash.1.gz
+  usr/man/man1/sh.1.gz
+  $ pkginfo -l grep#2.5-1.pkg.tar.gz
+  usr/
+  usr/bin/
+  usr/bin/egrep
+  usr/bin/fgrep
+  usr/bin/grep
+  usr/man/
+  usr/man/man1/
+  usr/man/man1/egrep.1.gz
+  usr/man/man1/fgrep.1.gz
+  usr/man/man1/grep.1.gz
+
+List owners of files matching F<bin/ls>:
+
+  $ pkginfo -o bin/ls
+  e2fsprogs  usr/bin/lsattr
+  fileutils  bin/ls
+  modutils   sbin/lsmod
+
+Print footprint for file:
+
+  $ pkginfo -f xorg-xkill#1.0.5-1.pkg.tar.gz
+  drwxr-xr-x      root/root       usr/
+  drwxr-xr-x      root/root       usr/share/
+  drwxr-xr-x      root/root       usr/bin/
+  -rwxr-xr-x      root/root       usr/bin/xkill
+  drwxr-xr-x      root/root       usr/share/man/
+  drwxr-xr-x      root/root       usr/share/man/man1/
+  -rw-r--r--      root/root       usr/share/man/man1/xkill.1.gz
+
+This feature is mainly used by
+L<pkgmk(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgmk.8.pod>
+for creating and comparing footprints.
+
+The B<-r> (B<--root>) option should be used if you want to display
+information about a package that is installed on a temporary mounted
+partition, which is "owned" by another system.  By using this option
+you specify which database to use.
+
+=head2 Package management frontend: pkgman
+
+In its current form B<pkgutils> does not have a concept of dependency
+handling.  To address this, a frontend utility called
+L<pkgman(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgman/pkgman.1.pod>
+exists.
+
+L<pkgman(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgman/pkgman.1.pod>
+supports dependency handling (with the caveat mentioned below) as well
+as some overlap with B<pkgutils> features.
+
+=head3 Functionality
+
+Some examples of pkgman's functionality and use are as follows:
+
+=head4 Listing installed packages
+
+  $ pkgman list
+  acl
+  attr
+  autoconf
+  [...]
+
+  $ pkgman list -vv
+  acl 2.3.1-1: Access Control List filesystem support
+  attr 2.5.1-1: Extended attribute support library for ACL support
+  autoconf 2.71-1: Generates automatic source code configuration scripts
+
+=head4 Querying information about a package source
+
+  $ pkgman info acl
+  Name:         acl
+  Path:         /usr/src/zeppe-lin/core
+  Version:      2.3.1
+  Release:      1
+  Description:  Access Control List filesystem support
+  URL:          http://savannah.nongnu.org/projects/acl
+  Dependencies: attr
+  Files:        ABOUT
+
+=head4 Searching for packages sources by name
+
+  $ pkgman search glibc -vv
+  -- search ([i] = installed)
+  [i] glibc 2.32-5: GNU C Library
+  [i] glibc-32 2.32-5: GNU C Library (32bit)
+
+  $ pkgman search --regex '^(glib)c?$' -vv
+  -- search ([i] = installed)
+  [i] glib 2.70.1-1: Common C routines used by Gtk+ and other libs
+  [i] glibc 2.32-5: GNU C Library
+
+=head4 Searching for packages sources by words in their description
+
+  $ pkgman dsearch archive -vv
+  -- search ([i] = installed)
+  [i] cpio 2.13-2: Copy files into or out of a cpio or tar archive
+  [i] libarchive 3.5.2-1: Library to create and read several archive formats
+  [ ] unrar 6.0.7-1: Extracts RAR archives
+  [i] wordlistctl 0.9.2-1: Fetch, install and search wordlist archives from websites
+  [ ] zip 3.0-1: Compression and file packaging/archive utility
+
+=head4 Viewing dependency lists
+
+  $ pkgman dep bash
+  readline
+
+  $ pkgman dep bash --recursive
+  readline
+   ncurses
+
+  $ pkgman dep bash --recursive -vv --tree
+  -- dependencies ([i] = installed, --> seen before)
+  [i] bash 5.1.8-1: GNU Bourne Again Shell
+  [i]   readline 8.1.1-1: Lets users edit command lines as they are typed in
+  [i]     ncurses 6.3-1: System V Release 4.0 curses emulation library
+
+=head4 Installing packages
+
+  $ pkgman install xterm
+
+B<NOTE>: The C<install> command does B<NOT> process dependencies
+without B<--deps> option, and it's usually recommended to use
+B<--deps> with C<install>.  It is also worth noting that
+L<pkgman(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgman/pkgman.1.pod>
+by default tries to install all the packages specified in the
+dependencies, and if one of the dependencies does not build, it will
+skip it, and go further.  At the end, it will show the
+C<build-failed packages> in the report.  This behaviour can have
+unexpected consequences if you install many programs with many
+dependencies at a time.  Because, one dependency may not build, and
+affect the building of another dependency, and thereby affect the
+third, etc.
+
+We can tell
+L<pkgman(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgman/pkgman.1.pod>
+not to skip the C<fails>, but to stop.  Then we can fix the packages
+sources and start installation further.
+
+There is option B<--group> for this.  In this handbook it is
+recommended to use it always, unless you know what you are doing.
+
+  $ pkgman install --deps --group xterm
+
+In case if one of the dependency build has failed, just fix it and
+retry:
+
+  $ pkgman install --deps --group --force xterm
+
+The option B<--force> tell to
+L<pkgman(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgman/pkgman.1.pod>
+to skip installation of already installed package(s).  It just
+ignores the package and installing next in the listed order.  At the
+end of installation procedure, all skipped packages will be in the
+report.
+
+=head4 Viewing and updating outdated packages
+
+Since the packages source for zeppe-lin is distributed via
+L<git(1)|https://www.mankier.com/1/git>, the first thing to do is to
+update the sources:
+
+  $ cd /usr/src/zeppe-lin
+  $ git pull
+
+Listing installed packages which are out of date
+(including their new dependencies):
+
+  $ pkgman diff --deps --full
+  -- Differences between installed packages and packages' sources
+  Package                         Installed           Available
+
+  bind                            9.16.7-1            9.16.8-1
+  bindutils                                           9.16.8-1
+
+  --
+  1 update
+  1 install
+
+Updating an individual package:
+
+  $ pkgman update --deps --group bind
+
+Updating all installed packages:
+
+  $ pkgman sysup --deps --depsort --group
+
+=head3 Configuration
+
+=head4 /etc/pkgman.conf
+
+B<pkgman>'s main configuration file, F</etc/pkgman.conf>, contains
+options that can be used to change pkgman's behaviour.  Notably in
+this file the following options can be configured:
+
+=over 4
+
+=item pkgsrcdir
+
+This option can occur multiple times and specifies a directory with a
+packages' sources "collection" which
+L<pkgman(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgman/pkgman.1.pod>
+should check in its operation.  By default the "core", "system",
+"xorg", "desktop" and "stuff" collections are enabled.
+
+=item runscripts
+
+This option configures
+L<pkgman(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgman/pkgman.1.pod>
+to run C<pre-install>, C<post-install>, C<pre-remove> and
+C<post-remove> scripts if they exists in package source directory.
+These scripts are run during F<install>, F<update>, F<sysup> and
+F<remove> operations.
+
+It is recommended that this be enabled as in many cases if these
+scripts exists in a package source directory, it is required to be
+run for proper operation.
+
+=item logfile
+
+This option configures a file for pkgman to log its operation if
+desired.
+
+=back
+
+This is B<NOT> an exhaustive list of all of pkgman's commands,
+features, and configuration options, merely a starting point.  More
+information can be found in the
+L<pkgman(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgman/pkgman.1.pod>
+and
+L<pkgman.conf(5)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgman/pkgman.conf.5.pod>.
+
+=head2 Creating Packages
+
+Creating a package is done using
+L<pkgmk(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgman/pkgmk.8.pod>.
+This utility uses a file called Pkgfile (see
+L<Pkgfile(5)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/Pkgfile.5.pod>
+for more info), which contains information about the package (such as
+name, version, etc) and the commands that should be executed in order
+to compile the package in question.  To be more specific, the Pkgfile
+file is actually a
+L<bash(1)|https://www.mankier.com/1/bash>
+script, which defines a number of variables (name, version, release
+and source) and a function (build).  Below is an example of what a
+Pkgfile file might look like.  The example shows how to package the
+L<grep(1)|https://www.mankier.com/1/grep>
+utility.  Some comments are inserted for explanation.
+
+  # Specify the name of the package.
+  name=grep
+
+  # Specify the version of the package.
+  version=2.4.2
+
+  # Specify the package release.
+  release=1
+
+  # The source(s) used to build this package.
+  source=ftp://ftp.ibiblio.org/pub/gnu/$name/$name-$version.tar.gz
+
+  # The build() function below will be called by pkgmk when
+  # the listed source files have been unpacked.
+  build() {
+          # The first thing we do is to cd into the source directory.
+          cd $name-$version
+
+          # Run the configure script with desired arguments.
+          # In this case we want to put grep under /usr/bin and
+          # disable national language support.
+          ./configure --prefix=/usr --disable-nls
+
+          # Compile.  Use the verbose flag (V=1) to see/log the
+          # compilation flags at build time. 
+          make V=1
+
+          # Install the files, BUT do not install it under /usr,
+          # instead we redirect all the files to $PKG/usr by setting
+          # the DESTDIR variable.  The $PKG variable points to a
+          # temporary directory which will later be made into a
+          # tar.gz-file.  Note that the DESTDIR variable is not used
+          # by all Makefiles, some use prefix and others use ROOT,
+          # etc.  You have to inspect the Makefile in question to
+          # find out.  Some Makefiles do not support redirection at
+          # all.  In those cases you will have to create a patch for it.
+          make DESTDIR=$PKG install
+
+          # Remove unwanted files, in this case the info-pages.
+          rm -rf $PKG/usr/info
+  }
+
+In reality you do not include all those comments, thus the real
+Pkgfile for
+L<grep(1)|https://www.mankier.com/1/grep>
+looks like this:
+
+  # Description: GNU grep, egrep and fgrep
+  # URL:         http://www.gnu.org/software/grep/grep.html
+
+  name=grep
+  version=2.4.2
+  release=1
+  source=ftp://ftp.ibiblio.org/pub/gnu/$name/$name-$version.tar.gz
+
+  build() {
+          cd $name-$version
+
+          ./configure --prefix=/usr --disable-nls
+
+          make V=1
+          make DESTDIR=$PKG install
+
+          rm -rf $PKG/usr/info
+  }
+
+B<NOTE>
+The build() function in the example above is just an example of how
+grep is built.  The contents of the function can differ significantly
+if the program is built in some other way, e.g. does not use
+B<autoconf>.
+
+When the build() function has been executed, the $PKG directory will
+be made into a package named I<name#version-release.pkg.tar.gz>.
+Before the package creation is completed,
+L<pkgmk(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgmk.8.pod>
+will check the content of the package against the F<.footprint> file.
+If this file does not exist, it will be created and the test will be
+skipped.  The F<.footprint> file will contain a list of all files that
+should be in the package if the build was successful or a list of all
+the files that were installed in $PKG (if the F<.footprint> did not
+already exist).  If there is a mismatch the test will fail and an
+error message will be printed.  You should dot write the F<.footprint>
+file by hand.  Instead, when a package has been upgraded and you need
+to update the contents of the F<.footprint> file you simply do
+C<pkgmk -uf>.  This test ensures that a rebuild of the package turned
+out as expected.
+
+If the package built without errors it's time to install it by using
+L<pkgadd(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgutils/pkgadd.8.pod>
+and try it out.  It's highly recommend to look at the Pkgfile in
+another package(s), since looking at examples is a great way to learn.
+
+See
+L<Pkgfile(5)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/Pkgfile.5.pod>
+for additional information.
+
+=head2 Adjusting/Configuring the Package Build Process
+
+Many settings pertaining to the package build process can be adjusted
+by editing the
+L<pkgmk(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgmk.8.pod>
+configuration file F</etc/pkgmk.conf>.  Some of these configurable
+settings include:
+
+=over 4
+
+=item CFLAGS, CXXFLAGS
+
+These settings control optimization and architecture options for
+package compiles.  It is best B<NOT> to change these unless you
+absolutely know what you're doing!
+
+=item PKGMK_SOURCE_MIRRORS
+
+This setting defines locations from which pkgmk will attempt to fetch
+source archives.
+
+=item PKGMK_SOURCE_DIR
+
+This setting defines where
+L<pkgmk(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgmk.8.pod>
+will store (if downloading) and use source archives when building.
+
+=item PKGMK_PACKAGE_DIR
+
+This setting defines where
+L<pkgmk(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgmk.8.pod>
+will create package files once the build process is complete.
+
+=item PKGMK_WORK_DIR
+
+This setting defines a work area
+L<pkgmk(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgmk.8.pod>
+will use to build the package.
+
+=back
+
+Here are some examples:
+
+  PKGMK_SOURCE_MIRRORS=(http://fileserver.intranet/crux/sources/)
+
+This setting instructs
+L<pkgmk(8)|https://github.com/zeppe-lin/pkgmk/blob/master/pkgmk.8.pod>
+to attempt to fetch all source archives from
+L<http://fileserver.intranet/zeppe-lin/sources/>
+before falling back to the source URL specified in the Pkgfile.
+Multiple URLs can be separated by spaces.
+
+  PKGMK_SOURCE_DIR="/var/cache/pkgmk/sources"
+
+This setting instructs
+L<pkgmk(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgmk.8.pod>
+to store and find source archives in C</var/cache/pkgmk/sources>.  An
+example benefit of this setup would be the ability to store
+C</var/cache/pkgmk/sources> on an NFS server on your local network
+for use by multiple zeppe-lin installations.
+C<PKGMK_PACKAGE_DIR> can be set and used the same way.
+
+  PKGMK_WORK_DIR="/var/cache/pkgmk/work/$name"
+
+This setting instructs
+L<pkgmk(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgmk.8.pod>
+to use C</var/cache/pkgmk/work/$name> as a work area for building the
+specified package.  Building the B<grep> package would result in the
+work area being C</var/cache/pkgmk/work/grep>.  An alternative would
+be to use a
+L<tmpfs(5)|https://www.mankier.com/5/tmpfs>
+as your work directory.
+
+There are a few more settings which can be found in the
+L<pkgmk.conf(5)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgmk.conf.5.pod>
+manual page. 
+
+=head2 Package Guidelines
+
+A detailed guideline is described in
+L<Pkgfile(5)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/Pkgfile.5.pod>
+manual page.
+
+=head1 THE PACKAGES SOURCES SYSTEM
+
+=head2 Introduction
+
+=head3 What is a package source?
+
+A package source is a directory containing the files needed for
+building a package using
+L<pkgmk(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgmk.8.pod>.
+This means that this directory at least has the files F<Pkgfile>
+(which is the package build description) and F<.footprint>
+(which is used for regression testing and contains a list of files
+this package is expected to contain once it is built).  Further, a
+package source directory can contain patches and/or other files needed
+for building the package, even software sources.  It is important to
+understand that the actual source code for the package is not
+necessarily present in package source directory.  Instead the
+F<Pkgfile> contains an URL which points to a location where the
+source can be downloaded.
+
+The use of the words "package source" in this context is borrowed
+from the NetBSD world, where a package refers to a set of files and
+building instructions that describe what's necessary to build a
+certain piece of software.
+
+=head3 What is the Packages Sources Repository?
+
+The term I<Packages Sources Repository> refers to a remote repository
+containing packages sources.
+
+=head3 Packages Sources Collections
+
+zeppe-lin is organized in so called collections.  There are two
+different layer of packages sources.
+
+=head4 core
+
+This collection contains packages sources required to create a basic
+system, on the basis of which you can build your installation.
+The official rootfs images are built on the basis of this collection.
+
+=head4 system
+
+This collection contains packages required for minimal installation
+on real hardware.  Packages in this collection depends B<only> on the
+core.
+
+=head4 xorg
+
+This collection contains packages required for X Window System.
+These packages depends on the system and core.
+
+=head4 desktop
+
+This collection contains packages typically used on a desktop:
+web browser, music/video player, file manager, chat messenger, etc.
+These packages depends on the system, core and xorg.
+
+=head4 stuff
+
+This collection contains packages that does not fit into the above
+categories.  Packages in this collection may depend on any of the
+collections listed above.
+
+=head2 Using the Packages Sources System
+
+=head3 Synchronizing Your Local Packages Sources Repository
+
+When zeppe-lin is installed for the first time the local packages
+sources structure (F</usr/src/zeppe-lin/*>) is empty.  To obtains
+the source at first time, use C<git clone>.  Example:
+
+  # cd /usr/src/
+  # git clone https://github.com/zeppe-lin/pkgsrc
+
+To bring your local packages sources up to date use C<git pull>.
+Example:
+
+  # cd /usr/src/pkgsrc
+  # git pull
+
+=head3 Listing Local Packages Sources
+
+When the local packages sources structure has been updated the
+directory C</usr/src/zeppe-lin> will contain some package categories,
+C<core>, C<system>, C<xorg>, C<desktop> and C<stuff>.
+Under each of these directories you will find packages sources.  You
+can simply browse around in the directory structure to find out which
+packages sources are available.
+
+  $ cd /usr/src/pkgsrc/core
+  $ ls
+  acl              gettext-tiny  libtirpc         python3-setuptools
+  asciidoctor      git           libtool          rc
+  attr             glibc         libunistring     rdate
+  autoconf         glibc-32      libusb           readline
+  automake         gperf         libyaml          rejmerge
+  bash             grep          LINT.SH          revdep
+  bash-completion  groff         linux-pam        ruby
+  bc               gzip          lz4              samurai
+  binutils         hdparm        lzo              sed
+  bison            iana-etc      m4               shadow
+  bzip2            inetutils     make             sqlite3
+  ca-certificates  iproute2      man-db           start-stop-daemon
+  cmake            iptables      man-pages        sudo
+  coreutils        kbd           man-pages-posix  sysfsutils
+  cpio             kmod          meson            sysklogd
+  curl             less          mlocate          sysvinit
+  db               libarchive    mpdecimal        tar
+  dcron            libbsd        nasm             tcl
+  diffutils        libcap        ncurses          time
+  ed               libdevmapper  openssh          tzdata
+  elfutils         libffi        openssl          usbutils
+  eudev            libgmp        patch            util-linux
+  expat            libmd         pciutils         vim
+  fakeroot         libmnl        perl             wget
+  file             libmpc        pkg-config       which
+  filesystem       libmpfr       pkgman           xz
+  findutils        libnfnetlink  pkgmk            zhandbook
+  flex             libnsl        pkgutils         zlib
+  gawk             libpcre       procps           zstd
+  gcc              libpcre2      psmisc
+  gdbm             libpipeline   python3
+
+Pay attention to the C<LINT.SH> file.  It is needed for maintenance:
+it will check all Pkgfiles in this collection to make sure that the
+packages in this collection do not depend on packages in other
+collections.
+
+You can also use
+L<pkgman(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgman/pkgman.1.pod>
+with command B<list> and option B<--all> to list all local packages
+sources.  Example:
+
+  $ pkgman list --all
+  -- list ([i] = installed)
+  [i] acl
+  [i] alsa-lib
+  [ ] alsa-ucm-conf
+  [i] alsa-utils
+  ...
+
+Add the B<--path> option to see the package source location:
+
+  $ pkgman list --all --path
+  -- list ([i] = installed)
+  [i] /usr/src/zeppe-lin/core/acl
+  [i] /usr/src/zeppe-lin/extra/alsa-lib
+  [ ] /usr/src/zeppe-lin/extra/alsa-ucm-conf
+  [i] /usr/src/zeppe-lin/extra/alsa-utils
+
+If you are looking for a specific package source, it might be easier
+to use B<search> command instead of C<list | grep>:
+
+  $ pkgman search --path alsa
+  -- search ([i] = installed)
+  [i] /usr/src/zeppe-lin/extra/alsa-lib
+  [ ] /usr/src/zeppe-lin/extra/alsa-ucm-conf
+  [i] /usr/src/zeppe-lin/extra/alsa-utils
+
+=head3 Listing Version Differences
+
+To find out if the packages sources structure carries packages that
+are different (likely newer) compared to the versions currently
+installed you can use
+L<pkgman-diff(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgman/pkgman-diff.1.pod>.
+If versions differences are found, the output could look like this:
+
+  $ pkgman diff --deps --full
+
+  -- Differences between installed packages and packages sources tree
+  Package                         Installed           Available
+
+  aircrack-ng-scm                 20211113-1          20211121-1
+  cowpatty                        4.8-1               4.8-2
+  feh                             3.7.2-1             3.7.2-2
+  joomscan-scm                    20211112-1          20211121-1
+  trinity-extra-theme             0.4-3cc4340-2       0.1-1
+  zhandbook                       0.3-1               0.3.1-1
+
+  -- Packages which was not found in the packages sources tree
+  Package                         Installed           Required by
+
+  libncurses5-compat                                  android-ndk-bin
+
+  --
+  6 updates
+
+The option B<--deps> calculates the new dependencies for available
+packages.  The option B<--full> shows the table above, not just the
+list of packages.
+
+Pay attention to C<trinity-extra-theme> package.  The available
+package has the lower version than installed.  You can use
+B<--config-set>="preferhigher yes" to prefer higher installed
+versions over lower packages, overwriting default B<preferhigher>
+configuration settings.
+
+If no version differences were found, i.e. the system is in sync with
+the packages sources structure, the output will simply be:
+
+  $ pkgman diff
+  No differences found
+
+=head3 Building and Installing Packages
+
+B<Note> that the recommended way is to use
+L<pkgman-install(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgman/pkgman-install.8.pod>.
+Here we will only describe the steps to better understand the build
+process.
+
+Once you have found a package that you want to build and install you
+simply go into the desired package source directory and use
+L<pkgmk(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgmk.8.pod>
+to build it.  Example:
+
+  # cd /usr/src/zeppe-lin/core/gawk
+  # pkgmk -d
+
+The B<-d> option means download missing source files and tells
+L<pkgmk(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgmk.8.pod>
+to download the source(s) specified in F<Pkgfile> (in case the source
+are already downloaded this option is ignored).  When the download
+is completed the package will be built.
+
+=begin man
+
+.TS
+center, box, line, tab (|) ;
+c
+c.
+<WARNING>
+_
+.SP
+It is often not a good idea to build the packages with root privileges.
+Some recipes for building programs (Makefiles, etc) may not be written
+correctly, and overwrite system files.
+.TE
+
+=end man
+
+=begin text
+
+   |-----------------------------------------------------------------|
+   |                          <WARNING>                              |
+   |-----------------------------------------------------------------|
+   | It is often not a good idea to build the packages with root     |
+   | privileges.  Some recipes for building programs (Makefiles,     |
+   | etc) may not be written correctly, and overwrite system files.  |
+   |-----------------------------------------------------------------|
+
+=end text
+
+=begin html
+
+  <table>
+    <tr>
+      <th>WARNING</th>
+    </tr>
+    <tr>
+      <td>
+      It is often not a good idea to build the packages with root
+      privileges.  Some recipes for building programs (Makefiles, etc)
+      may not be written correctly, and overwrite system files.
+      </td>
+    </tr>
+  </table>
+
+=end html
+
+If you will build packages with non-root privileges, the installed
+files will have user permissions.  This is wrong, both in terms of
+security and distribution of these packages.  It is better to use 
+L<fakeroot(1)|https://www.mankier.com/1/fakeroot>, to run
+L<pkgmk(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgmk.8.pod>
+in an environment faking root privileges.  Example:
+
+  # fakeroot pkgmk -d
+
+The
+L<pkgman(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgman/pkgman.1.pod>
+already uses it by default in zeppe-lin installation.
+
+If the package was built successfully you can use
+L<pkgadd(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgutils/pkgadd.1.pod>
+to install or upgrade it.  Example:
+
+  # pkgadd gawk#3.1.5-3.pkg.tar.gz
+
+=head3 Build Packages as an Unprivileged user
+
+This is already done in default zeppe-lin installation.  The following
+describes how to achieve this, so that you now how it is done in
+zeppe-lin.
+
+=over 8
+
+=item Add the new user
+
+  # useradd -b /var/cache/ -m -s /bin/false -U pkgmk
+
+This will create the user C<pkgmk> and the group with the same name
+as the user.  Also, the F</var/cache/pkgmk> home directory will be
+created.  Default shell for this user is F</bin/false>.
+
+=item Add directories required for pkgmk
+
+  # mkdir -p /var/cache/pkgmk/{sources,packages,work}
+  # chown -R pkgmk:pkgmk /var/cache/pkgmk/{sources,packages,work}
+
+=item Add pkgmk directories to pkgmk.conf
+
+Edit F</etc/pkgmk.conf>'s variables C<PKGMK_SOURCE_DIR>,
+C<PKGMK_PACKAGE_DIR> and C<PKGMK_WORK_DIR> to refer to previously
+created directories in F</var/cache/pkgmk>.
+
+=item Set up the makecommand in pkgman.conf
+
+Edit F</etc/pkgman.conf>'s C<makecommand> to build as a regular user:
+
+  makecommand sudo -H -u pkgmk fakeroot pkgmk
+
+=back
+
+=head3 Renice pkgmk's child process
+
+If you keep using your computer while compiling packages you will
+notice that your box is much less responsive as usual.  This is
+caused by having two C<groups> of processes with the same nice
+priority: your usual running tasks on one side, and
+L<pkgman(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgman/pkgman.1.pod>
+(and its child processes) on other.  Now, if you could renice
+L<pkgman(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgman/pkgman.1.pod>
+and its children to a higher nice (i.e. lower priority!) value
+(default is 0), compiling would inevitably take somewhat longer, but
+you could use your workstation without noticing much difference to
+its usual performance.
+
+Just set up the C<makecommand> in the F</etc/pkgman.conf> to something
+like this:
+
+  makecommand sudo -H -u pkgmk nice -n10 ionice -c2 -n6 fakeroot pkgmk
+
+=head3 Build in RAM
+
+By default, zeppe-lin already has C<pkgmk> user and F</etc/fstab>'s
+entry for this.  Just edit F</etc/fstab>'s C<pkgmk> entry, remove
+C<-pipe> from F</etc/pkgmk.conf> and type C<mount pkgmk>.
+
+Below is described how this was done in zeppe-lin.
+
+=head4 Find your user id for pkgmk
+
+  $ id pkgmk
+
+=head4 Edit /etc/fstab
+
+Add the following line to F</etc/fstab>
+
+  pkgmk /var/cache/pkgmk/work tmpfs size=<SIZE>,uid=<UID>,defaults 0 0
+
+The C<SIZE> is the memory size for F</var/cache/pkgmk/work>.  Add the
+postfix C<M> for megabytes, or C<G> for gigabytes.  Example: C<16G>.
+
+The C<UID> is the C<pkgmk>'s user id.
+
+=head4 Mount the tmpfs
+
+  # mount pkgmk
+
+=head4 Edit /etc/pkgmk.conf
+
+Set where you put your RAM file system from F</etc/fstab> file:
+
+  PKGMK_WORK_DIR="/var/cache/pkgmk/work/$name"
+
+Remove C<-pipe> from all your C<CFLAGS> and C<CXXFLAGS>.
+
+=head1 CONFIGURATION
+
+=head2 Initialization Scripts
+
+=head3 Runlevels
+
+The following runlevels are used in zeppe-lin
+(defined in F</etc/inittab>).
+
+=begin man
+
+.TS
+center, box, line, tab (|) ;
+l | l
+l | l.
+Runlevel | Description
+_
+.SP
+0     | Halt
+1 (S) | Single-User Mode
+2     | Multi-User Mode
+3-5   | (Not Used)
+6     | Reboot
+.TE
+
+=end man
+
+=begin text
+
+    |----------|------------------|
+    | Runlevel | Description      |
+    |----------|------------------|
+    | 0        | Halt             |
+    | 1 (S)    | Single-User Mode |
+    | 2        | Multi-User Mode  |
+    | 3-5      | (Not Used)       |
+    | 6        | Reboot           |
+    |----------|------------------|
+
+=end text
+
+=begin html
+
+  <table>
+    <tr> <th>Runlevel</th> <th>Description</th>      </tr>
+    <tr> <td>0</td>        <td>Halt</td>             </tr>
+    <tr> <td>1 (S)</td>    <td>Single-User Mode</td> </tr>
+    <tr> <td>2</td>        <td>Multi-User Mode</td>  </tr>
+    <tr> <td>3-5</td>      <td>(Not Used)</td>       </tr>
+    <tr> <td>6</td>        <td>Reboot</td>           </tr>
+  </table>
+
+=end html
+
+See
+L<inittab(5)|http://www.skrenta.com/rt/man/inittab.5.html>
+for more information about runlevels.
+
+=head3 Layout
+
+The initialization scripts used in zeppe-lin follow the BSD-style
+(as opposed to the SysV-style) and have the following layout.
+
+=begin man
+
+.TS
+center, box, line, tab (|) ;
+l | l
+l | l.
+File | Description
+_
+.SP
+/etc/rc          | System boot script
+/etc/rc.single   | Single-user startup script
+/etc/rc.multi    | Multi-user startup script
+/etc/rc.modules  | Module initialization script
+/etc/rc.local    | Local multi-user startup script
+/etc/rc.shutdown | System shutdown script
+/etc/rc.conf     | System configuration
+/etc/rc.d/       | Service start/stop directory
+.TE
+
+C</etc/rc.local> is empty by default.
+
+=end man
+
+=begin text
+
+    |------------------|---------------------------------------------|
+    | File             | Description                                 |
+    |------------------|---------------------------------------------|
+    | /etc/rc          | System boot script                          |
+    | /etc/rc.single   | Single-user startup script                  |
+    | /etc/rc.multi    | Multi-user startup script                   |
+    | /etc/rc.modules  | Module initialization script                |
+    | /etc/rc.local    | Local multi-user startup script             |
+    | /etc/rc.shutdown | System shutdown script                      |
+    | /etc/rc.conf     | System configuration                        |
+    | /etc/rc.d/       | Service start/stop directory                |
+    |------------------|---------------------------------------------|
+
+C</etc/rc.local> is empty by default.
+
+=end text
+
+=begin html
+
+ <table>
+  <tr>
+    <th>File</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>/etc/rc</td>
+    <td>System boot script</td>
+  </tr>
+  <tr>
+    <td>/etc/rc.single</td>
+    <td>Single-User startup script</td>
+  </tr>
+  <tr>
+    <td>/etc/rc.multi</td>
+    <td>Multi-User startup script</td>
+  </tr>
+  <tr>
+    <td>/etc/rc.modules</td>
+    <td>Module initialization script</td>
+  </tr>
+  <tr>
+    <td>/etc/rc.local</td>
+    <td>Local multi-user startup script</td>
+  </tr>
+  <tr>
+    <td>/etc/rc.shutdown</td>
+    <td>System shutdown script</td>
+  </tr>
+  <tr>
+    <td>/etc/rc.conf</td>
+    <td>System configuration</td>
+  </tr>
+  <tr>
+    <td>/etc/rc.d/</td>
+    <td>Service start/stop directory</td>
+  </tr>
+ </table>
+
+C</etc/rc.local> is empty by default.
+
+=end html
+
+Modify F</etc/rc.modules>, F</etc/rc.local> and F</etc/rc.conf>
+according to your needs.  See
+L<rc.conf(5)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/rc/rc.conf.5.pod>
+for more information about this configuration file.
+
+=head3 Generating Locales
+
+B<glibc> does not contain all possible locales, thus you'll have to
+generate the locales you need/use.  The following example is a typical
+setup for US users, replace C<en_US*> with the locale you want:
+
+  # localedef -i en_US -f UTF-8 en_US.UTF-8
+
+You may wish to add C<export LANG=en_US.UTF-8> to F</etc/profile>.
+
+=head3 Network Configuration
+
+=head4 Static address
+
+The network configuration is found in the service script
+F</etc/rc.d/net>.  To enable this service you need to add C<net> to
+the C<SERVICES> string in  F</etc/rc.conf>.  By default this service
+script configures a static IP address.  Example:
+
+  #!/bin/sh -e
+  #
+  # /etc/rc.d/net: start/stop network interface
+  #
+
+  IFACE=enp11s0
+
+  ADDR=192.168.1.100
+  MASK=24
+  GW=192.168.1.1
+
+  case $1 in
+  start)
+  	/sbin/ip addr add $ADDR/$MASK dev $IFACE broadcast +
+  	/sbin/ip link set $IFACE up
+  	/sbin/ip route add default via $GW
+  	;;
+  stop)
+  	/sbin/ip route del default
+  	/sbin/ip link set $IFACE down
+  	/sbin/ip addr del $ADDR/$MASK dev $IFACE
+  	;;
+  restart)
+  	$0 stop
+  	$0 start
+  	;;
+  *)
+  	echo "Usage: $0 [start|stop|restart]"
+  	;;
+  esac
+
+  # End of file.
+
+You will also need to configure DNS settings in C</etc/resolv.conf>.
+Example:
+
+  #
+  # /etc/resolv.conf: resolver configuration file
+  #
+
+  search <your internal domain>
+  nameserver <your DNS server>
+
+  # End of file.
+
+=head4 Dynamic address
+
+If you want to configure your system to use a dynamic IP address,
+install C<dhcpcd> package and run F</etc/rc.d/dhcpcd> service.  By
+default, L<dhcpcd(8)|https://www.mankier.com/8/dhcpcd> run on all
+interfaces.  You can specify the interface, by modifying the
+C<OPTS> value in F</etc/rc.d/dhcpcd> service file.
+
+=head4 Wireless Network
+
+Before using wireless networking, use
+L<rfkill(8)|https://www.mankier.com/8/rfkill>
+to check whether the relevant interfaces are soft- or hard-blocked.
+
+Next, install the C<wpa-supplicant> package.  It includes utilities to
+configure wireless interfaces and handle wireless security protocols.
+To use C<wpa_supplicant>, you will need to enable
+F</etc/rc.d/wpa_supplicant> service.
+
+To use B<WPA-PSK>, generate a pre-shared key with
+L<wpa_passphrase(8)|https://www.mankier.com/8/wpa_passphrase>
+and append the output to the F</etc/wpa_supplicant.conf> file:
+
+  # wpa_passphrase <MYSSID> <passphrase> >> /etc/wpa_supplicant.conf
+
+Then, run F</etc/rc.d/wpa_supplicant> and F</etc/rc.d/dhcpcd>
+services.
+
+  # /etc/rc.d/wpa_supplicant
+  # /etc/rc.d/dhcpcd
+
+To use B<WPA-EAP> generate the password hash like this:
+
+  # echo -n <passphrase> | iconv -t utf16le | openssl md4
+
+For B<WEP> configuration, add the following lines to your
+F</etc/wpa_supplicant.conf>:
+
+  network={
+      ssid="MYSSID"
+      key_mgmt=NONE
+      wep_key0="YOUR AP WEP KEY"
+      wep_tx_keyidx=0
+      auth_alg=SHARED
+  }
+
+=head2 Passwords
+
+Zeppe-lin uses C<SHA512> passwords by default.  To change the password
+encryption method set the C<ENCRYPT_METHOD> variable in
+F</etc/login.defs> to C<DES>, C<MD5> or C<SHA256>.
+
+Furthermore, when compiling programs that use the
+L<crypt(3)|https://www.mankier.com/3/crypt>
+function to authenticate users you should make sure that these
+programs are linked against the B<libcrypt> library
+(i.e. use C<-lcrypt> when linking) which contains the C<SHA512>
+version of the crypt function (this version is backwards compatible
+and understands C<DES> passwords as well).
+
+=cut
+
+# vim:ft=pod:sw=2:ts=2:sts=2:et:cc=72
+# End of file.

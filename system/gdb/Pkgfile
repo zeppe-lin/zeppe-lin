@@ -1,0 +1,36 @@
+# Description: GNU Debugger (GDB)
+# URL:         https://www.gnu.org/software/gdb
+# Depends on:  libmpfr readline xz zlib expat python3
+
+name=gdb
+version=11.2
+release=1
+source=https://ftp.gnu.org/gnu/$name/$name-$version.tar.xz
+
+build() {
+	cd $name-$version
+
+	sed '/^SUBDIRS/s/doc//' -i gdb/Makefile.in
+
+	mkdir build && cd build
+
+	../configure \
+		--prefix=/usr \
+		--with-system-readline \
+		--with-system-zlib \
+		--with-python=/usr/bin/python3
+
+	make V=1
+	make DESTDIR=$PKG install
+
+	export PYTHONHASHSEED=0
+	/usr/bin/python3     -m compileall -d /usr/share/gdb/python $PKG/usr/share/gdb/python
+	/usr/bin/python3 -O  -m compileall -d /usr/share/gdb/python $PKG/usr/share/gdb/python
+	/usr/bin/python3 -OO -m compileall -d /usr/share/gdb/python $PKG/usr/share/gdb/python
+
+	install -m 0644 -Dt $PKG/usr/share/man/man1/ ../gdb/doc/*.1
+	install -m 0644 -Dt $PKG/usr/share/man/man5/ ../gdb/doc/*.5
+
+	rm -r	$PKG/usr/include $PKG/usr/lib/*.a $PKG/usr/lib/*.la \
+		$PKG/usr/share/info $PKG/usr/share/locale
+}

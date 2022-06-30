@@ -1,0 +1,14 @@
+# Description: Extracts RAR archives
+# URL:         https://www.rarlab.com/rar_add.htm
+
+name=unrar
+version=6.1.7
+release=1
+source=https://www.rarlab.com/rar/${name}src-$version.tar.gz
+
+build() {
+	cd $name
+
+	make -j1 CXXFLAGS="$CXXFLAGS" STRIP=:
+	make install DESTDIR=$PKG/usr
+}

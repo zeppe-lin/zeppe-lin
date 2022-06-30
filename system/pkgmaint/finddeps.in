@@ -1,0 +1,99 @@
+#!/bin/sh
+# See files COPYRIGHT and COPYING for copyright and license information.
+
+export LD_LIBRARY_PATH=/lib:/usr/lib:/lib32:/usr/lib32:"$LD_LIBRARY_PATH"
+
+finddeps() {
+	pkginfo -l "$1" | awk '/(bin|sbin|lib|lib32)/{print $1}' \
+		| xargs -I {} -P "${JOBS:-1}" ldd -- "/{}" 2>/dev/null \
+		| awk '!/(linux-gate)|( dynamic)|(not found)/{printf "%s\n", $3}' >> "$TMPFILE1"
+
+	xargs -a "$TMPFILE1" -I{} -r -P "${JOBS:-1}" \
+		readlink -f "{}" | sort | uniq > "$TMPFILE2"
+
+	xargs -a "$TMPFILE2" -I{} -r -P "${JOBS:-1}" pkginfo -o "{}" \
+		| awk '!/^(Package|pkginfo: no owner)/{print $1}' | sort | uniq
+
+	# additional deps that can't be found be ldd(8)
+	pkginfo -l "$1" | while read -r line; do
+		case $line in
+		usr/share/gir-1.0/*.gir)
+			echo "gobject-introspection" ;;
+		usr/share/vala/vapi/*.vapi)
+			echo "vala" ;;
+		esac
+	done | sort -u
+}
+
+print_help() {
+	cat <<EOF
+Usage: finddeps [OPTION] PKGNAME
+Find linked dependencies for a package.
+
+  -v, --version   print version and exit
+  -h, --help      print help and exit
+EOF
+}
+
+main() {
+	while [ "$1" ]; do
+		case $1 in
+		-v|--version)
+			echo "finddeps (pkgmaint) @VERSION@"
+			exit 0
+			;;
+		-h|--help)
+			print_help
+			exit 0
+			;;
+		-*)
+			echo "finddeps: invalid option $1"
+			exit 1
+			;;
+		*)
+			if [ -z "$1" ]; then
+				echo "finddeps: option missing"
+				exit 2
+			fi
+			if ! pkgman isinst "$1" >/dev/null 2>&1; then
+				echo "finddeps: $1 is not installed"
+				exit 3
+			fi
+			PKGNAME=$1
+			;;
+		esac
+		shift
+	done
+	finddeps "$PKGNAME"
+}
+
+interrupted() {
+	echo
+	echo "=======> Aborted."
+	exit 1
+}
+
+atexit() {
+	[ -f "$TMPFILE1" ] && rm "$TMPFILE1"
+	[ -f "$TMPFILE2" ] && rm "$TMPFILE2"
+}
+
+trap "interrupted" HUP INT QUIT TERM
+trap "atexit" EXIT
+
+export LC_ALL=POSIX
+
+if command -v nproc >/dev/null 2>&1; then
+	JOBS=$(nproc)
+elif getconf _NPROCESSORS_ONLN >/dev/null; then
+	JOBS=$(getconf _NPROCESSORS_ONLN)
+else
+	JOBS=$(grep -c processor /proc/cpuinfo)
+fi
+
+TMPFILE1=$(mktemp) || exit 1
+TMPFILE2=$(mktemp) || exit 1
+
+main "$@"
+
+# End of file.

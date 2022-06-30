@@ -1,0 +1,11 @@
+--- tools/cltostr.sh	2019-08-12 23:45:06.000000000 +0300
++++ tools/cltostr.sh	2021-06-27 16:33:19.593000000 +0300
+@@ -13,7 +13,7 @@
+ # Convert stdin to a \0-terminated char array.
+ dump() {
+     echo "static const char $1[] = {"
+-    od -v -A n -t x1 | sed 's/[[:space:]]*\([[:alnum:]]\{2\}\)/0x\1, /g'
++    od -v -A n -t x1 | sed 's/[[:space:]]*\([[:alnum:]]\{1,2\}\)/0x\1, /g'
+     echo '0x00 };'
+ }
+ 

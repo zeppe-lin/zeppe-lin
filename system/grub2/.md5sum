@@ -1,0 +1,5 @@
+cf0fd928b1e5479c8108ee52cb114363  grub-2.06.tar.xz
+8459e7425bf9eea9d482e53c5b5c91c9  grub.cfg.sample
+3a03d3f53911ac1889e6e68c8429f700  grub2-00_header.diff
+0d8c1aa18cbb52ac57c8414abb185e19  grub2-10_linux.diff
+fc1de0fd5ce0f235906da98aefbd9517  unifont-9.0.06.pcf.gz

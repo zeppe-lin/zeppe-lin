@@ -1,0 +1,45 @@
+# Description: Multi-platform toolkit for creating graphical user interfaces
+# URL:         https://www.gtk.org
+# Depends on:  atk gdk-pixbuf hicolor-icon-theme pango xorg-libxcomposite xorg-libxcursor xorg-libxdamage xorg-libxinerama xorg-libxrandr
+
+name=gtk
+version=2.24.33
+release=1
+source="https://download.gnome.org/sources/gtk+/2.24/${name}+-$version.tar.xz
+	gtk.immodules gtk-register.sh"
+
+build() {
+	cd gtk+-$version
+
+	# don't waste time building tests
+	sed -i '/SRC_SUBDIRS/s/tests//g' Makefile.am Makefile.in
+	sed -i '/SUBDIRS/s/tests//g' gdk/Makefile.am gdk/Makefile.in \
+		gtk/Makefile.am gtk/Makefile.in
+
+	# don't waste time building demos
+	sed -i '/SRC_SUBDIRS/s/demos//g' Makefile.am Makefile.in
+
+	./configure \
+		--prefix=/usr \
+		--disable-papi \
+		--disable-glibtest \
+		--disable-cups \
+		--disable-test-print-backend \
+		--enable-introspection=no \
+		--enable-gtk-doc=no \
+		--enable-gtk-doc-html=no \
+		--enable-gtk-doc-pdf=no \
+		--enable-man=no \
+
+	make V=1
+	make DESTDIR=$PKG install
+
+	install -m 0644 -D $SRC/gtk.immodules \
+		$PKG/usr/lib/gtk-2.0/2.10.0/immodules.cache
+
+	install -m 0755 -D $SRC/gtk-register.sh \
+		$PKG/usr/bin/gtk-register
+
+	# remove junk
+	rm -r $PKG/usr/share/gtk-doc $PKG/usr/bin/gtk-update-icon-cache
+}

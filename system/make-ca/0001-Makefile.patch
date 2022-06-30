@@ -1,0 +1,51 @@
+diff '--color=always' '--color=never' -pruN make-ca-1.7.orig/Makefile make-ca-1.7/Makefile
+--- make-ca-1.7.orig/Makefile	2021-02-21 11:51:52.596225605 +0200
++++ make-ca-1.7/Makefile	2021-02-21 12:03:08.809584296 +0200
+@@ -1,7 +1,7 @@
+ MANDIR=/usr/share/man
+ SBINDIR=/usr/sbin
+ ETCDIR=/etc
+-LIBEXECDIR=/usr/libexec/make-ca
++LIBEXECDIR=/usr/lib/make-ca
+ 
+ all: make_ca man
+ 
+@@ -21,30 +21,20 @@ clean_man:
+ 	rm -f make-ca.8
+ 	chmod 0644 help2man
+ 
+-install: all install_bin install_man install_systemd install_conf
++install: all install_bin install_man install_conf
+ 
+ install_bin:
+-	install -vdm755 $(DESTDIR)$(SBINDIR)
+-	install -vm755 make-ca $(DESTDIR)$(SBINDIR)
+-	install -vdm755 $(DESTDIR)$(LIBEXECDIR)
+-	install -vm700 copy-trust-modifications $(DESTDIR)$(LIBEXECDIR)
+-
+-install_systemd:
+-	if test -d /usr/lib/systemd/system; then \
+-	    install -vdm755 ${DESTDIR}/usr/lib/systemd/system; \
+-	    install -vm644 systemd/* $(DESTDIR)/usr/lib/systemd/system; \
+-	elif test -d /lib/systemd/system; then \
+-	    install -vdm755 ${DESTDIR}/lib/systemd/system; \
+-	    install -vm644 systemd/* ${DESTDIR}/lib/systemd/system; \
+-	fi
++	install -m 755 -D -t $(DESTDIR)$(SBINDIR) make-ca
++	install -m 755 -d $(DESTDIR)$(LIBEXECDIR)
++	install -m 700 -t $(DESTDIR)$(LIBEXECDIR) copy-trust-modifications
+ 
+ install_man: man
+-	install -vdm755 $(DESTDIR)$(MANDIR)/man8
+-	install -vm644 make-ca.8 $(DESTDIR)$(MANDIR)/man8
++	install -m 755 -d $(DESTDIR)$(MANDIR)/man8
++	install -m 644 -t $(DESTDIR)$(MANDIR)/man8 make-ca.8
+ 
+ install_conf:
+-	install -vdm755 $(DESTDIR)$(ETCDIR)
+-	install -vm644 make-ca.conf.dist $(DESTDIR)$(ETCDIR)
++	install -m 755 -d $(DESTDIR)$(ETCDIR)
++	install -m 644 -t $(DESTDIR)$(ETCDIR) make-ca.conf.dist
+ 
+ uninstall:
+ 	rm -f $(DESTDIR)$(SBINDIR)/make-ca

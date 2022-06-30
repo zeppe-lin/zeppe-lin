@@ -1,0 +1,15 @@
+# Description: Find ROP gadgets in program files
+# URL:         https://github.com/JonathanSalwan/ROPgadget
+# Depends on:  capstone
+
+name=ropgadget
+version=6.8
+release=1
+source=https://github.com/JonathanSalwan/ROPgadget/archive/v$version/ROPgadget-$version.tar.gz
+
+build() {
+	cd ROPgadget-$version
+
+	/usr/bin/python3 setup.py install -O1 --root=$PKG --prefix=/usr
+	ln -s ROPgadget $PKG/usr/bin/$name
+}

@@ -1,0 +1,94 @@
+--- a/usr/bin/pass	2021-07-28 13:30:21.688000000 +0300
++++ b/usr/bin/pass	2021-07-28 13:58:50.504000000 +0300
+@@ -176,12 +176,12 @@ clip() {
+ 	# variable. Specifically, it cannot store nulls nor (non-trivally) store
+ 	# trailing new lines.
+ 	pkill -f "^$sleep_argv0" 2>/dev/null && sleep 0.5
+-	local before="$("${paste_cmd[@]}" 2>/dev/null | $BASE64)"
++	local before="$("${paste_cmd[@]}" 2>/dev/null | $BASE64ENC)"
+ 	echo -n "$1" | "${copy_cmd[@]}" || die "Error: Could not copy data to the clipboard"
+ 	(
+ 		( exec -a "$sleep_argv0" bash <<<"trap 'kill %1' TERM; sleep '$CLIP_TIME' & wait" )
+-		local now="$("${paste_cmd[@]}" | $BASE64)"
+-		[[ $now != $(echo -n "$1" | $BASE64) ]] && before="$now"
++		local now="$("${paste_cmd[@]}" | $BASE64ENC)"
++		[[ $now != $(echo -n "$1" | $BASE64ENC) ]] && before="$now"
+ 
+ 		# It might be nice to programatically check to see if klipper exists,
+ 		# as well as checking for other common clipboard managers. But for now,
+@@ -192,7 +192,7 @@ clip() {
+ 		# so we axe it here:
+ 		qdbus org.kde.klipper /klipper org.kde.klipper.klipper.clearClipboardHistory &>/dev/null
+ 
+-		echo "$before" | $BASE64 -d | "${copy_cmd[@]}"
++		echo "$before" | $BASE64DEC | "${copy_cmd[@]}"
+ 	) >/dev/null 2>&1 & disown
+ 	echo "Copied $2 to clipboard. Will clear in $CLIP_TIME seconds."
+ }
+@@ -244,8 +244,8 @@ tmpdir() {
+ }
+ GETOPT="getopt"
+ SHRED="shred -f -z"
+-BASE64="base64"
+-
++BASE64ENC="uuencode -m -"
++BASE64DEC="uudecode -m -"
+ 
+ #
+ # END platform definable
+@@ -343,7 +343,7 @@ cmd_init() {
+ 		fi
+ 		rmdir -p "${gpg_id%/*}" 2>/dev/null
+ 	else
+-		mkdir -v -p "$PREFIX/$id_path"
++		mkdir -p "$PREFIX/$id_path"
+ 		printf "%s\n" "$@" > "$gpg_id"
+ 		local id_print="$(printf "%s, " "$@")"
+ 		echo "Password store initialized for ${id_print%, }${id_path:+ ($id_path)}"
+@@ -383,8 +383,8 @@ cmd_show() {
+ 	check_sneaky_paths "$path"
+ 	if [[ -f $passfile ]]; then
+ 		if [[ $clip -eq 0 && $qrcode -eq 0 ]]; then
+-			pass="$($GPG -d "${GPG_OPTS[@]}" "$passfile" | $BASE64)" || exit $?
+-			echo "$pass" | $BASE64 -d
++			pass="$($GPG -d "${GPG_OPTS[@]}" "$passfile" | $BASE64ENC)" || exit $?
++			echo "$pass" | $BASE64DEC
+ 		else
+ 			[[ $selected_line =~ ^[0-9]+$ ]] || die "Clip location '$selected_line' is not a number."
+ 			pass="$($GPG -d "${GPG_OPTS[@]}" "$passfile" | tail -n +${selected_line} | head -n 1)" || exit $?
+@@ -452,7 +452,7 @@ cmd_insert() {
+ 
+ 	[[ $force -eq 0 && -e $passfile ]] && yesno "An entry already exists for $path. Overwrite it?"
+ 
+-	mkdir -p -v "$PREFIX/$(dirname -- "$path")"
++	mkdir -p "$PREFIX/$(dirname -- "$path")"
+ 	set_gpg_recipients "$(dirname -- "$path")"
+ 
+ 	if [[ $multiline -eq 1 ]]; then
+@@ -486,7 +486,7 @@ cmd_edit() {
+ 
+ 	local path="${1%/}"
+ 	check_sneaky_paths "$path"
+-	mkdir -p -v "$PREFIX/$(dirname -- "$path")"
++	mkdir -p "$PREFIX/$(dirname -- "$path")"
+ 	set_gpg_recipients "$(dirname -- "$path")"
+ 	local passfile="$PREFIX/$path.gpg"
+ 	set_git "$passfile"
+@@ -528,7 +528,7 @@ cmd_generate() {
+ 	check_sneaky_paths "$path"
+ 	[[ $length =~ ^[0-9]+$ ]] || die "Error: pass-length \"$length\" must be a number."
+ 	[[ $length -gt 0 ]] || die "Error: pass-length must be greater than zero."
+-	mkdir -p -v "$PREFIX/$(dirname -- "$path")"
++	mkdir -p "$PREFIX/$(dirname -- "$path")"
+ 	set_gpg_recipients "$(dirname -- "$path")"
+ 	local passfile="$PREFIX/$path.gpg"
+ 	set_git "$passfile"
+@@ -617,7 +617,7 @@ cmd_copy_move() {
+ 	echo "$old_path"
+ 	[[ -e $old_path ]] || die "Error: $1 is not in the password store."
+ 
+-	mkdir -p -v "${new_path%/*}"
++	mkdir -p "${new_path%/*}"
+ 	[[ -d $old_path || -d $new_path || $new_path == */ ]] || new_path="${new_path}.gpg"
+ 
+ 	local interactive="-i"

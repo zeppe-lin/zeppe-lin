@@ -1,0 +1,22 @@
+# Description: Session management and attach/detach functionality
+# URL:         http://www.brain-dump.org/projects/abduco/
+# Optional:    dvtm
+
+name=abduco
+version=0.6
+release=1
+source="http://www.brain-dump.org/projects/$name/$name-$version.tar.gz
+	config.def.h"
+
+build() {
+	cd $name-$version
+
+	# copy default config
+	cp $SRC/config.def.h config.h
+
+	# rewrite it with custom config if exists
+	[ -f $PKGMK_ROOT/config.h ] && cp $PKGMK_ROOT/config.h .
+
+	make all
+	make PREFIX=/usr DESTDIR=$PKG install
+}

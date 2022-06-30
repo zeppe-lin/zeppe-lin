@@ -1,0 +1,24 @@
+# Description: High productivity build system
+# URL:         https://mesonbuild.com
+# Depends on:  python3-setuptools
+
+name=meson
+version=0.62.2
+release=1
+source=https://github.com/mesonbuild/meson/releases/download/$version/$name-$version.tar.gz
+
+build() {
+	cd $name-$version
+
+	/usr/bin/python3 setup.py build
+	/usr/bin/python3 setup.py install \
+		--prefix=/usr --root=$PKG --optimize=1 --skip-build
+
+	install -d $PKG/usr/share/vim/vimfiles
+
+	for dir in data/syntax-highlighting/vim/*/; do
+		cp -r $dir $PKG/usr/share/vim/vimfiles
+	done
+
+	rm -r $PKG/usr/share/polkit-1
+}

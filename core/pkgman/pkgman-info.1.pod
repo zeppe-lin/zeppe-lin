@@ -1,0 +1,47 @@
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+pkgman-info - print package information
+
+=head1 SYNOPSIS
+
+B<pkgman> info [B<-v>|B<-vv>] I<PKGNAME>
+
+=head1 DESCRIPTION
+
+Print available information for a package.
+
+=head1 OPTIONS
+
+=over 8
+
+=item B<-v>, B<-vv>
+
+Print also the README file if exists.
+
+=back
+
+=head1 ENVIRONMENT
+
+=over 8
+
+=item I<PAGER>
+
+If the package source directory has a F<README> file, and the B<-v> or
+B<-vv> option is set to print it, then B<pkgman> will try to open it
+using a I<PAGER>.  If I<PAGER> is unset, then B<pkgman> prints the
+F<README> to stdout.
+
+=back
+
+=head1 EXIT STATUS
+
+0 if success, 255 otherwise.
+
+=cut
+
+# vim:sw=2:ts=2:sts=2:et:cc=72
+# End of file.

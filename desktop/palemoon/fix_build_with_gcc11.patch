@@ -1,0 +1,44 @@
+--- a/gfx/2d/BaseRect.h
++++ b/gfx/2d/BaseRect.h
+@@ -9,6 +9,7 @@
+ #include <algorithm>
+ #include <cmath>
+ #include <ostream>
++#include <limits>
+ 
+ #include "mozilla/Assertions.h"
+ #include "mozilla/FloatingPoint.h"
+
+--- a/gfx/2d/Matrix.h
++++ b/gfx/2d/Matrix.h
+@@ -13,6 +13,7 @@
+ #include "Quaternion.h"
+ #include <iosfwd>
+ #include <math.h>
++#include <limits>
+ #include "mozilla/Attributes.h"
+ #include "mozilla/DebugOnly.h"
+ #include "mozilla/FloatingPoint.h"
+
+--- a/media/webrtc/trunk/webrtc/modules/audio_coding/codecs/opus/audio_encoder_opus.cc
++++ b/media/webrtc/trunk/webrtc/modules/audio_coding/codecs/opus/audio_encoder_opus.cc
+@@ -8,6 +8,8 @@
+  *  be found in the AUTHORS file in the root of the source tree.
+  */
+ 
++#include <limits>
++
+ #include "webrtc/modules/audio_coding/codecs/opus/interface/audio_encoder_opus.h"
+ 
+ #include "webrtc/base/checks.h"
+
+--- a/netwerk/base/nsURLParsers.cpp
++++ b/netwerk/base/nsURLParsers.cpp
+@@ -4,6 +4,7 @@
+  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+ 
+ #include <string.h>
++#include <limits>
+ 
+ #include "mozilla/RangedPtr.h"
+

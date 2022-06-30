@@ -1,0 +1,16 @@
+# Description: Python 2 and 3 compatibility utilities
+# URL:         https://pypi.python.org/pypi/six/
+# Depends on:  python3-setuptools
+
+name=python3-six
+version=1.16.0
+release=1
+source=https://files.pythonhosted.org/packages/source/s/${name#*-}/${name#*-}-$version.tar.gz
+
+build() {
+	cd ${name#*-}-$version
+
+	/usr/bin/python3 setup.py build
+	/usr/bin/python3 setup.py install \
+		--prefix=/usr --root=$PKG --optimize=1
+}

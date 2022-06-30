@@ -1,0 +1,33 @@
+# Description: ALSA utils
+# URL:         http://www.alsa-project.org
+# Depends on:  alsa-lib dialog
+
+name=alsa-utils
+version=1.2.7
+release=1
+source="ftp://ftp.alsa-project.org/pub/utils/$name-$version.tar.bz2
+	rc.alsa
+	0001-simplify-nocolors-menu.patch"
+
+build() {
+	cd $name-$version
+
+	patch -p1 -i $SRC/0001-simplify-nocolors-menu.patch
+
+	./configure \
+		--prefix=/usr \
+		--disable-alsaconf \
+		--disable-bat \
+		--disable-nls \
+		--disable-xmlto \
+		--disable-rst2man \
+
+	make V=1
+	make DESTDIR=$PKG install
+
+	install -m 0755 -D $SRC/rc.alsa $PKG/etc/rc.d/alsa
+
+	# remove junk
+	rm -r $PKG/lib/udev/ $PKG/usr/sbin/alsa-info.sh
+	rmdir $PKG/usr/share/man/man7/
+}

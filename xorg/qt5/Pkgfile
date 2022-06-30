@@ -1,0 +1,109 @@
+# Description: Qt Free Edition, version 5.x
+# URL:         http://www.qt.io/
+# Depends on:  alsa-lib gtk3 libinput libpcre2 libxkbcommon mysql postgresql xorg-libsm xorg-xcb-util-image xorg-xcb-util-keysyms xorg-xcb-util-renderutil xorg-xcb-util-wm
+# Optional:    postgresql mysql
+
+name=qt5
+version=5.15.2
+release=1
+source="https://download.qt.io/official_releases/qt/5.15/$version/single/qt-everywhere-src-$version.tar.xz
+	qt-everywhere-src-5.15.2-CVE-2021-3481-1.patch
+	qt5-cflags.patch
+	qtbase-everywhere-src-5.11.1-python3.patch
+	qtbase-everywhere-src-5.14.2-no_relocatable.patch
+	qtbase-everywhere-src-5.15.2-libglvnd.patch
+	qtbase-filechooser-portal-send-window-id-in-hex.patch
+	qtbase-use-wayland-on-gnome.patch"
+
+build() {
+	cd qt-everywhere-src-$version
+
+	patch -d qtbase -p1 -i $SRC/qt5-cflags.patch
+	patch -d qtbase -p1 -i $SRC/qtbase-everywhere-src-5.11.1-python3.patch
+	patch -d qtbase -p1 -i $SRC/qtbase-everywhere-src-5.14.2-no_relocatable.patch
+	patch -d qtbase -p1 -i $SRC/qtbase-everywhere-src-5.15.2-libglvnd.patch
+	patch -d qtbase -p1 -i $SRC/qtbase-filechooser-portal-send-window-id-in-hex.patch
+	patch -d qtbase -p1 -i $SRC/qtbase-use-wayland-on-gnome.patch
+	patch -p1 -i $SRC/qt-everywhere-src-5.15.2-CVE-2021-3481-1.patch
+
+	export PYTHON='/usr/bin/python3'
+	mkdir $SRC/bin
+	ln -s /usr/bin/python3 $SRC/bin/python
+	export PATH="$SRC/bin:$PATH"
+
+	export QTDIR="$PWD"
+	export LD_LIBRARY_PATH="$QTDIR/qtbase/lib:$QTDIR/qttools/lib:$LD_LIBRARY_PATH"
+	export QT_PLUGIN_PATH="$QTDIR/qtbase/plugins"
+
+	if pkgman isinst ccache; then
+		PKGMK_QT5+=' -ccache'
+		PATH="$(echo $PATH | awk -v RS=: -v ORS=: '/ccache/{next}{print}' \
+			| sed 's/:*$//')"
+	fi
+
+	sed -i '/utility/a #include <limits>' \
+		qtbase/src/corelib/global/qglobal.h
+
+	sed -i '/string/a #include <limits>' \
+		qtbase/src/corelib/global/qfloat16.h
+
+	sed -i '/qbytearray/a #include <limits>' \
+		qtbase/src/corelib/text/qbytearraymatcher.h
+
+	sed -i '/type_traits/a #include <limits>' \
+		qtdeclarative/src/qmldebug/qqmlprofilerevent_p.h
+
+	./configure $PKGMK_QT5 \
+		-prefix /usr/ \
+		-archdatadir /usr/lib/qt5 \
+		-bindir /usr/lib/qt5/bin \
+		-plugindir /usr/lib/qt5/plugins \
+		-importdir /usr/lib/qt5/imports \
+		-datadir /usr/share/qt5 \
+		-docdir /usr/share/doc/qt5 \
+		-translationdir /usr/share/qt5/translations \
+		-examplesdir /usr/share/doc/qt5/examples \
+		-headerdir /usr/include/qt5 \
+		-libdir /usr/lib \
+		-sysconfdir /usr/etc/xdg \
+		-confirm-license \
+		-nomake examples \
+		-no-pch \
+		-no-rpath \
+		-no-separate-debug-info \
+		-no-strip \
+		-no-cups \
+		-no-dbus \
+		-no-gstreamer \
+		-opengl desktop \
+		-opensource \
+		-openssl-linked \
+		-optimized-qmake \
+		-reduce-relocations \
+		-release \
+		-shared \
+		-qt-sqlite \
+		-system-harfbuzz \
+		-skip qtwebengine \
+
+	make V=1
+	make -j1 INSTALL_ROOT=$PKG install
+
+	# fix paths
+	find "$PKG/usr/lib" -type f -name '*.prl' \
+		-exec sed -e '/^QMAKE_PRL_BUILD_DIR/d' -i {} \;
+
+	sed -i -e "s|$PWD/qtbase|/usr/lib/qt5|g" \
+		$PKG/usr/lib/qt5/mkspecs/modules/qt_lib_bootstrap_private.pri
+
+	# install useful symlinks
+	install -d $PKG/usr/bin
+	for file in $PKG/usr/lib/qt5/bin/*; do
+		ln -s ../lib/qt5/bin/$(basename $file) $PKG/usr/bin/$(basename $file)-qt5
+		ln -s ../lib/qt5/bin/$(basename $file) $PKG/usr/bin/$(basename $file)
+	done
+
+	# remove junk
+	rm -rf  $PKG/usr/share/doc $PKG/usr/share/applications \
+		$PKG/usr/share/icons
+}

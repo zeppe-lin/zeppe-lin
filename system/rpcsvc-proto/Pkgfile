@@ -1,0 +1,17 @@
+# Description: rpcsvc proto.x files from glibc
+# URL:         https://github.com/thkukuk/rpcsvc-proto
+
+name=rpcsvc-proto
+version=1.4.3
+release=1
+source=https://github.com/thkukuk/$name/releases/download/v$version/$name-$version.tar.xz
+
+build() {
+	cd $name-$version
+
+	autoreconf -f
+	./configure --prefix=/usr
+
+	make V=1
+	make DESTDIR=$PKG install
+}

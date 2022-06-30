@@ -1,0 +1,17 @@
+# Description: Simple/suckless image-viewer
+# URL:         https://github.com/muennich/sxiv
+# Depends on:  imlib2 libexif xorg-libxft
+
+name=sxiv
+version=26
+release=1
+source=https://github.com/muennich/$name/archive/v$version/$name-$version.tar.gz
+
+build() {
+	cd $name-$version
+
+	make config.h
+
+	make
+	make install DESTDIR=$PKG PREFIX=/usr MANPREFIX=/usr/share/man
+}

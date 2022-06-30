@@ -1,0 +1,30 @@
+# Description: Network logon cracker
+# URL:         https://github.com/vanhauser-thc/thc-hydra
+# Depends on:  freerdp2 gtk libgcrypt libidn libpcre2 libssh mysql postgresql
+
+name=thc-hydra
+version=9.3-b9a985f
+release=2
+source=https://github.com/vanhauser-thc/$name/archive/${version#*-}/$name-${version#*-}.tar.gz
+
+build() {
+	cd $name-${version#*-}*
+
+	export CFLAGS="$CFLAGS -O3"
+
+	sed -i 's/dummy_ssh/dummy_sshkey/' hydra-sshkey.c
+	./configure --prefix=$PKG/usr
+
+	make V=1
+	make MANDIR=/share/man install
+
+	# move password lists
+	mkdir -p $PKG/usr/share/hydra
+	mv $PKG/usr/etc/* $PKG/usr/share/hydra
+	rm -rf $PKG/usr/etc
+
+	# fix paths in dpl4hydra.sh
+	sed -i  -e "s|^INSTALLDIR=.*|INSTALLDIR=/usr|"    \
+		-e "s|^LOCATION=.*|LOCATION=share/hydra|" \
+		$PKG/usr/bin/dpl4hydra.sh
+}

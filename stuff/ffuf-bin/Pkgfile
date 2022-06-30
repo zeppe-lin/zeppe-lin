@@ -1,0 +1,13 @@
+# Description: Fast web fuzzer
+# URL:         https://github.com/ffuf/ffuf
+
+name=ffuf-bin
+version=1.5.0
+release=1
+source=https://github.com/ffuf/ffuf/releases/download/v$version/ffuf_${version}_linux_amd64.tar.gz
+
+build() {
+	ls -la
+
+	install -m 755 -Dt $PKG/usr/bin/ ffuf
+}

@@ -1,0 +1,74 @@
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+pkgman-list-dup - print list of duplicate packages
+
+=head1 SYNOPSIS
+
+B<pkgman> list-dup [B<--prefer-higher>|B<--strict-diff>] [I<FORMAT>]
+
+=head1 DESCRIPTION
+
+Print list of duplicate packages in the packages sources directories.
+It looks in all directories specified in F</etc/pkgman.conf> as
+C<pkgsrcdir>.
+
+The default I<FORMAT> string is C<%p1 %v1 %c %p2 %v2\n>.
+
+=head1 OPTIONS
+
+=over 8
+
+=item B<--prefer-higher>
+
+Prefer higher installed versions over lower ones in the packages
+sources directories.
+
+=item B<--strict-diff>
+
+Override B<preferhigher> configuration settings.
+
+=item I<FORMAT>
+
+The string that contain variables, which are replaced like this:
+
+=over
+
+=item C<%n>
+
+package name
+
+=item C<%p1>
+
+full path (including name) to package' source that has priority
+
+=item C<%p2>
+
+full path (including name) to package source being hidden
+
+=item C<%v1>
+
+the version of the package, that has priority
+
+=item C<%v2>
+
+the version of the hidden package
+
+=item C<%c>
+
+comparison sign of C<%p1> and C<%p2>: C<E<lt>>, C<E<gt>>, C<==>, C<!=>
+
+=back
+
+Use C<\n> and C<\t> to format your output.  No additional format
+specifier is supported.
+
+=back
+
+=cut
+
+# vim:sw=2:ts=2:sts=2:et:cc=72
+# End of file.

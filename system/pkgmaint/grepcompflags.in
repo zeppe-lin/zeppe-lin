@@ -1,0 +1,94 @@
+#!/usr/bin/perl
+# See files COPYRIGHT and COPYING for copyright and license information.
+# vim:sw=4:ts=4:sts=4:et
+
+use strict;
+use warnings;
+#use diagnostics;
+
+use Getopt::Long qw(:config gnu_compat);
+use Term::ANSIColor;
+use Data::Dumper;
+
+use vars qw($opt_brief $opt_version $opt_help);
+use vars qw(@REGEX);
+
+sub grepcompflags {
+    my $logfile = shift;
+
+    warn "grepcompflags: $logfile does not exists\n" and return
+        if ! -f $logfile;
+
+    open(my $fh, "<", $logfile)
+        or die "grepcompflags: $logfile: $!\n";
+
+    my $legal_flag = 0;
+    my $catched    = 0;
+    my %found;
+
+    while (<$fh>) {
+        for my $regex (@REGEX) {
+            next if !/$regex /;
+
+            if (/^\+ \bsed\b.*$regex/
+                || /^\+.*\buseradd\b.*-g.*/
+            ) {
+                $legal_flag++;
+                s/$regex/\e[0;93m$&\e[0m/g;
+            } else {
+                $catched++;
+                s/$&/\e[0;91m$&\e[0m/g;
+                $found{ $& } = 1;
+            }
+        }
+        print if ($legal_flag || $catched) and not $opt_brief;
+    }
+    close $fh;
+
+    print "\n$logfile\n" . "=" x length($logfile) . "\n";
+    print "$_\n" for keys %found;
+}
+
+
+sub print_help {
+    print <<EOF;
+Usage: grepcompflags [OPTION] FILE...
+Grep GCC's debug and optimization flags in file.
+
+  -b, --brief     print summary instead of colorized captures
+  -v, --version   print version and exit
+  -h, --help      print help and exit
+EOF
+}
+
+sub print_version {
+    print "grepcompflags (pkgmaint) \@VERSION@\n";
+}
+
+GetOptions(
+    "b|brief"   => \$opt_brief,
+    "v|version" => \$opt_version,
+    "h|help"    => \$opt_help,
+) or die "grepcompflags: error in command-line arguments\n";
+
+&print_help    and exit(0) if $opt_help;
+&print_version and exit(0) if $opt_version;
+
+@REGEX = grep { chomp; $_ } <DATA>;
+
+grepcompflags($_) for @ARGV;
+
+__DATA__
+-pipe
+-O1
+-O2
+-O3
+-Ofast
+-ggdb
+-g0
+-g1
+-g2
+-g3
+-g
+-march=.*?
+-mtune=.*?

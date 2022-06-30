@@ -1,0 +1,20 @@
+# Description: Handling OpenGL function pointer management
+# URL:         https://github.com/anholt/libepoxy
+# Depends on:  mesa
+
+name=libepoxy
+version=1.5.10
+release=1
+source=https://github.com/anholt/$name/archive/$version/$name-$version.tar.gz
+
+build() {
+	meson build $name-$version \
+		--prefix=/usr \
+		--buildtype=plain \
+		--wrap-mode=nodownload \
+		-D b_lto=true \
+		-D b_pie=true \
+
+	ninja -C build -j ${JOBS:-1} -v
+	DESTDIR=$PKG ninja -C build install
+}

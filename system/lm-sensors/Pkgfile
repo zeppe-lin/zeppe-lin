@@ -1,0 +1,21 @@
+# Description: Monitoring system health (temperatures, voltages, fan speed, etc)
+# URL:         https://github.com/groeck/lm-sensors
+
+name=lm-sensors
+version=3.6.0
+release=1
+_version=$(echo $version | sed 's/\./-/g')
+source=https://github.com/groeck/$name/archive/V$_version/lm_sensors-$_version.tar.gz
+
+build() {
+	cd $name-$_version
+
+	# remove default optimization flag
+	sed -i -e '/ALL_CFLAGS +=/s/-O2//' Makefile
+
+	make	DESTDIR=$PKG           \
+		PREFIX=/usr            \
+		ETCDIR=/usr/etc        \
+		MANDIR=/usr/share/man  \
+		install
+}

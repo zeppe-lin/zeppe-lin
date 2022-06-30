@@ -1,0 +1,26 @@
+# Description: Library and frontend to manipulate partition tables
+# URL:         http://www.gnu.org/software/parted
+# Depends on:  lvm2
+
+name=parted
+version=3.5
+release=1
+source="http://ftp.gnu.org/gnu/$name/$name-$version.tar.xz
+	$name-sysmacros.patch"
+
+build() {
+	cd $name-$version
+
+	patch -p1 -i $SRC/$name-sysmacros.patch
+
+	./configure \
+		--prefix=/usr     \
+		--disable-nls     \
+		--disable-static  \
+		--with-readline   \
+
+	make V=1
+	make DESTDIR=$PKG install
+
+	rm -rf $PKG/usr/share/info
+}

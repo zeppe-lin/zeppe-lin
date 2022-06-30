@@ -1,0 +1,17 @@
+# Description: Portable library for SSA/ASS subtitles rendering
+# URL:         https://github.com/libass/libass
+# Depends on:  fribidi harfbuzz
+
+name=libass
+version=0.16.0
+release=1
+source=https://github.com/$name/$name/releases/download/$version/$name-$version.tar.gz
+
+build() {
+	cd $name-$version
+
+	./configure --prefix=/usr
+
+	make V=1
+	make DESTDIR=$PKG install
+}

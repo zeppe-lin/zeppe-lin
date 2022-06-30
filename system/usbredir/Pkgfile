@@ -1,0 +1,15 @@
+# Description: Send usb device traffic over a network connection
+# URL:         https://www.spice-space.org/usbredir.html
+# Depends on:  glib libusb
+
+name=usbredir
+version=0.12.0
+release=1
+source=https://spice-space.org/download/$name/$name-$version.tar.xz
+
+build() {
+	meson build $name-$version --prefix=/usr
+
+	ninja -C build -j ${JOBS:-1} -v
+	DESTDIR=$PKG ninja -C build install
+}

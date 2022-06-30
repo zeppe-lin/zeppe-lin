@@ -1,0 +1,17 @@
+# Description: Utility to configure and test XInput devices
+# URL:         http://xorg.freedesktop.org
+# Depends on:  xorg-libxi xorg-libxinerama xorg-libxrandr
+
+name=xorg-xinput
+version=1.6.3
+release=1
+source=https://www.x.org/releases/individual/app/xinput-$version.tar.bz2
+
+build() {
+	cd xinput-$version
+
+	./configure --prefix=/usr
+
+	make V=1
+	make DESTDIR=$PKG install
+}

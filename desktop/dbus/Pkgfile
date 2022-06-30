@@ -1,0 +1,36 @@
+# Description: Message bus system (with X)
+# URL:         https://freedesktop.org/wiki/Software/dbus
+# Depends on:  libbsd xorg-libsm xorg-libx11
+
+name=dbus
+version=1.12.20
+release=2
+source="https://dbus.freedesktop.org/releases/dbus/dbus-$version.tar.gz
+	30-dbus.launch rc.dbus"
+
+build() {
+	cd $name-$version
+
+	./configure \
+		--prefix=/usr \
+		--libexecdir=/usr/lib/dbus \
+		--localstatedir=/var \
+		--sysconfdir=/etc \
+		--disable-xml-docs \
+		--disable-doxygen-docs \
+		--disable-systemd \
+		--disable-tests \
+		--with-dbus-daemondir=/usr/sbin \
+		--with-dbus-user=messagebus \
+		--with-system-pid-file=/var/run/$name/$name.pid
+
+	make V=1
+	make DESTDIR=$PKG install
+
+	install -m 0755 -D $SRC/30-dbus.launch \
+		$PKG/etc/X11/xinit/xinitrc.d/30-dbus.launch.sh
+
+	install -m 0755 -D $SRC/rc.dbus $PKG/etc/rc.d/dbus
+
+	rm -r $PKG/usr/share/doc/ $PKG/usr/share/xml/ $PKG/usr/lib/cmake/
+}

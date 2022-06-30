@@ -1,0 +1,23 @@
+# Description: Python bindings for GObject (legacy)
+# URL:         https://wiki.gnome.org/Projects/PyGObject
+# Depends on:  glib python
+
+name=python-gobject-compat
+version=2.28.7
+release=1
+source=https://download.gnome.org/sources/pygobject/2.28/pygobject-$version.tar.xz
+
+build() {
+	cd pygobject-$version
+
+	./configure \
+		--prefix=/usr \
+		--disable-introspection \
+		--disable-docs          \
+		--disable-static        \
+
+	make V=1
+	make DESTDIR=$PKG install
+
+	rm -r $PKG/usr/share/gtk-doc
+}

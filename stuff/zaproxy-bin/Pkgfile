@@ -1,0 +1,21 @@
+# Description: OWASP Zed Attack Proxy (Weekly Build)
+# URL:         https://github.com/zaproxy/zaproxy
+# Depends on:  jdk11-bin
+
+name=zaproxy-bin
+version=2022-06-27
+release=1
+source="https://github.com/zaproxy/zaproxy/releases/download/w$version/ZAP_WEEKLY_D-$version.zip
+	zaproxy.sh"
+
+build() {
+	cd ZAP_D-$version
+
+	# remove junk
+	rm -r zap.bat zap.ico README plugin/Readme.txt license/ lang/
+
+	install -d $PKG/opt/zaproxy
+	cp -pR . $PKG/opt/zaproxy
+
+	install -m 755 -D $SRC/zaproxy.sh $PKG/usr/bin/zaproxy
+}

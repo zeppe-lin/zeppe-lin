@@ -1,0 +1,13 @@
+#!/bin/sh -e
+
+/usr/bin/getent group  postgres || /usr/sbin/groupadd -r postgres
+/usr/bin/getent passwd postgres || /usr/sbin/useradd -u 42 \
+	-d /var/pgsql/data -g postgres -s /bin/false postgres
+/usr/bin/passwd -l postgres
+
+/usr/bin/test -d /var/pgsql/data && exit 0
+
+/usr/bin/install -d -o postgres -g postgres /var/pgsql/data
+su -s /bin/sh -c "pg_ctl -D /var/pgsql/data initdb" postgres
+
+# End of file.

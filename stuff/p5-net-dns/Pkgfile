@@ -1,0 +1,25 @@
+# Description: Perl Library Net::DNS
+# URL:         https://metacpan.org/release/Net-DNS
+# Depends on:  p5-digest-hmac
+
+name=p5-net-dns
+version=1.34
+release=1
+source=https://cpan.metacpan.org/authors/id/N/NL/NLNETLABS/Net-DNS-$version.tar.gz
+
+build() {
+	cd Net-DNS-$version
+
+	PERL_MM_USE_DEFAULT=1 perl Makefile.PL INSTALLDIRS=vendor \
+		--no-online-tests --no-IPv6-tests
+
+	make OPTIMIZE="$CFLAGS"
+	make install DESTDIR=$PKG
+
+	# remove perlcrap
+	find $PKG -name .packlist -o -name '*.bs' -o -name autosplit.ix \
+		-o -name perllocal.pod | xargs rm
+
+	# remove empty dirs
+	find $PKG -depth -empty -exec rm -rf {} \;
+}

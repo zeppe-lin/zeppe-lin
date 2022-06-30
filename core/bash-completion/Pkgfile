@@ -1,0 +1,41 @@
+# Description: Programmable completion functions for bash
+# URL:         https://github.com/scop/bash-completion
+
+name=bash-completion
+version=2.11
+release=1
+source=https://github.com/scop/$name/releases/download/$version/$name-$version.tar.xz
+
+build() {
+	cd $name-$version
+
+	sed -i -e 's,profiledir = .*,profiledir = /etc,g' Makefile.*
+
+	./configure --prefix=/usr --sysconfdir=/etc
+
+	make V=1
+	make DESTDIR=$PKG install
+
+	mv $PKG/etc/bash_completion.sh $PKG/etc/bash_completion
+	chmod 0755 $PKG/usr/share/$name/bash_completion
+
+	# remove package tools intended for other distributions which
+	# do not exist in ZPLN.
+	rm $PKG/usr/share/bash-completion/completions/apt-*
+	rm $PKG/usr/share/bash-completion/completions/aptitude*
+	rm $PKG/usr/share/bash-completion/completions/dpkg*
+	rm $PKG/usr/share/bash-completion/completions/explodepkg
+	rm $PKG/usr/share/bash-completion/completions/installpkg
+	rm $PKG/usr/share/bash-completion/completions/makepkg
+	rm $PKG/usr/share/bash-completion/completions/removepkg
+	rm $PKG/usr/share/bash-completion/completions/sbopkg
+	rm $PKG/usr/share/bash-completion/completions/slackpkg
+	rm $PKG/usr/share/bash-completion/completions/upgradepkg
+	rm $PKG/usr/share/bash-completion/completions/pkg-get
+	rm $PKG/usr/share/bash-completion/completions/pkg_*
+	rm $PKG/usr/share/bash-completion/completions/pkgadd
+	rm $PKG/usr/share/bash-completion/completions/pkgrm
+	rm $PKG/usr/share/bash-completion/completions/pkgtool
+	rm $PKG/usr/share/bash-completion/completions/pkgutil
+	rm $PKG/usr/share/bash-completion/completions/slapt-*
+}

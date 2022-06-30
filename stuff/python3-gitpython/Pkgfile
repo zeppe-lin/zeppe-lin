@@ -1,0 +1,18 @@
+# Description: Interact with Git repositories
+# URL:         https://github.com/gitpython-developers/gitpython
+# Depends on:  git python3-gitdb
+
+name=python3-gitpython
+version=3.1.27
+release=1
+source=https://github.com/gitpython-developers/GitPython/archive/$version/GitPython-$version.tar.gz
+
+build() {
+	cd GitPython-$version
+
+	/usr/bin/python3 setup.py build
+	/usr/bin/python3 setup.py install \
+		--prefix=/usr --skip-build --optimize=1 --root=$PKG
+
+	find $PKG/usr/lib/python*/site-packages/ -type f -exec chmod 644 {} +
+}

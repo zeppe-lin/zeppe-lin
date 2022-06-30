@@ -1,0 +1,12 @@
+ae5ef942da842103ca9ecaf959d6927b  0000-arch-x86-Makefile-ln-fsn.patch
+83cf12e6751a9f0ff130d0dba0627f67  0001-fix-QoS-overwriting.patch
+38553666fd917946ad330ac30bb20dab  0002-fix-the-channel-changing-of-the-monitor-interface.patch
+ce8be2eb14e6b9083d3b433e07c0385b  0003-fix-injecting-fragments-on-rtl8187-based-wifi-cards.patch
+f7c5f4e4667773700abfca5411627dd8  0004-skip-frame-ACKing-renumbering-handle-sequence-by-use.patch
+21a63784b88743ead12d6b649f52e362  0005-Enable-monitoring-and-injection-for-the-Zydax-1211rw.patch
+9661b7ac043abf8ad631bade1f02bf9b  0006-Override-regdomain-hardcoded-in-EEPROM-with-custom-v.patch
+0caf1594870ae58f71d5f5a69e0ba1fe  0007-carl9170-Enable-sniffer-mode-promisc-flag-to-fix-inj.patch
+83866e1067cb580a22322b9eabe1a6d4  0008-mac80211-ignore-AP-power-level-when-tx-power-type-is.patch
+9684d7785937e8a2f15d14ff73f34360  0009-ath9k-override-regdomain-hardcoded-in-EEPROM-with-cu.patch
+62ebccb3b7967583c5e582294107f5df  linux-5.4.191.tar.xz
+5647d9d387d178d2bbac592089bad074  x86_64-dotconfig

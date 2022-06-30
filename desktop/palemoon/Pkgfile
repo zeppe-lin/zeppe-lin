@@ -1,0 +1,46 @@
+# Description: Pale Moon is what FireFox Web Browser ought to have been
+# URL:         https://www.palemoon.org
+# Depends on:  alsa-lib autoconf-2.13 gtk python unzip xorg-libxdamage xorg-libxt yasm zip
+
+name=palemoon
+version=29.4.0.2
+_upxrel=20210823
+release=1
+source="https://repo.palemoon.org/mcp-graveyard/Pale-Moon/archive/${version}_Release.tar.gz
+	https://repo.palemoon.org/mcp-graveyard/UXP/archive/RELBASE_${_upxrel}.tar.gz
+	mozconfig.in
+	fix_build_with_gcc11.patch"
+
+build() {
+	patch -d uxp -Np1 -i $SRC/fix_build_with_gcc11.patch
+
+	(cd uxp; cp -R . $SRC/pale-moon/platform/)
+	
+	cd pale-moon
+
+	sed	-e "s#%SRCDIR%#$SRC#g"      \
+		-e "s#%NAME%#$name#g"       \
+		-e "s#%VERSION%#$version#g" \
+		$SRC/mozconfig.in > mozconfig
+
+	export MOZBUILD_STATE_PATH=$SRC/mozbuild
+	export MOZCONFIG=$SRC/pale-moon/mozconfig
+	export MOZ_MAKE_FLAGS="$MAKEFLAGS"
+	export CPPFLAGS="$CPPFLAGS -Wno-format-overflow"
+
+	./mach build
+	DESTDIR=$PKG ./mach install
+
+	# revdep additional library directories
+	install -d $PKG/etc/revdep.d
+	cat > $PKG/etc/revdep.d/palemoon <<EOF
+/usr/lib/$name-$version/
+/usr/lib/$name-$version/browser/components/
+EOF
+
+	# remove junk:
+	# we don't need these (just symlink anyway)
+	rm -rf $PKG/usr/lib/$name-devel-$version
+	# avoid duplicate binaries
+	rm -f $PKG/usr/lib/$name-$version/$name-bin
+}

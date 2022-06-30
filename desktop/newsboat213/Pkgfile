@@ -1,0 +1,27 @@
+# Description: RSS/Atom feed reader for text terminals
+# URL:         http://www.newsboat.org/
+# Depends on:  json-c libxml2 sqlite3 stfl
+
+name=newsboat213
+version=2.13
+release=1
+source="https://newsboat.org/releases/$version/newsboat-$version.tar.xz
+	newsboat.1.gz
+	podboat.1.gz"
+
+build() {
+	cd newsboat-$version
+	
+	# fix build with json-c 0.14
+	sed -e 's/TRUE/1/' -e 's/FALSE/0/' -i src/newsblur_api.cpp
+
+	# remove unwanted flags
+	sed -i '23s/-O2 -ggdb//' Makefile
+
+	export prefix=/usr
+	./config.sh
+	make newsboat podboat
+
+	install -m 0755 -Dt $PKG/usr/bin/ newsboat podboat
+	install -m 0644 -Dt $PKG/usr/share/man/man1/ $SRC/*.1.gz
+}

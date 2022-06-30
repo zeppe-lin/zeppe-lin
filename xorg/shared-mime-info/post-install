@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# update MIME data
+update-mime-database /usr/share/mime
+
+# End of file

@@ -1,0 +1,83 @@
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+rejmerge - merge files that were rejected during package upgrades
+
+=head1 SYNOPSIS
+
+B<rejmerge> [I<OPTION>]
+
+=head1 DESCRIPTION
+
+B<rejmerge> is a package management utility that helps you merge files
+that were rejected during package upgrades.
+
+For each rejected file found in F</var/lib/pkg/rejected/>, B<rejmerge>
+will display difference between installed version and the rejected
+version.
+
+The user can the choose to keep the installed version, upgrade to the
+rejected or perform a merge of the two.
+
+=head1 OPTIONS
+
+Mandatory arguments to long options are mandatory for short options
+too.
+
+=over 8
+
+=item B<-r>, B<--root> I<PATH>
+
+Specify alternate root (default is C</>).  This should be used if you
+want to merge rejected files on a temporary mounted partition, which
+is "owned" by another system.
+
+=item B<-v>, B<--version>
+
+Print version and exit.
+
+=item B<-h>, B<--help>
+
+Print help and exit.
+
+=back
+
+=head1 ENVIRONMENT
+
+=over 8
+
+=item B<EDITOR>
+
+F</bin/vi> if unset.
+
+=item B<PAGER>
+
+F</bin/more> if unset.
+
+=back
+
+=head1 FILES
+
+=over 8
+
+=item F</etc/rejmerge.conf>
+
+Configuration file.
+
+=item F</var/lib/rejected/>
+
+Directory where rejected files are stored.
+
+=back
+
+=head1 SEE ALSO
+
+L<rejmerge.conf(5)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/rejmerge/rejmerge.conf.5.pod>
+
+=cut
+
+# vim:sw=2:ts=2:sts=2:et:cc=72
+# End of file.

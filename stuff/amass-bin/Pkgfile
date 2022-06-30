@@ -1,0 +1,16 @@
+# Description: In-depth attack surface mapping and asset discovery
+# URL:         https://github.com/OWASP/Amass
+
+name=amass-bin
+version=3.19.3
+release=1
+source=$name-$version-x86_64.zip
+
+build() {
+	cd amass_linux_*
+
+	/bin/ls -la
+
+	install -m 755 -D amass $PKG/usr/bin/amass
+	install -m 644 -D examples/config.ini $PKG/etc/amass/config.ini
+}

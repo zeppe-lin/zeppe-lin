@@ -1,0 +1,13 @@
+ABOUT rssfeeds
+
+
+  This directory contains RSS/Atom feeds for the software used in zeppe-lin.
+  The main purpose of these feeds is to help maintainer to watch for updates.
+
+    .
+    ├── ABOUT     This file.
+    ├── LINT.PL   Check for missing and redundant feeds in "rssfeeds".
+    └── RSS       The URL file for newsboat.
+
+
+End of file.

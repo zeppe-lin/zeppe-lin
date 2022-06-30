@@ -1,0 +1,36 @@
+# Description: User interface library focusing on simplicity and minimalism
+# URL:         https://pwmt.org/projects/girara
+# Depends on:  gtk3 json-c
+# Optional:    libnotify
+
+name=girara
+version=0.3.7
+release=1
+source=https://pwmt.org/projects/$name/download/$name-$version.tar.xz
+
+build() {
+	cd $name-$version
+
+	meson build \
+		--prefix=/usr \
+		--sysconfdir=/usr/etc \
+		--buildtype=plain \
+		--wrap-mode=nodownload \
+		-D b_lto=true \
+		-D b_pie=true \
+		-D json=enabled \
+		-D notify=disabled \
+		-D docs=disabled \
+
+	sed -i 's/ \-pipe / /g' build/compile_commands.json \
+		build/build.ninja
+
+	ninja -C build -j ${JOBS:-1} -v
+	DESTDIR=$PKG ninja -C build install
+
+	rm -rf $PKG/usr/share/locale
+
+	#find $PKG -perm -g+w | xargs chmod g-w
+	# Remove empty directories
+	#find $PKG -depth -empty -exec rm -rf {} \;
+}

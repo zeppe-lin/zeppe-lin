@@ -1,0 +1,62 @@
+diff '--color=always' -pruN '--color=never' cdrtools-3.02.orig/conf/oarch.sh cdrtools-3.02/conf/oarch.sh
+--- cdrtools-3.02.orig/conf/oarch.sh	2022-01-15 06:09:38.345582371 +0200
++++ cdrtools-3.02/conf/oarch.sh	2022-01-15 06:14:53.789581281 +0200
+@@ -71,9 +71,9 @@ fi
+ MACHCMD="( (mach || uname -p || true)		2> /dev/null)"
+ ARCHCMD="( (arch || /usr/ucb/arch || true)	2> /dev/null)"
+ 
+-XP_ARCH=`eval ${MACHCMD} | tr '[A-Z]' '[a-z]' | tr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ, /\\()"' 'abcdefghijklmnopqrstuvwxyz,//////' | tr ',/' ',\-'`
+-XK_ARCH=`uname -m        | tr '[A-Z]' '[a-z]' | tr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ, /\\()"' 'abcdefghijklmnopqrstuvwxyz,//////' | tr ',/' ',\-'`
+-XM_ARCH=`eval ${ARCHCMD} | tr '[A-Z]' '[a-z]' | tr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ, /\\()"' 'abcdefghijklmnopqrstuvwxyz,//////' | tr ',/' ',\-'`
++XP_ARCH=`eval ${MACHCMD} | tr '[A-Z]' '[a-z]' | tr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ, /\\()"' 'abcdefghijklmnopqrstuvwxyz,//////' | tr ',/' ',-'`
++XK_ARCH=`uname -m        | tr '[A-Z]' '[a-z]' | tr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ, /\\()"' 'abcdefghijklmnopqrstuvwxyz,//////' | tr ',/' ',-'`
++XM_ARCH=`eval ${ARCHCMD} | tr '[A-Z]' '[a-z]' | tr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ, /\\()"' 'abcdefghijklmnopqrstuvwxyz,//////' | tr ',/' ',-'`
+ 
+ #echo XP_ARCH $XP_ARCH
+ #echo XK_ARCH $XK_ARCH
+@@ -94,10 +94,10 @@ if [ ."${XM_ARCH}" = . ]; then
+ 	M_ARCH="${K_ARCH}"
+ fi
+ 
+-OSNAME=`uname -s | tr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ, /\\()"' 'abcdefghijklmnopqrstuvwxyz,//////' | tr ',/' ',\-'`
+-OSHOST=`uname -n | tr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ, /\\()"' 'abcdefghijklmnopqrstuvwxyz,//////' | tr ',/' ',\-'`
+-OSREL=`uname -r | tr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ, /\\()"' 'abcdefghijklmnopqrstuvwxyz,//////' | tr ',/' ',\-'`
+-OSVERS=`uname -v | tr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ, /\\()"' 'abcdefghijklmnopqrstuvwxyz,//////' | tr ',/' ',\-'`
++OSNAME=`uname -s | tr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ, /\\()"' 'abcdefghijklmnopqrstuvwxyz,//////' | tr ',/' ',-'`
++OSHOST=`uname -n | tr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ, /\\()"' 'abcdefghijklmnopqrstuvwxyz,//////' | tr ',/' ',-'`
++OSREL=`uname -r | tr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ, /\\()"' 'abcdefghijklmnopqrstuvwxyz,//////' | tr ',/' ',-'`
++OSVERS=`uname -v | tr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ, /\\()"' 'abcdefghijklmnopqrstuvwxyz,//////' | tr ',/' ',-'`
+ 
+ O_ARCH="$OSNAME"
+ 
+Binary files cdrtools-3.02.orig/conf/.oarch.sh.un~ and cdrtools-3.02/conf/.oarch.sh.un~ differ
+diff '--color=always' -pruN '--color=never' cdrtools-3.02.orig/RULES/mk-gmake.id cdrtools-3.02/RULES/mk-gmake.id
+--- cdrtools-3.02.orig/RULES/mk-gmake.id	2022-01-15 06:09:38.292582371 +0200
++++ cdrtools-3.02/RULES/mk-gmake.id	2022-01-15 06:23:22.260579525 +0200
+@@ -63,9 +63,9 @@ endif
+ _MACHCMD=	(mach || uname -p || true)	2> /dev/null
+ _ARCHCMD=	(arch || /usr/ucb/arch || true)	2> /dev/null
+ 
+-XP_ARCH:=	$(shell $(_MACHCMD) | tr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ, /\\()"' 'abcdefghijklmnopqrstuvwxyz,//////' | tr ',/' ',\-')
+-XK_ARCH:=	$(shell uname -m    | tr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ, /\\()"' 'abcdefghijklmnopqrstuvwxyz,//////' | tr ',/' ',\-')
+-XM_ARCH:=	$(shell $(_ARCHCMD) | tr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ, /\\()"' 'abcdefghijklmnopqrstuvwxyz,//////' | tr ',/' ',\-')
++XP_ARCH:=	$(shell $(_MACHCMD) | tr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ, /\\()"' 'abcdefghijklmnopqrstuvwxyz,//////' | tr ',/' ',-')
++XK_ARCH:=	$(shell uname -m    | tr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ, /\\()"' 'abcdefghijklmnopqrstuvwxyz,//////' | tr ',/' ',-')
++XM_ARCH:=	$(shell $(_ARCHCMD) | tr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ, /\\()"' 'abcdefghijklmnopqrstuvwxyz,//////' | tr ',/' ',-')
+ 
+ P_ARCH=		$(XP_ARCH)
+ K_ARCH=		$(XK_ARCH)
+@@ -81,9 +81,9 @@ _M_ARCH=	$(_UNIQ)$(XM_ARCH)
+ __M_ARCH=	$(_M_ARCH:$(_UNIQ)=$(K_ARCH))
+ M_ARCH=		$(__M_ARCH:$(_UNIQ)%=%)
+ 
+-OSNAME:=	$(shell uname -s | tr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ, /\\()"' 'abcdefghijklmnopqrstuvwxyz,//////' | tr ',/' ',\-')
+-OSREL:=		$(shell uname -r | tr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ, /\\()"' 'abcdefghijklmnopqrstuvwxyz,//////' | tr ',/' ',\-')
+-OSVERSION:=	$(shell uname -v | tr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ, /\\()"' 'abcdefghijklmnopqrstuvwxyz,//////' | tr ',/' ',\-')
++OSNAME:=	$(shell uname -s | tr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ, /\\()"' 'abcdefghijklmnopqrstuvwxyz,//////' | tr ',/' ',-')
++OSREL:=		$(shell uname -r | tr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ, /\\()"' 'abcdefghijklmnopqrstuvwxyz,//////' | tr ',/' ',-')
++OSVERSION:=	$(shell uname -v | tr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ, /\\()"' 'abcdefghijklmnopqrstuvwxyz,//////' | tr ',/' ',-')
+ 
+ ARCH_DONE=	TRUE
+ 
+Binary files cdrtools-3.02.orig/RULES/.mk-gmake.id.un~ and cdrtools-3.02/RULES/.mk-gmake.id.un~ differ

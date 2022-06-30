@@ -1,0 +1,14 @@
+drwxr-xr-x	root/root	usr/
+drwxr-xr-x	root/root	usr/include/
+drwxr-xr-x	root/root	usr/include/tox/
+-rw-r--r--	root/root	usr/include/tox/tox.h
+-rw-r--r--	root/root	usr/include/tox/tox_dispatch.h
+-rw-r--r--	root/root	usr/include/tox/tox_events.h
+-rw-r--r--	root/root	usr/include/tox/toxencryptsave.h
+drwxr-xr-x	root/root	usr/lib/
+-rw-r--r--	root/root	usr/lib/libtoxcore.a
+lrwxrwxrwx	root/root	usr/lib/libtoxcore.so -> libtoxcore.so.2
+lrwxrwxrwx	root/root	usr/lib/libtoxcore.so.2 -> libtoxcore.so.2.18.0
+-rwxr-xr-x	root/root	usr/lib/libtoxcore.so.2.18.0
+drwxr-xr-x	root/root	usr/lib/pkgconfig/
+-rw-r--r--	root/root	usr/lib/pkgconfig/toxcore.pc

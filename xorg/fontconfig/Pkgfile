@@ -1,0 +1,30 @@
+# Description: Configuring and customizing font access
+# URL:         https://www.freedesktop.org/wiki/Software/fontconfig/
+# Depends on:  expat freetype
+
+name=fontconfig
+version=2.14.0
+release=1
+source=https://fontconfig.org/release/$name-$version.tar.xz
+
+build() {
+	cd $name-$version
+
+	./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--with-xmldir=/etc/fonts \
+		--with-templatedir=/etc/fonts/conf.avail \
+		--disable-nls \
+
+	make V=1
+	make DESTDIR=$PKG install
+
+	# enabling autohinting by default
+	ln -sf /etc/fonts/conf.avail/10-autohint.conf \
+		$PKG/etc/fonts/conf.d/10-autohint.conf
+
+	rm -f $PKG/etc/fonts/conf.d/README
+	rm -r $PKG/usr/share/doc $PKG/usr/share/gettext
+}

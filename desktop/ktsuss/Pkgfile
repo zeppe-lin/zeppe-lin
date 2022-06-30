@@ -1,0 +1,25 @@
+# Description: Graphical version of su written in C and GTK+ (gksu alternative)
+# URL:         https://github.com/nomius/ktsuss
+# Depends on:  gtk
+
+name=ktsuss
+version=2.1
+release=2
+source="https://github.com/nomius/$name/archive/$version/$name-$version.tar.gz
+	3584ce168196bd7262d542332d318706edc741fd.patch
+	b6d680585554bed88cd387fea0ecc434d01a90ca.patch"
+
+build() {
+	cd $name-$version
+
+	patch -p1 -i $SRC/3584ce168196bd7262d542332d318706edc741fd.patch
+	patch -p1 -i $SRC/b6d680585554bed88cd387fea0ecc434d01a90ca.patch
+
+	./autogen.sh
+	./configure --prefix=/usr
+
+	make V=1
+	make DESTDIR=$PKG install
+
+	install -m 0644 -Dt $PKG/usr/share/man/man1/ debian/$name.1
+}

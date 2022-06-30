@@ -1,0 +1,17 @@
+# Description: Utility to set a display's backlight level
+# URL:         http://xorg.freedesktop.org
+# Depends on:  xorg-xcb-util
+
+name=xorg-xbacklight
+version=1.2.3
+release=1
+source=https://www.x.org/releases/individual/app/xbacklight-$version.tar.bz2
+
+build() {
+	cd xbacklight-$version
+
+	./configure --prefix=/usr
+
+	make V=1
+	make DESTDIR=$PKG install
+}

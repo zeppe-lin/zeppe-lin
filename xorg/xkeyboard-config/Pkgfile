@@ -1,0 +1,26 @@
+# Description: X keyboard configuration database
+# URL:         https://cgit.freedesktop.org/xkeyboard-config
+# Depends on:  xorg-xkbcomp libxslt
+
+name=xkeyboard-config
+version=2.36
+release=1
+source=https://www.x.org/releases/individual/data/$name/$name-$version.tar.xz
+
+build() {
+	meson build $name-$version \
+		--prefix=/usr \
+		--buildtype=plain \
+		--wrap-mode=nodownload \
+		-D b_lto=true \
+		-D b_pie=true \
+		-D xkb-base="/usr/share/X11/xkb" \
+		-D compat-rules=true \
+		-D xorg-rules-symlinks=true
+
+	ninja -C build -j ${JOBS:-1} -v
+	DESTDIR=$PKG ninja -C build install
+
+	ln -s /var/lib/xkb $PKG/usr/share/X11/xkb/compiled
+	find $PKG -name README | xargs rm
+}

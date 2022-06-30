@@ -1,0 +1,14 @@
+# Description: SSL-capable man-in-the-middle HTTP proxy
+# URL:         https://mitmproxy.org
+# Depends on:  zlib
+
+name=mitmproxy-bin
+version=8.1.1
+release=1
+source=https://snapshots.mitmproxy.org/$version/mitmproxy-$version-linux.tar.gz
+
+build() {
+	ls -la
+	install -m 755 -Dt $PKG/usr/bin/ \
+		mitmdump mitmproxy mitmweb
+}

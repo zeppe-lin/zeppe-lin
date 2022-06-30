@@ -1,0 +1,21 @@
+# Description: Sophisticated command line based FTP client
+# URL:         https://lftp.yar.ru/
+# Depends on:  expat libidn2 openssl readline zlib
+
+name=lftp
+version=4.9.2
+release=2
+source=https://distfiles.gentoo.org/distfiles/lftp-$version.tar.xz
+
+build() {
+	cd $name-$version
+
+	./configure \
+		--prefix=/usr \
+		--disable-nls \
+		--with-openssl=/usr \
+		--sysconfdir=/usr/etc \
+
+	make V=1
+	make DESTDIR=$PKG install
+}

@@ -1,0 +1,26 @@
+# Description: SQL database engine
+# URL:         https://www.sqlite.org/
+# Depends on:  readline zlib
+
+name=sqlite3
+version=3.38.1
+release=1
+_version=$(printf "%i%.2i%.2i%.2i" $(echo $version | sed 's/\./ /g'))
+source=https://www.sqlite.org/2022/sqlite-autoconf-$_version.tar.gz
+
+build() {
+	cd sqlite-autoconf-${_version}
+
+	export CFLAGS="$CFLAGS            \
+	-DSQLITE_SECURE_DELETE=1          \
+	-DSQLITE_ENABLE_COLUMN_METADATA=1 \
+	-DSQLITE_ENABLE_UNLOCK_NOTIFY=1   \
+	-DSQLITE_ENABLE_DBSTAT_VTAB=1     \
+	-DSQLITE_ENABLE_FTS3=1            \
+	"
+
+	./configure --prefix=/usr --enable-readline
+
+	make V=1
+	make DESTDIR=$PKG install
+}

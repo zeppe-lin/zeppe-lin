@@ -1,0 +1,16 @@
+# Description: Wrapper library for evdev devices
+# URL:         http://xorg.freedesktop.org
+
+name=xorg-libevdev
+version=1.12.1
+release=1
+source=https://www.freedesktop.org/software/libevdev/libevdev-$version.tar.xz
+
+build() {
+	cd libevdev-$version
+
+	./configure --prefix=/usr
+
+	make V=1
+	make DESTDIR=$PKG install
+}

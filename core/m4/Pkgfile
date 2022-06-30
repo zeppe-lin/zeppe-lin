@@ -1,0 +1,20 @@
+# Description: GNU version of UNIX m4 macro language processor
+# URL:         http://www.seindal.dk/rene/gnu/
+
+name=m4
+version=1.4.19
+release=1
+source="https://ftp.gnu.org/gnu/$name/$name-$version.tar.xz"
+
+build() {
+	cd $name-$version
+
+	./configure \
+		--prefix=/usr \
+		--disable-nls \
+
+	make V=1
+	make DESTDIR=$PKG install
+
+	rm -rf $PKG/usr/share/info
+}

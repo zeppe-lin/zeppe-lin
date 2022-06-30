@@ -1,0 +1,234 @@
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+pkgman.conf - configuration file for pkgman
+
+=head1 SYNOPSIS
+
+B</etc/pkgman.conf>
+
+=head1 DESCRIPTION
+
+This file is read by
+L<pkgman(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgman/pkgman.1.pod>.
+
+=head1 CONFIGURATION
+
+Every line can contain one configuration option.  The format of the
+lines is C<key value>.
+
+The valid keys are:
+
+=over 8
+
+=item B<pkgsrcdir> I<path>[:I<pkg1>,I<pkg2>,...]
+
+The location where to look for the packages sources.  The order of the
+C<pkgsrcdir> options is important as if a package is in multiple
+directories,
+L<pkgman(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgman/pkgman.1.pod>
+will use the one found first (directories listed first have
+precedence).
+
+If you want to restrict the packages used from one C<pkgsrcdir>, you
+can append a comma-separated list of packages to be used after the
+path, using a colon C<:> character to separate the two components.
+
+I<path> The directory.
+
+I<pkg1,pkg2> The final directory in the path.
+
+Example:
+
+  pkgsrcdir /usr/src/zeppe-lin/core
+  pkgsrcdir /usr/src/zeppe-lin/extra:mpv,ffmpeg
+
+=item B<runscripts> (I<yes>|I<no>)
+
+Run pre/post-install and pre/post-remove scripts.
+
+Default: I<no>.
+
+=item B<preferhigher> (I<yes>|I<no>)
+
+If set to I<yes>,
+L<pkgman(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgman/pkgman.1.pod>
+will parse version strings and prefer the higher one, even if the one
+found in the packages sources directories is lower.  Influences
+C<diff>, C<sysup> operations.
+
+Default: I<no>.
+
+=item B<useregex> (I<yes>|I<no>)
+
+If set to I<yes>,
+L<pkgman(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgman/pkgman.1.pod>
+will interpret C<expr> and C<filter> patterns in C<list>, C<printf>,
+C<dsearch> and C<fsearch> operations as regular expression.
+
+Default: I<no>.
+
+=item B<readme> (I<verbose>|I<compat>|I<disabled>)
+
+If the readme option is set to something different that I<disabled>,
+L<pkgman(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgman/pkgman.1.pod>
+will notify the user if installed package has a F<README> file.
+
+=over 8
+
+=item I<verbose>
+
+Print separate information about README files.
+
+=item I<compact>
+
+Integrate in the result output.
+
+=item I<disabled>
+
+No information about README files.
+
+=back
+
+See
+L<pkgman-readme(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgman/pkgman-readme.1.pod>
+for information how to read those F<README> files.
+
+Default: I<verbose>.
+
+=item B<writelog> (I<enabled>|I<disabled>)
+
+Write the log for install, update and remove operations.
+
+Default: I<disabled>.
+
+=item B<logmode> (I<append>|I<overwrite>)
+
+Write log mode.
+
+Default: I<overwrite>.
+
+=item B<rmlog_on_success> (I<yes>|I<no>)
+
+When set to I<yes>, log files of successful build will be removed.
+
+=item B<logfile> I<format>
+
+The string that contains a path to the log file, where all occurrences
+of next characters will be replaced by corresponding items:
+
+=begin man
+
+.TS
+left, box, line, tab (|) ;
+l | l.
+.SP
+%n | package name
+%p | package path
+%v | package version
+%r | package release
+.TE
+
+=end man
+
+=begin text
+
+            %n -> package name
+            %p -> package path
+            %v -> package version
+            %r -> package release
+            
+=end text
+
+=begin html
+
+  <table>
+    <tr><td>%n</td><td>package name</td><tr>
+    <tr><td>%p</td><td>package path</td></tr>
+    <tr><td>%v</td><td>package version</td></tr>
+    <tr><td>%r</td><td>package release</td></tr>
+  </table>
+
+=end html
+
+Example: C</var/log/pkgbuild/%n.log>
+
+Default: none.
+
+=item B<makecommand> I<command>
+
+Use an alternate I<command> instead of
+L<pkgmk(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgmk.8.pod>
+for the command which is used to build the package.
+
+Default: I<pkgmk>.
+
+=item B<addcommand> I<command>
+
+Use an alternate I<command> instead of
+L<pkgadd(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgutils/blob/master/pkgadd.8.pod>
+for the command which is used to install the package.
+
+Default: I<pkgadd>.
+
+=item B<removecommand> I<command>
+
+Use an alternate I<command> instead of
+L<pkgrm(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgutils/blob/master/pkgrm.8.pod>
+for the command which is used to remove the package.
+
+Default: I<pkgrm>.
+
+=item B<runscriptcommand> I<command>
+
+Use an alternate command instead of L<sh(1)> for the command which is
+used to run the C<pre/post-install> and C<pre/post-remove> scripts.
+
+Default: I</bin/sh>.
+
+=back
+
+=head1 EXAMPLE
+
+  #
+  # /etc/pkgman.conf: pkgman(1) configuration
+  #
+
+  # use local directory first
+  #pkgsrcdir /path/to/unofficial/pkgsrcs/
+
+  # zeppe-lin official
+  pkgsrcdir /usr/src/zeppe-lin/core
+  pkgsrcdir /usr/src/zeppe-lin/extra
+
+  # log options
+  writelog enabled
+  logmode overwrite
+  rmlog_on_success yes
+  logfile /var/log/pkgbuild/%n.log
+
+  # notify the user about README files
+  readme verbose
+
+  # do not prefer higher versions in sysup / diff
+  preferhigher no
+
+  # do not use regex search
+  useregex no
+
+  # run pre/post-install and pre/post-remove scripts
+  runscripts yes
+
+  # End of file.
+
+=head1 SEE ALSO
+
+L<pkgman(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgman/pkgman.1.pod>
+
+=cut
+
+# vim:sw=2:ts=2:sts=2:et:cc=72
+# End of file.

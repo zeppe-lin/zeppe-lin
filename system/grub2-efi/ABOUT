@@ -1,0 +1,8 @@
+ABOUT grub2-efi
+
+
+  This package is the Grand Unified Boot Loader (EFI version).  It is one of
+  several boot loaders available, but is the most flexible.
+
+
+End of file.

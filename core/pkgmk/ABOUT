@@ -1,0 +1,49 @@
+ABOUT pkgmk
+
+
+  This directory contains pkgmk, a package management utility, which
+  makes a software package.
+
+  It is a fork of CRUX' pkgmk (extracted from pkgutils source).  It
+  was rewritten in POSIX shell, added support of aria2 downloader,
+  and adjusted for zeppe-lin distribution.
+
+  The original sources can be downloaded from:
+
+    1. https://crux.nu/gitweb/?p=tools/pkgutils.git;a=summary
+    2. git://crux.nu/tools/pkgutils.git
+
+
+  DEPENDENCIES
+
+    Built time:
+
+    * make(1p)
+    * pod2man(1pm)
+
+    For downloading the distfiles pkgmk needs one of the following:
+
+    * aria2
+    * curl
+    * wget (is used by default)
+
+    Runtime:
+
+    * sh(1)
+    * bsdtar(1)
+
+    And in any case:
+
+    * POSIX utilities
+
+
+  LICENSE
+
+    pkgmk is licensed through the GNU General Public License v2 or
+    later <https://gnu.org/licenses/gpl.html>.
+
+    Read the COPYING file for the complete license.
+    Read the COPYRIGHT file for the copyright notice.
+
+
+End of file.

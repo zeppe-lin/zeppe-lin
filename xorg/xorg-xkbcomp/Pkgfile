@@ -1,0 +1,17 @@
+# Description: Xorg XKB keyboard description compiler
+# URL:         http://xorg.freedesktop.org
+# Depends on:  xorg-libxkbfile xorg-util-macros
+
+name=xorg-xkbcomp
+version=1.4.5
+release=1
+source=https://www.x.org/releases/individual/app/xkbcomp-$version.tar.bz2
+
+build() {
+	cd xkbcomp-$version
+
+	./configure --prefix=/usr
+
+	make V=1
+	make DESTDIR=$PKG pkgconfigdir=/usr/share/pkgconfig install
+}

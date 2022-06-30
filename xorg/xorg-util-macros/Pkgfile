@@ -1,0 +1,15 @@
+# Description: xorg m4 macros
+# URL:         http://xorg.freedesktop.org
+
+name=xorg-util-macros
+version=1.19.3
+release=1
+source=https://www.x.org/releases/individual/util/util-macros-$version.tar.bz2
+
+build() {
+	cd util-macros-$version
+
+	./configure --prefix=/usr
+
+	make DESTDIR=$PKG install
+}

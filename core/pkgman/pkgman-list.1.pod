@@ -1,0 +1,57 @@
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+pkgman-list - print list of available packages
+
+=head1 SYNOPSIS
+
+B<pkgman> list [B<-v>|B<-vv>] [B<--path>] [B<--all>] [B<--depsort>]
+[B<--regex>] [B<--filter>=I<EXPR>]
+
+=head1 DESCRIPTION
+
+Print list of available packages.  It looks in all directories
+specified in F</etc/pkgman.conf> as C<pkgsrcdir>.
+
+=head1 OPTIONS
+
+=over 8
+
+=item B<-v>
+
+Show version in the listing.
+
+=item B<-vv>
+
+Show version and description in the listing.
+
+=item B<--path>
+
+Show package' source path in the listing.
+
+=item B<--all>
+
+List all packages, not only installed.
+
+=item B<--depsort>
+
+List the packages sorted by dependency.
+
+=item B<--regex>
+
+Interpret filter argument as a regular expression.
+
+=item B<--filter>=I<EXPR>
+
+Filter listing packages by I<EXPR>.  The filter option argument may
+be the string, wildcard or regex.
+
+=back
+
+=cut
+
+# vim:sw=2:ts=2:sts=2:et:cc=72
+# End of file.

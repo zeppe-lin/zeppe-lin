@@ -1,0 +1,26 @@
+# Description: Portable Hardware Locality
+# URL:         http://www.multiprecision.org/
+# Depends on:  libxml2 ncurses xorg-libpciaccess
+
+name=hwloc
+version=2.7.1
+release=2
+source=https://download.open-mpi.org/release/$name/v${version%.*}/$name-$version.tar.gz
+
+build() {
+	cd $name-$version
+
+	./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--enable-netloc \
+		--disable-cairo \
+		--disable-libudev \
+
+	make V=1
+	make DESTDIR=$PKG install
+
+	# remove junk
+	cd $PKG/usr/share
+	rm -r doc hwloc/hwloc-ps.www hwloc/hwloc-dump-hwdata.service
+}

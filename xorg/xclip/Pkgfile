@@ -1,0 +1,18 @@
+# Description: CLI to the X11 clipboard
+# URL:         https://github.com/astrand/xclip
+# Depends on:  xorg-libxmu
+
+name=xclip
+version=0.13
+release=1
+source=https://github.com/astrand/$name/archive/$version/$name-$version.tar.gz
+
+build() {
+	cd $name-$version
+
+	./bootstrap
+	./configure --prefix=/usr
+
+	make V=1
+	make DESTDIR=$PKG install
+}

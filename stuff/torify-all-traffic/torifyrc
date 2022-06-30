@@ -1,0 +1,147 @@
+#
+# /etc/tor/torifyrc
+#
+
+# Store working data in DIR. Can not be changed while tor is running. (Default: ~/.tor if your home
+# directory is not /; otherwise, /var/lib/tor. On Windows, the default is your ApplicationData
+# folder.)
+DataDirectory /var/lib/tor
+
+# Send all messages of level 'notice' or higher to /var/log/tor/torify-notices.log
+Log notice file /var/log/tor/torify-notices.log
+
+# When Tor needs to assign a virtual (unused) address because of a MAPADDRESS command from the
+# controller or the AutomapHostsOnResolve feature, Tor picks an unassigned address from this range.
+# (Defaults: 127.192.0.0/10 and [FE80::]/10 respectively.)
+#
+# When providing proxy server service to a network of computers using a tool like dns-proxy-tor,
+# change the IPv4 network to "10.192.0.0/10" or "172.16.0.0/12" and change the IPv6 network to
+# "[FC00::]/7". The default VirtualAddrNetwork address ranges on a properly configured machine will
+# route to the loopback or link-local interface. The maximum number of bits for the network prefix
+# is set to 104 for IPv6 and 16 for IPv4. However, a wider network - smaller prefix length
+#
+# •   is preferable since it reduces the chances for an attacker to guess the used IP. For local
+#     use, no change to the default VirtualAddrNetwork setting is needed.
+VirtualAddrNetwork 10.192.0.0/10
+
+# When this option is enabled, and we get a request to resolve an address that ends with one of the
+# suffixes in AutomapHostsSuffixes, we map an unused virtual address to that address, and return the
+# new virtual address. This is handy for making ".onion" addresses work with applications that
+# resolve an address and then connect to it. (Default: 0)
+AutomapHostsOnResolve 1
+
+# A comma-separated list of suffixes to use with AutomapHostsOnResolve. The "." suffix is equivalent
+# to "all addresses." (Default: .exit,.onion).
+AutomapHostsSuffixes .exit,.onion
+
+# Open this port to listen for connections from SOCKS-speaking applications. Set this to 0 if you
+# don’t want to allow application connections via SOCKS. Set it to "auto" to have Tor pick a port
+# for you. This directive can be specified multiple times to bind to multiple addresses/ports. If a
+# unix domain socket is used, you may quote the path using standard C escape sequences. (Default:
+# 9050)
+# 
+# NOTE: Although this option allows you to specify an IP address other than localhost, you should do
+# so only with extreme caution. The SOCKS protocol is unencrypted and (as we use it)
+# unauthenticated, so exposing it in this way could leak your information to anybody watching your
+# network, and allow anybody to use your computer as an open proxy.
+# 
+# If multiple entries of this option are present in your configuration file, Tor will perform stream
+# isolation between listeners by default. The isolation flags arguments give Tor rules for which
+# streams received on this SocksPort are allowed to share circuits with one another. Recognized
+# isolation flags are:
+# 
+# IsolateClientAddr
+#     Don’t share circuits with streams from a different client address. (On by default and strongly
+#     recommended when supported; you can disable it with NoIsolateClientAddr. Unsupported and
+#     force-disabled when using Unix domain sockets.)
+# 
+# IsolateSOCKSAuth
+#     Don’t share circuits with streams for which different SOCKS authentication was provided. (For
+#     HTTPTunnelPort connections, this option looks at the Proxy-Authorization and
+#     X-Tor-Stream-Isolation headers. On by default; you can disable it with NoIsolateSOCKSAuth.)
+# 
+# IsolateClientProtocol
+#     Don’t share circuits with streams using a different protocol. (SOCKS 4, SOCKS 5, TransPort
+#     connections, NATDPort connections, and DNSPort requests are all considered to be different
+#     protocols.)
+# 
+# IsolateDestPort
+#     Don’t share circuits with streams targeting a different destination port.
+# 
+# IsolateDestAddr
+#     Don’t share circuits with streams targeting a different destination address.
+SocksPort 127.0.0.1:9050 IsolateClientAddr IsolateSOCKSAuth IsolateClientProtocol IsolateDestPort IsolateDestAddr
+
+# Open this port to listen for transparent proxy connections. Set this to 0 if you don’t want to
+# allow transparent proxy connections. Set the port to "auto" to have Tor pick a port for you. This
+# directive can be specified multiple times to bind to multiple addresses/ports. If multiple entries
+# of this option are present in your configuration file, Tor will perform stream isolation between
+# listeners by default. See SOCKSPort for an explanation of isolation flags.
+# 
+# TransPort requires OS support for transparent proxies, such as BSDs' pf or Linux’s IPTables. If
+# you’re planning to use Tor as a transparent proxy for a network, you’ll want to examine and change
+# VirtualAddrNetwork from the default setting. (Default: 0)
+TransPort 127.0.0.1:9040 IsolateClientAddr IsolateSOCKSAuth IsolateClientProtocol IsolateDestPort IsolateDestAddr
+
+# Accept connections on this port and allow those connections to control the Tor
+# process using the Tor Control Protocol.
+ControlPort 9051
+
+# Listen for UDP DNS requests, and resolve them anonymously.
+DNSPort 127.0.0.1:9053
+
+# Use built-in (static) crypto hardware acceleration when available
+HardwareAccel 1
+
+# Make a notice-level log entry for each connection to the Socks port indicating whether
+# the request used a safe socks protocol or an unsafe one.
+# This helps to determine whether an application using Tor is possibly leaking
+# DNS requests. Inspect /var/log/tor/torify-notices.log
+TestSocks 1
+
+# Block hostnames containing illegal characters (like @ and :)
+# rather than sending them to an exit node to be resolved. This helps trap accidental attempts to
+# resolve URLs and so on
+AllowNonRFC953Hostnames 0
+
+# Tells Tor to issue a warnings whenever the user tries to make an anonymous connection to one of
+# these ports.
+WarnPlaintextPorts 23,109,110,143,80
+
+# If true, Tor does not try to fulfill requests to connect to an internal address (like 127.0.0.1 or
+# 192.168.0.1) unless an exit node is specifically requested (for example, via a .exit hostname, or
+# a controller request). If true, multicast DNS hostnames for machines on the local network (of the
+# form *.local) are also rejected. (Default: 1)
+ClientRejectInternalAddresses 1
+
+# Every NUM seconds consider whether to build a new circuit.
+NewCircuitPeriod 40
+
+# Feel free to reuse a circuit that was first used at most NUM seconds ago, but never attach a new
+# stream to a circuit that is too old. For hidden services, this applies to the last time a circuit
+# was used, not the first. Circuits with streams constructed with SOCKS authentication via
+# SocksPorts that have KeepAliveIsolateSOCKSAuth also remain alive for MaxCircuitDirtiness seconds
+# after carrying the last such stream. (Default: 10 minutes)
+MaxCircuitDirtiness 600
+
+# Do not allow more than NUM circuits to be pending at a time for handling client streams. A circuit
+# is pending if we have begun constructing it, but it has not yet been completely constructed.
+MaxClientCircuitsPending 48
+
+# If this option is set to 1, we pick a few long-term entry servers, and try to stick with them.
+# This is desirable because constantly changing servers increases the odds that an adversary who
+# owns some servers will observe a fraction of your paths. Entry Guards can not be used by Directory
+# Authorities or Single Onion Services. In these cases, this option is ignored. (Default: 1)
+UseEntryGuards 1
+
+# If 1, Tor will not put two servers whose IP addresses are "too close" on the same circuit.
+# Currently, two addresses are "too close" if they lie in the same /16 range. (Default: 1)
+EnforceDistinctSubnets 1
+
+# If 1, Tor forks and daemonizes to the background. This option has no effect on Windows; instead
+# you should use the --service command-line option. Can not be changed while tor is running.
+# (Default: 0)
+RunAsDaemon 1
+
+# Include hashed control password which was generated at startup
+%include /etc/tor/torifyrc.control

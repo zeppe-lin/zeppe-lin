@@ -1,0 +1,61 @@
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+pkgman-(r)dep - print (reverse) dependencies for a package
+
+=head1 SYNOPSIS
+
+B<pkgman> (r)dep [B<-v>|B<-vv>] [B<--path>] [B<--all>] [B<--tree>]
+[B<--recursive>] [B<--full>] I<PKGNAME>
+
+=head1 DESCRIPTION
+
+Print (reverse) dependencies for a package.  It looks in all packages
+sources directories specified in F</etc/pkgman.conf> as C<pkgsrcdir>
+directories.
+
+=head1 OPTIONS
+
+=over 8
+
+=item B<-v>
+
+Show version in the listing.
+
+=item B<-vv>
+
+Show version and description in the listing.
+
+=item B<--path>
+
+Show package source path in the listing.
+
+=item B<--all>
+
+List all packages, not only installed.
+
+=item B<--tree>
+
+Print a nicely indented tree of the package (reverse) dependencies.
+
+=item B<--recursive>
+
+Print a recursive list of (reverse) dependencies.  In case B<--tree>
+was specified, subtrees already shown are marked with C<--E<gt>> to
+save some space.  If B<--tree> option wasn't specified, (reverse)
+dependencies already shown are not displayed.  In order to show them
+all, add the B<--full> option described below.
+
+=item B<--full>
+
+If B<--recursive> option was set, show all dependencies.
+
+=back
+
+=cut
+
+# vim:sw=2:ts=2:sts=2:et:cc=72
+# End of file.

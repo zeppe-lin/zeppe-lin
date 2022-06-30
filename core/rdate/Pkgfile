@@ -1,0 +1,26 @@
+# Description: Time setting software implementing RFC 868 (inetd time) and RFC 2030 (SNTP/NTP) protocols
+# URL:         https://github.com/leahneukirchen/outils
+
+name=rdate
+version=0.10
+release=1
+source="https://github.com/leahneukirchen/outils/archive/v$version/outils-$version.tar.gz 
+	ntpleaps.patch
+	cron.rdate"
+
+build() {
+	cd outils-$version
+
+	# FS1462
+	patch -p0 -d src/usr.sbin/rdate -i $SRC/ntpleaps.patch
+
+	make PREFIX=/usr src/usr.sbin/rdate/rdate
+
+	install -d $PKG/usr/bin $PKG/usr/share/man/man8 \
+		$PKG/etc/cron/daily
+
+	install -m 0755 src/usr.sbin/rdate/rdate   $PKG/usr/bin/
+	install -m 0644 src/usr.sbin/rdate/rdate.8 $PKG/usr/share/man/man8/
+
+	install -m 0755 $SRC/cron.rdate $PKG/etc/cron/daily/rdate
+}

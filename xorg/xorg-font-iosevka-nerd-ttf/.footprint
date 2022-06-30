@@ -1,0 +1,46 @@
+drwxr-xr-x	root/root	usr/
+drwxr-xr-x	root/root	usr/share/
+drwxr-xr-x	root/root	usr/share/fonts/
+drwxr-xr-x	root/root	usr/share/fonts/TTF/
+-rw-r--r--	root/root	usr/share/fonts/TTF/Iosevka Bold Italic Nerd Font Complete.ttf
+-rw-r--r--	root/root	usr/share/fonts/TTF/Iosevka Bold Nerd Font Complete.ttf
+-rw-r--r--	root/root	usr/share/fonts/TTF/Iosevka Bold Oblique Nerd Font Complete.ttf
+-rw-r--r--	root/root	usr/share/fonts/TTF/Iosevka Extralight Italic Nerd Font Complete.ttf
+-rw-r--r--	root/root	usr/share/fonts/TTF/Iosevka Extralight Nerd Font Complete.ttf
+-rw-r--r--	root/root	usr/share/fonts/TTF/Iosevka Extralight Oblique Nerd Font Complete.ttf
+-rw-r--r--	root/root	usr/share/fonts/TTF/Iosevka Heavy Italic Nerd Font Complete.ttf
+-rw-r--r--	root/root	usr/share/fonts/TTF/Iosevka Heavy Nerd Font Complete.ttf
+-rw-r--r--	root/root	usr/share/fonts/TTF/Iosevka Heavy Oblique Nerd Font Complete.ttf
+-rw-r--r--	root/root	usr/share/fonts/TTF/Iosevka Italic Nerd Font Complete.ttf
+-rw-r--r--	root/root	usr/share/fonts/TTF/Iosevka Light Italic Nerd Font Complete.ttf
+-rw-r--r--	root/root	usr/share/fonts/TTF/Iosevka Light Nerd Font Complete.ttf
+-rw-r--r--	root/root	usr/share/fonts/TTF/Iosevka Light Oblique Nerd Font Complete.ttf
+-rw-r--r--	root/root	usr/share/fonts/TTF/Iosevka Medium Italic Nerd Font Complete.ttf
+-rw-r--r--	root/root	usr/share/fonts/TTF/Iosevka Medium Nerd Font Complete.ttf
+-rw-r--r--	root/root	usr/share/fonts/TTF/Iosevka Medium Oblique Nerd Font Complete.ttf
+-rw-r--r--	root/root	usr/share/fonts/TTF/Iosevka Nerd Font Complete.ttf
+-rw-r--r--	root/root	usr/share/fonts/TTF/Iosevka Oblique Nerd Font Complete.ttf
+-rw-r--r--	root/root	usr/share/fonts/TTF/Iosevka Term Bold Italic Nerd Font Complete.ttf
+-rw-r--r--	root/root	usr/share/fonts/TTF/Iosevka Term Bold Nerd Font Complete.ttf
+-rw-r--r--	root/root	usr/share/fonts/TTF/Iosevka Term Bold Oblique Nerd Font Complete.ttf
+-rw-r--r--	root/root	usr/share/fonts/TTF/Iosevka Term Extralight Italic Nerd Font Complete.ttf
+-rw-r--r--	root/root	usr/share/fonts/TTF/Iosevka Term Extralight Nerd Font Complete.ttf
+-rw-r--r--	root/root	usr/share/fonts/TTF/Iosevka Term Extralight Oblique Nerd Font Complete.ttf
+-rw-r--r--	root/root	usr/share/fonts/TTF/Iosevka Term Heavy Italic Nerd Font Complete.ttf
+-rw-r--r--	root/root	usr/share/fonts/TTF/Iosevka Term Heavy Nerd Font Complete.ttf
+-rw-r--r--	root/root	usr/share/fonts/TTF/Iosevka Term Heavy Oblique Nerd Font Complete.ttf
+-rw-r--r--	root/root	usr/share/fonts/TTF/Iosevka Term Italic Nerd Font Complete.ttf
+-rw-r--r--	root/root	usr/share/fonts/TTF/Iosevka Term Light Italic Nerd Font Complete.ttf
+-rw-r--r--	root/root	usr/share/fonts/TTF/Iosevka Term Light Nerd Font Complete.ttf
+-rw-r--r--	root/root	usr/share/fonts/TTF/Iosevka Term Light Oblique Nerd Font Complete.ttf
+-rw-r--r--	root/root	usr/share/fonts/TTF/Iosevka Term Medium Italic Nerd Font Complete.ttf
+-rw-r--r--	root/root	usr/share/fonts/TTF/Iosevka Term Medium Nerd Font Complete.ttf
+-rw-r--r--	root/root	usr/share/fonts/TTF/Iosevka Term Medium Oblique Nerd Font Complete.ttf
+-rw-r--r--	root/root	usr/share/fonts/TTF/Iosevka Term Nerd Font Complete.ttf
+-rw-r--r--	root/root	usr/share/fonts/TTF/Iosevka Term Oblique Nerd Font Complete.ttf
+-rw-r--r--	root/root	usr/share/fonts/TTF/Iosevka Term Thin Italic Nerd Font Complete.ttf
+-rw-r--r--	root/root	usr/share/fonts/TTF/Iosevka Term Thin Nerd Font Complete.ttf
+-rw-r--r--	root/root	usr/share/fonts/TTF/Iosevka Term Thin Oblique Nerd Font Complete.ttf
+-rw-r--r--	root/root	usr/share/fonts/TTF/Iosevka Thin Italic Nerd Font Complete.ttf
+-rw-r--r--	root/root	usr/share/fonts/TTF/Iosevka Thin Nerd Font Complete.ttf
+-rw-r--r--	root/root	usr/share/fonts/TTF/Iosevka Thin Oblique Nerd Font Complete.ttf

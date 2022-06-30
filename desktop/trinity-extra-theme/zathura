@@ -1,0 +1,66 @@
+#
+# ~/.config/zathura/zathurarc: Trinity theme configuration file for zathura(1)
+#
+
+# Open document in fit-width mode by default
+#set adjust-open "best-fit"
+set adjust-open width
+
+# zoom
+map <C-i> zoom in
+map <C-o> zoom out
+
+# font
+#set font Iosevka\ 10
+#set font Terminus\ \(TTF\)\ 9
+
+# dark-mode recoloring
+set recolor true
+#set recolor-lightcolor "#000000" #00
+#set recolor-darkcolor "#E0E0E0" #06
+set recolor-reverse-video true
+set recolor-keephue true
+
+set render-loading true
+
+# Use a strict seccomp filter
+#set sandbox strict
+
+# Enable copy to clipboard
+set selection-clipboard clipboard
+
+set default-bg                  "#000000"
+set default-fg                  "#55ff66"
+
+set statusbar-fg                "darkgrey"
+set statusbar-bg                "#000000"
+set statusbar-basename          "true"
+
+set inputbar-bg                 "#000000"
+set inputbar-fg                 "#00d75f"
+
+set notification-bg             "#000000"
+set notification-fg             "yellow"
+
+set notification-error-bg       "#000000"
+set notification-error-fg       "#fb4934"
+
+set notification-warning-bg     "#000000"
+set notification-warning-fg     "#fb4934"
+
+set highlight-color             "#fabd2f"
+set highlight-active-color      "#83a598"
+
+set completion-bg               "#000000"
+set completion-fg               "darkgreen"
+
+set completion-highlight-bg     "#000000"
+set completion-highlight-fg     "yellow"
+
+set recolor-lightcolor          "#000000"
+set recolor-darkcolor           "#00d75f"
+
+set recolor                     "true"
+set recolor-keephue             "false"
+
+# End of file.

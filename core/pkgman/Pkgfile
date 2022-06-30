@@ -1,0 +1,17 @@
+# Description: Advanced package management tool
+# URL:         file:///usr/src/zeppe-lin/core/pkgman
+
+name=pkgman
+version=6.0.1
+release=1
+source="$(ls -1 *.cpp *.h *.pod) config.mk Makefile bash_completion
+	pkgman.conf"
+
+build() {
+	make VERSION=$version DESTDIR=$PKG PREFIX=/usr install
+	install -m 644 -Dt $PKG/etc/ $SRC/pkgman.conf
+
+	# bash-completion
+	install -m 0644 -D bash_completion \
+		$PKG/usr/share/bash-completion/completions/$name
+}

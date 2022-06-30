@@ -1,0 +1,19 @@
+# Description: List open files
+# URL:         https://github.com/lsof-org/lsof
+# Depends on:  libtirpc
+
+name=lsof
+version=4.95.0
+release=1
+source=https://github.com/lsof-org/lsof/archive/$version/$name-$version.tar.gz
+
+build() {
+	cd $name-$version
+
+	./Configure -n linux
+	make V=1 CC="cc $CFLAGS"
+
+	install -d $PKG/usr/sbin $PKG/usr/share/man/man8/
+	install -m 755 lsof $PKG/usr/sbin/
+	soelim Lsof.8 > $PKG/usr/share/man/man8/lsof.8
+}

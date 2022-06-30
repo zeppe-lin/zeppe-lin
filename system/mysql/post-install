@@ -1,0 +1,18 @@
+#!/bin/sh -ex
+
+if ! /usr/bin/getent group mysql; then
+	/usr/sbin/groupadd -g 46 mysql
+fi
+
+if ! /usr/bin/getent passwd mysql; then
+	/usr/sbin/useradd -g mysql -u 46 -d /var/lib/mysql -s /bin/false mysql
+	/usr/bin/passwd -l mysql
+fi
+
+#chmod 700 /var/lib/mysql /var/lib/mysql-files /var/log/mysql \
+#	/var/run/mysql
+
+chown -R mysql:mysql /var/lib/mysql /var/lib/mysql-files \
+	/var/log/mysql
+
+# End of file.

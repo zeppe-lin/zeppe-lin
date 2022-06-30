@@ -1,0 +1,22 @@
+# Description: GNU parser generator
+# URL:         https://www.gnu.org/software/bison
+
+name=bison
+version=3.8.2
+release=1
+source="https://ftpmirror.gnu.org/gnu/$name/$name-$version.tar.xz"
+
+build() {
+	cd $name-$version
+
+	./configure \
+		--prefix=/usr \
+		--disable-nls \
+
+	make V=1
+	make DESTDIR=$PKG install
+
+	# remove junk
+	rm -r $PKG/usr/share/doc $PKG/usr/share/info \
+		$PKG/usr/share/bison/README.md
+}

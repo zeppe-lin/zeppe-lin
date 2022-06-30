@@ -1,0 +1,78 @@
+#!/bin/bash
+# See files COPYRIGHT and COPYING for copyright and license information.
+
+# This script is written in POSIX sh. However, we use the /bin/bash, because
+# it reads (via source) /etc/pkgmk.conf, which is written in bash and may
+# contain bashisms. This can lead to errors.
+
+show() {
+	compiler=${CC:-gcc}
+	case "$compiler" in
+		gcc)
+			$compiler -### -E - $@ 2>&1 | sed -r '/cc1/!d;s/(")|(^.* - )//g'
+			;;
+		*)
+			echo "$compiler is not supported yet."
+			;;
+	esac
+}
+
+print_help() {
+	cat <<EOF
+Usage: $PROGRAM [OPTION]
+Show the pkgmk's compiler directives for building packages.
+
+  -c, --config FILE   use alternative pkgmk's config
+  -v, --version       print version and exit
+  -h, --help          print help and exit
+EOF
+}
+
+parse_options() {
+	while [ "$1" ]; do
+		case $1 in
+		-c|--config)
+			if [ ! "$2" ]; then
+				echo "$PROGRAM: option $1 requires an argument"
+				exit 1
+			elif [ ! -f "$2" ]; then
+				echo "$PROGRAM: config $2 not exists"
+				exit 1
+			fi
+			CONFIG=$2
+			shift
+			;;
+		-v|--version)
+			echo "$PROGRAM (pkgmaint) @VERSION@"
+			exit 0
+			;;
+		-h|--help)
+			print_help
+			exit 0
+			;;
+		*)
+			echo "$PROGRAM: invalid option $1"
+			exit 1
+			;;
+		esac
+		shift
+	done
+}
+
+main() {
+	parse_options "$@"
+
+	. "$CONFIG"
+
+	case $PROGRAM in
+	pkgmkcflags)    show "$CFLAGS"   ;;
+	pkgmkcxxflags)  show "$CXXFLAGS" ;;
+	esac
+}
+
+CONFIG=/etc/pkgmk.conf
+PROGRAM=$(basename "$0")
+
+main "$@"
+
+# End of file.

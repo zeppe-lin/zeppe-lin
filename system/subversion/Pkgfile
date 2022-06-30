@@ -1,0 +1,25 @@
+# Description: Version control system (CVS replacement)
+# URL:         http://subversion.apache.org
+# Depends on:  cyrus-sasl file lz4 serf utf8proc
+
+name=subversion
+version=1.14.1
+release=1
+source=https://archive.apache.org/dist/$name/$name-$version.tar.bz2
+
+build() {
+	cd $name-$version
+
+	./configure \
+		--prefix=/usr \
+		--disable-nls \
+		--disable-mod-activation \
+		--without-apxs \
+		--without-swig \
+
+	make V=1
+	make -j1 DESTDIR=$PKG install
+
+	# info pages seem to get generated when makeinfo is available
+	rm -rf $PKG/usr/info
+}

@@ -1,0 +1,28 @@
+# Description: Standard unix password manager
+# URL:         https://www.passwordstore.org
+# Depends on:  git gnupg tree xclip
+# Optional:    git xclip qrencode
+
+name=password-store
+version=1.7.4
+release=2
+source="https://git.zx2c4.com/$name/snapshot/$name-$version.tar.xz
+	adjust_to_sbase.patch
+	ensure_compat_with_tree_2.0.patch"
+
+build() {
+	cd password-store-$version
+
+	patch -Np1 -i $SRC/ensure_compat_with_tree_2.0.patch
+
+	# hotfix
+	sed -i  -e 's/install -v/install /g'                  \
+		-e 's/install -m \(....\) -v/install -m \1/g' \
+		Makefile
+
+	make install DESTDIR=$PKG PREFIX=/usr WITH_BASHCOMP=no
+
+	patch -p1 -d $PKG -i $SRC/adjust_to_sbase.patch
+
+	install -m 0755 -Dt $PKG/usr/bin/ contrib/dmenu/passmenu
+}

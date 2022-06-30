@@ -1,0 +1,19 @@
+# Description: X Damage extension client library
+# URL:         http://xorg.freedesktop.org
+# Depends on:  xorg-libxfixes
+
+name=xorg-libxdamage
+version=1.1.5
+release=1
+source=https://www.x.org/releases/individual/lib/libXdamage-$version.tar.bz2
+
+build() {
+	cd libXdamage-$version
+
+	./configure \
+		--prefix=/usr    \
+		--disable-static \
+
+	make V=1
+	make DESTDIR=$PKG install
+}

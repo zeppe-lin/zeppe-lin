@@ -1,0 +1,15 @@
+# Description: System information script
+# URL:         https://github.com/smxi/inxi
+# Optional:    xorg-xprop xorg-xdpyinfo xorg-xrandr lm-sensors
+
+name=inxi
+version=3.3.19-1
+release=1
+source=https://github.com/smxi/inxi/archive/$version/$name-$version.tar.gz
+
+build() {
+	cd $name-$version
+
+	install -m 755 -Dt $PKG/usr/bin/            inxi
+	install -m 644 -Dt $PKG/usr/share/man/man1/ inxi.1
+}

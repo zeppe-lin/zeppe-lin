@@ -1,0 +1,80 @@
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+finddisowned - find files that are disowned by package manager
+
+=head1 SYNOPSIS
+
+B<finddisowned> [I<OPTION>]...
+
+=head1 DESCRIPTION
+
+B<finddisowned> lists the files that are disowned by package manager.
+
+In particular, finddisowned compares the package database with contents of the
+directories described in F</etc/finddisowned.whitelist>.
+
+B<finddisowned> does not compare the package database with the entire file
+system, but only with files from directories described in
+F</etc/finddisowned.whitelist> becase the entire file system contains
+directories such as F</home>, F</mnt> and even dynamic directories like
+F</proc>, F</dev>, etc, the contents of which are definitely not taken into
+account (and should not be) by package manager.
+
+Feel free to adjust the whitelist conform your needs.
+
+=head1 OPTIONS
+
+Mandatory arguments to long options are mandatory for short options too.
+
+=over 8
+
+=item B<-w>, B<--whitelist> I<FILE>
+
+Specify alternate whitelist file.
+
+=item B<-r>, B<--root> I<PATH>
+
+Specify alternate root directory.
+
+=item B<-v>, B<--version>
+
+Print version and exit.
+
+=item B<-h>, B<--help>
+
+Print help and exit.
+
+=back
+
+=head1 FILES
+
+=over 8
+
+=item F</var/lib/pkg/db>
+
+System package database.
+
+=item F</etc/finddisowned.whitelist>
+
+Contains a list of directories, the contents of which will be compared with
+package database.
+
+=back
+
+=head1 COPYRIGHT
+
+Copyright (c) 2021 Alexandr Savca <https://github.com/zeppe-lin>.
+
+License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.
+
+=head1 SEE ALSO
+
+L<finddeps(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/pkgmaint/finddeps.1.pod>,
+L<finddisappeared(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/pkgmaint/finddisappeared.1.pod>,
+L<findredundantdeps(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/pkgmaint/findredundantdeps.1.pod>
+
+=cut

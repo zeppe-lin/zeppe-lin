@@ -1,0 +1,15 @@
+# Description: Template library written in Python
+# URL:         http://www.makotemplates.org/
+# Depends on:  python3-markupsafe
+
+name=python3-mako
+version=1.2.0
+release=1
+source=https://files.pythonhosted.org/packages/source/M/Mako/Mako-$version.tar.gz
+
+build() {
+	cd Mako-$version
+
+	/usr/bin/python3 setup.py build
+	/usr/bin/python3 setup.py install --prefix=/usr --root=$PKG --optimize=1
+}

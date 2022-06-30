@@ -1,0 +1,10 @@
+README for firefox-bin.
+
+
+  REQUIREMENTS
+
+  pulseaudio (optional)  for audio support
+  apulse     (optional)  for audio support
+
+
+End of file.

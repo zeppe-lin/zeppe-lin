@@ -1,0 +1,20 @@
+# Description: X11 keyboard layout index switcher
+# URL:         file:///usr/src/zeppe-lin/xorg/xkbswitch
+# Depends on:  libbsd xorg-libx11
+
+name=xkbswitch
+version=0.1.1
+release=1
+source="$name.c $name.1.pod"
+
+build() {
+	export CFLAGS="$CFLAGS -std=c99 -pedantic -Wall -Wextra -Wformat"
+	export LDFLAGS="$LDFLAGS -lX11"
+	export CPPFLAGS="-D_DEFAULT_SOURCE"
+
+	${CC:-cc} -o $name $CPPFLAGS $CFLAGS $LDFLAGS $name.c
+	pod2man -c ' ' -n $name -r $version $name.1.pod > $name.1
+
+	install -m 0755 -Dt $PKG/usr/bin/            $name
+	install -m 0644 -Dt $PKG/usr/share/man/man1/ $name.1
+}

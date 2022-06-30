@@ -1,0 +1,24 @@
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+pkgman-current - print installed package version
+
+=head1 SYNOPSIS
+
+B<pkgman> current I<PKGNAME>
+
+=head1 DESCRIPTION
+
+Print the version of the currently installed package.
+
+=head1 EXIT STATUS
+
+0 if success, 255 otherwise.
+
+=cut
+
+# vim:sw=2:ts=2:sts=2:et:cc=72
+# End of file.

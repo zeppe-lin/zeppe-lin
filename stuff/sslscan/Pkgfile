@@ -1,0 +1,17 @@
+# Description: Test SSL/TLS enabled services to discover supported cipher suites
+# URL:         https://github.com/rbsec/sslscan
+# Depends on:  openssl
+
+name=sslscan
+version=2.0.14
+release=1
+source=https://github.com/rbsec/$name/archive/$version/$name-$version.tar.gz
+
+build() {
+	cd $name-$version
+
+	install -m 755 -d $PKG/usr/bin $PKG/usr/share/man/man1
+
+	make GIT_VERSION=$version
+	make install GIT_VERSION=$version DESTDIR=$PKG MANDIR=/usr/share/man
+}

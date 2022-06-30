@@ -1,0 +1,35 @@
+# Description: Collection of tools for network auditing and penetration testing
+# URL:         https://www.monkey.org/~dugsong/dsniff/
+# Depends on:  db libbsd libnids xorg-libxmu
+
+name=dsniff
+version=2.4b1
+release=1
+source="https://www.monkey.org/~dugsong/$name/beta/$name-$version.tar.gz
+	http://ftp.de.debian.org/debian/pool/main/d/$name/${name}_${version}+debian-30.debian.tar.xz
+	dsniff-httppostfix.patch
+	dsniff-macof-size-calculation.patch
+	dsniff-rpc.patch"
+
+build() {
+	cd $name-2.4
+
+	# apply bundled patches via series
+	while IFS='' read -r patch || [ -n "$patch" ]; do
+		patch -Np1 -i "$SRC/debian/patches/$patch"
+	done < $SRC/debian/patches/series
+
+	# apply local patches
+	patch -Np1 -i $SRC/$name-httppostfix.patch
+	patch -Np1 -i $SRC/$name-macof-size-calculation.patch
+	patch -Np1 -i $SRC/$name-rpc.patch
+
+	autoreconf -fi
+	./configure \
+		--with-libtirpc \
+		--prefix=/usr \
+		--sbindir=/usr/sbin \
+
+	make V=1
+	make install_prefix=$PKG install
+}

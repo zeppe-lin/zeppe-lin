@@ -1,0 +1,26 @@
+# Description: Library for the dynamic creation of images
+# URL:         https://libgd.github.io
+# Depends on:  libbsd libjpeg-turbo libpng xorg-libxpm
+
+name=libgd
+version=2.3.3
+release=1
+source="https://github.com/libgd/libgd/releases/download/gd-$version/$name-$version.tar.xz
+	remove_gd_flip_macros.patch"
+
+build() {
+	cd $name-$version
+
+	# macros are used in php
+	patch -Np1 -R -i $SRC/remove_gd_flip_macros.patch
+
+	./configure \
+		--prefix=/usr \
+		--without-webp \
+		--without-raqm \
+		--without-tiff \
+		--without-freetype \
+		--without-fontconfig \
+
+	make V=1 DESTDIR=$PKG install
+}

@@ -1,0 +1,126 @@
+#!/usr/bin/perl
+# See files COPYRIGHT and COPYING for copyright and license information.
+
+use strict;
+use warnings;
+#use diagnostics;
+use File::Basename;
+use Getopt::Long qw(:config gnu_compat);
+
+my $logdir;
+my %pkgs;
+my $totalTime = 0;
+
+my $opt_root = '';
+my $opt_version;
+my $opt_help;
+
+sub convertSecsToHMS {
+    my $secs = shift;
+    my $H    = $secs / 3600;
+    my $M    = $secs % 3600 / 60;
+    my $S    = $secs % 60;
+    sprintf "%02d:%02d:%02d", $H, $M, $S;
+}
+
+sub print_total_buildtime {
+    print "\nTotal: " . convertSecsToHMS($totalTime) . "\n";
+}
+
+sub print_packages_buildtime {
+    for my $pkg (keys %pkgs) {
+        print "$pkg: " . convertSecsToHMS($pkgs{$pkg}{buildTimeInSecs}). "\n";
+    }
+}
+
+sub get_timestamps_diffs {
+    for my $pkg (keys %pkgs) {
+        my $startDateTime = qx(date -d "$pkgs{$pkg}{startDateTime}" +%s);
+        my $endDateTime   = qx(date -d "$pkgs{$pkg}{endDateTime}" +%s);
+        my $DateTimeDiff  = $endDateTime - $startDateTime;
+
+        $pkgs{$pkg}{buildTimeInSecs} = $DateTimeDiff;
+        $totalTime += $DateTimeDiff;
+    }
+}
+
+sub get_timestamps {
+    for my $logfile (@ARGV) {
+        open my $fd, "$opt_root/$logdir/$logfile"
+            or warn "pkgmkbuildtime: $logdir/$logfile: $!\n" and next;
+
+        while (<$fd>) {
+            $pkgs{$logfile}{startDateTime} = $1
+                if /^=======> Building '.*?' started (.*)\.$/;
+
+            $pkgs{$logfile}{endDateTime} = $1
+                if /^=======> Building '.*?' succeeded (.*)\.$/;
+        }
+
+        close $fd;
+
+        if (! length $pkgs{$logfile}{startDateTime}) {
+            warn "$logfile: has no start datetime in the log\n";
+            delete $pkgs{$logfile} and next;
+        }
+
+        if (! length $pkgs{$logfile}{endDateTime}) {
+            warn "$logfile: has no end datetime in the log\n";
+            delete $pkgs{$logfile} and next;
+        }
+    }
+}
+
+sub get_logdir_location {
+    open my $fh, "$opt_root/etc/pkgman.conf" or die "pkgmkbuildtime: $!\n";
+    while (<$fh>) {
+        $logdir = dirname $1 if /^logfile\s+(.*)$/;
+    }
+    close $fh;
+}
+
+sub pkgmkbuildtime {
+    get_logdir_location;
+
+    die "pkgmkbuildtime: Log directory is empty. Check /etc/pkgman.conf!\n"
+        unless length $logdir;
+
+    die "pkgmkbuildtime: The specified log directory ($logdir) doesn't exists!\n"
+        unless -d $logdir;
+
+    get_timestamps;
+    get_timestamps_diffs;
+    print_packages_buildtime;
+    print_total_buildtime;
+}
+
+sub print_help {
+    print <<EOF;
+Usage: pkgmkbuildtime [OPTION] PKGNAME...
+Display total and average build time of selected packages.
+
+  -r, --root PATH   specify alternative root location
+  -v, --version     print version and exit
+  -h, --help        print help and exit
+EOF
+}
+
+sub print_version {
+    print "pkgmkbuildtime (pkgmaint) @VERSION@\n";
+}
+
+GetOptions(
+    "r|root=s"  => \$opt_root,
+    "v|version" => \$opt_version,
+    "h|help"    => \$opt_help,
+) or exit(1);
+
+&print_version and exit(0) if $opt_version;
+&print_help    and exit(0) if $opt_help;
+
+die "pkgmkbuildtime: option missing\n" unless scalar @ARGV;
+
+pkgmkbuildtime;
+
+# vim:sw=4:ts=4:sts=4:et
+# End of file.

@@ -1,0 +1,15 @@
+# Description: Domain scanner (chinarulezzz branch)
+# URL:         https://github.com/chinarulezzz/fierce-domain-scanner
+# Depends on:  p5-net-dns
+
+name=fierce
+version=0.9.9-40501b5
+_commit=40501b5bfab7d22a2b5e2c92bb19212b3cc0d355
+release=1
+source=https://github.com/chinarulezzz/$name-domain-scanner/archive/$_commit/$name-domain-scanner-$_commit.tar.gz
+
+build() {
+	cd $name-domain-scanner-$_commit
+
+	install -m 755 -D $name $PKG/usr/bin/$name
+}

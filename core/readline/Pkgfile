@@ -1,0 +1,36 @@
+# Description: Lets users edit command lines as they are typed in
+# URL:         https://tiswww.cwru.edu/php/chet/readline/rltop.html
+# Depends on:  ncurses
+
+name=readline
+version=8.1.2
+release=1
+source="http://ftpmirror.gnu.org/gnu/$name/$name-8.1.tar.gz
+	http://ftpmirror.gnu.org/gnu/$name/$name-8.1-patches/${name}81-001
+	http://ftpmirror.gnu.org/gnu/$name/$name-8.1-patches/${name}81-002
+	inputrc"
+
+build() {
+	cd $name-8.1
+
+	for p in $SRC/${name}81-???; do patch -p0 -i $p; done
+
+	./configure --prefix=/usr
+
+	make V=1 SHLIB_LIBS=-lncurses
+	make DESTDIR=$PKG install
+
+	install -d $PKG/lib
+	mv $PKG/usr/lib/lib*.so.*  $PKG/lib
+
+	ln -sf ../../lib/libhistory.so.8.1 \
+		$PKG/usr/lib/libhistory.so
+
+	ln -sf ../../lib/libreadline.so.8.1 \
+		$PKG/usr/lib/libreadline.so
+
+	install -m 0644 -D $SRC/inputrc $PKG/etc/inputrc
+
+	# remove junk
+	rm -r $PKG/usr/share/doc $PKG/usr/share/info
+}

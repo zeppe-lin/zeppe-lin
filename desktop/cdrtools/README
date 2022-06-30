@@ -1,0 +1,8 @@
+README cdrtools
+
+    KERNEL MODULE
+
+    Add "/sbin/modprobe sg" into /etc/rc.modules to autoload 'sg' module
+    needed by cdrecord.
+
+End of file.

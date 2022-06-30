@@ -1,0 +1,24 @@
+# Description: X display locker
+# URL:         http://tools.suckless.org/slock
+# Depends on:  xorg-libxext xorg-libxrandr
+
+name=slock
+version=1.4
+release=1
+source="http://dl.suckless.org/tools/$name-$version.tar.gz
+	slock-unlock_screen-1.4.patch"
+
+build() {
+	cd $name-$version
+
+	patch -p1 -i $SRC/slock-unlock_screen-1.4.patch
+
+	sed -i 's/nogroup/nobody/' config.def.h
+
+	# fix flags
+	sed -i -e "/^CFLAGS/s/-O./$CFLAGS/" -e "/^LDFLAGS/s/-s/$LDFLAGS/" \
+		config.mk
+
+	make
+	make install PREFIX=/usr DESTDIR=$PKG
+}

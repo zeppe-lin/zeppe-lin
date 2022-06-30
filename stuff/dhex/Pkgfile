@@ -1,0 +1,20 @@
+# Description: Hex editor with diff mode
+# URL:         http://www.dettus.net/dhex/
+# Depends on:  ncurses
+
+name=dhex
+version=0.69
+release=1
+source=http://www.dettus.net/dhex/${name}_$version.tar.gz
+
+build() {
+	cd ${name}_$version
+
+	make LDFLAGS="$LDFLAGS" CPPFLAGS="$CPPFLAGS" CFLAGS="$CFLAGS"
+
+	install -d $PKG/usr/bin $PKG/usr/share \
+		$PKG/usr/man/man1 $PKG/usr/man/man5
+
+	make DESTDIR=$PKG/usr install
+	mv $PKG/usr/man $PKG/usr/share/man
+}

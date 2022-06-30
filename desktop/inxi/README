@@ -1,0 +1,18 @@
+README inxi
+
+
+  REQUIREMENTS
+
+    To obtain more information about your system will be nice to have:
+
+    xorg-xprop     desktop data
+    xorg-xdpyinfo  multi-screen resolution
+    xorg-xrandr    single screen resolution
+    lm-sensors     sensors output
+
+    To see more optional requirements, type:
+
+      $ inxi --recommends
+
+
+End of file.

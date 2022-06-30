@@ -1,0 +1,20 @@
+# Description: File system and media management forensic analysis tools
+# URL:         https://www.sleuthkit.org/sleuthkit
+# Depends on:  libewf-legacy sqlite3
+
+
+name=sleuthkit
+version=4.11.1
+release=1
+source=https://github.com/$name/$name/archive/refs/tags/$name-$version.tar.gz
+
+build() {
+	cd $name-$name-$version
+
+	autoreconf -i
+	./configure \
+		--prefix=/usr
+
+	make V=1
+	make DESTDIR=$PKG install
+}

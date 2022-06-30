@@ -1,0 +1,28 @@
+# Description: Various portability utilities for module builders
+# URL:         https://metacpan.org/pod/ExtUtils::Helpers
+# Depends on:  perl
+
+name=p5-extutils-helpers
+version=0.026
+release=1
+source=https://www.cpan.org/modules/by-module/ExtUtils/ExtUtils-Helpers-$version.tar.gz
+
+build() {
+	cd ExtUtils-Helpers-$version
+
+	perl Makefile.PL
+
+	make V=1
+	make install DESTDIR=$PKG
+
+	# remove junk
+	find $PKG \( \
+		   -name '.packlist'     \
+		-o -name '*.bs'          \
+		-o -name 'autosplit.ix'  \
+		-o -name 'perllocal.pod' \
+		\) -delete
+
+	# remove empty dirs
+	find $PKG -depth -empty -exec rm -rf {} \;
+}

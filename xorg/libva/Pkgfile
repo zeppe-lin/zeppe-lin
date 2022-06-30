@@ -1,0 +1,20 @@
+# Description: Video Acceleration API to enable hardware accelerated video decode/encode
+# URL:         https://01.org/linuxmedia/vaapi
+# Depends on:  libdrm libglvnd xorg-libxfixes
+
+name=libva
+version=2.14.0
+release=1
+source=https://github.com/intel/$name/archive/$version/$name-$version.tar.gz
+
+build() {
+	meson setup build $name-$version \
+		--prefix=/usr \
+		--buildtype=plain \
+		--wrap-mode nodownload \
+		-D b_lto=true \
+		-D b_pie=true \
+
+	ninja -C build -j ${JOBS:-1} -v
+	DESTDIR=$PKG ninja -C build install
+}

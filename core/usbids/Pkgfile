@@ -1,0 +1,12 @@
+# Description: USB ID Repository
+# URL:         http://www.linux-usb.org/usb-ids.html
+
+name=usbids
+version=20210719
+release=1
+source=usb.ids.bz2
+
+build() {
+	install -d $PKG/usr/share
+	bzcat $SRC/usb.ids.bz2 > $PKG/usr/share/usb.ids
+}

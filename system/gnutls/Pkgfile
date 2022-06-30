@@ -1,0 +1,29 @@
+# Description: Provides a secure layer over a reliable transport layer
+# URL:         https://gnutls.org
+# Depends on:  libidn2 nettle p11-kit
+
+name=gnutls
+version=3.7.2
+release=1
+source=https://www.gnupg.org/ftp/gcrypt/$name/v3.7/$name-$version.tar.xz
+
+build() {
+	cd $name-$version
+
+	./configure \
+		--prefix=/usr                                \
+		--disable-guile                              \
+		--disable-bash-tests                         \
+		--disable-tests                              \
+		--disable-full-test-suite                    \
+		--with-default-trust-store-pkcs11="pkcs11:"  \
+		--without-tpm                                \
+
+	sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
+
+	make V=1
+	make DESTDIR=$PKG install
+
+	# more junk
+	rm -r $PKG/usr/share/doc $PKG/usr/share/info $PKG/usr/share/locale
+}

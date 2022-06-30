@@ -1,0 +1,47 @@
+# Description: Library for encoding H264/AVC video streams (snapshot)
+# URL:         http://www.videolan.org/developers/x264.html
+
+name=x264
+version=20190812-2245
+release=1
+source="https://download.videolan.org/pub/videolan/x264/snapshots/x264-snapshot-$version-stable.tar.bz2
+	0001-no-bash.patch
+	0002-adjust-to-sbase-od.patch"
+
+build() {
+	patch -d $name-snapshot-$version-stable \
+		-p1 -i $SRC/0001-no-bash.patch
+
+	cp -r $name-snapshot-$version-stable $name-10
+
+	cd $name-10
+	./configure \
+		--prefix=/usr \
+		--libdir=/usr/lib/libx264-10bit \
+		--includedir=/usr/lib/libx264-10bit/include \
+		--enable-pic \
+		--enable-shared \
+		--bit-depth='10' \
+		--disable-cli \
+		--disable-interlaced \
+		--extra-cflags="$CFLAGS"
+
+	make V=1
+	make DESTDIR=$PKG install-lib-shared
+
+	cd $SRC/$name-snapshot-$version-stable
+	patch -p0 -i $SRC/0002-adjust-to-sbase-od.patch
+
+	./configure \
+		--prefix=/usr \
+		--enable-pic \
+		--enable-shared \
+		--bit-depth='8' \
+		--disable-cli \
+		--extra-cflags="$CFLAGS"
+
+	make V=1
+	make DESTDIR=$PKG install
+
+	chmod a-x $PKG/usr/lib/*.so $PKG/usr/lib/libx264-10bit/*.so
+}

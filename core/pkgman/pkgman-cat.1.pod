@@ -1,0 +1,40 @@
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+pkgman-cat - print out the package's file
+
+=head1 SYNOPSIS
+
+B<pkgman> cat I<PKGNAME> [I<FILE>]
+
+=head1 DESCRIPTION
+
+Prints out the package file from the package source directory.  If
+I<FILE> is not specified, C<Pkgfile> is used.
+
+=head1 ENVIRONMENT
+
+=over 8
+
+=item I<PAGER>
+
+If the package's source directory has a I<FILE>, then
+L<pkgman(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgman/pkgman.1.pod>
+will try to open it using a I<PAGER>.  If I<PAGER> is unset, then
+L<pkgman(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgman/pkgman.1.pod>
+prints the I<FILE> to stdout.
+
+=back
+
+=head1 EXIT STATUS
+
+0 if success, 255 if package's source directory (or package's file)
+is not found
+
+=cut
+
+# vim:sw=2:ts=2:sts=2:et:cc=72
+# End of file.

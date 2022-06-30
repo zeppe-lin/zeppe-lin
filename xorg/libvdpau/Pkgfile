@@ -1,0 +1,21 @@
+# Description: VDPAU-based backend for VA-API
+# URL:         https://gitlab.freedesktop.org/vdpau/libvdpau
+# Depends on:  libbsd xorg-libxext
+
+name=libvdpau
+version=1.5
+release=1
+source=https://gitlab.freedesktop.org/vdpau/$name/-/archive/$version//$name-$version.tar.bz2
+
+build() {
+	meson setup build $name-$version \
+		--prefix=/usr \
+		--buildtype=plain \
+		--wrap-mode=nodownload \
+		-D b_lto=true \
+		-D b_pie=true \
+		-D documentation=false \
+
+	ninja -C build -j ${JOBS:-1} -v
+	DESTDIR=$PKG ninja -C build install
+}

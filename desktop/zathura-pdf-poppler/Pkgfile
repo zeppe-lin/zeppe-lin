@@ -1,0 +1,27 @@
+# Description: PDF support for zathura using poppler rendering library
+# URL:         https://pwmt.org/projects/zathura-pdf-poppler
+# Depends on:  libidn2 poppler zathura zstd
+
+name=zathura-pdf-poppler
+version=0.3.0
+release=1
+source=https://pwmt.org/projects/$name/download/$name-$version.tar.xz
+
+build() {
+	meson build $name-$version \
+		--prefix=/usr \
+		--sysconfdir=/usr/etc \
+		--buildtype=plain \
+		--wrap-mode=nodownload \
+		-D b_lto=true \
+		-D b_pie=true \
+
+	sed -i 's/ \-pipe / /g' build/compile_commands.json \
+		build/build.ninja
+
+	ninja -C build -j ${JOBS:-1} -v
+	DESTDIR=$PKG ninja -C build install
+
+	rm -r $PKG/usr/share
+	find $PKG -perm /go+w -exec chmod go-w {} \;
+}

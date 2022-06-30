@@ -1,0 +1,17 @@
+# Description: Alternate posix capabilities library
+# URL:         https://people.redhat.com/sgrubb/libcap-ng/
+
+name=libcap-ng
+version=0.8.3
+release=1
+source=https://people.redhat.com/sgrubb/$name/$name-$version.tar.gz
+
+build() {
+	cd $name-$version
+
+	autoreconf -fi
+	./configure --prefix=/usr
+
+	make V=1
+	make DESTDIR=$PKG install
+}

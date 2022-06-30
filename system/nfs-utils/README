@@ -1,0 +1,9 @@
+README nfs-utils
+
+
+  UPGRADING
+
+    Note, that nfs-utils >= 2.5.4 now depends on util-linux' uuidd.
+
+
+End of file.

@@ -1,0 +1,58 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use Getopt::Long qw(:config gnu_compat);
+
+sub finddisappeared {
+    my $root = shift || '';
+
+    local $/ = ""; # read files paragraph-wise; see ``perldoc perlvar''
+
+    open my $fh, "< $root/var/lib/pkg/db"
+        or die "Couldn't open package database ($root): $!\n";
+
+    while (<$fh>) {
+        my ($pkg_name, $pkg_version, @pkg_file) = split /\n/;
+        my @missing = grep ! -e "$root/$_", @pkg_file;
+        next if not @missing;
+
+        print map "/$_ $pkg_name\n", @missing;
+    }
+
+    close($fh);
+}
+
+sub print_help {
+    print <<EOF;
+Usage: finddisappeared [OPTION]
+Find files that are owned by package manager but somehow disappeared.
+
+  -r, --root PATH   specify alternative root location
+  -v, --version     print version and exit
+  -h, --help        print help and exit
+EOF
+    exit 0;
+}
+
+sub print_version {
+    print "finddisappeared (pkgmaint) @VERSION@\n";
+    exit 0;
+}
+
+
+GetOptions(
+    "r|root=s"  => \my $opt_root,
+    "v|version" => \my $opt_version,
+    "h|help"    => \my $opt_help,
+) or die "Error in command-line arguments\n";
+
+die "finddisappeared: invalid option @ARGV\n" if @ARGV;
+
+&print_help    if $opt_help;
+&print_version if $opt_version;
+
+finddisappeared $opt_root;
+
+# vim:sw=4:ts=4:sts=4:et
+# End of file.

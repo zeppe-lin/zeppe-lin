@@ -1,0 +1,12 @@
+# Description: Audit Git repos for secrets and keys
+# URL:         https://github.com/zricethezav/gitleaks
+
+name=gitleaks-bin
+version=8.8.11
+release=1
+source=https://github.com/zricethezav/gitleaks/releases/download/v$version/gitleaks_${version}_linux_x64.tar.gz
+
+build() {
+	ls -la
+	install -m 755 -Dt $PKG/usr/bin/ gitleaks
+}

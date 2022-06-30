@@ -1,0 +1,17 @@
+# Description: Take a list of domains and probe for working HTTP and HTTPS servers
+# URL:         https://github.com/tomnomnom/httprobe
+
+name=httprobe-bin
+version=0.2
+release=1
+source="https://github.com/tomnomnom/httprobe/releases/download/v$version/httprobe-linux-amd64-$version.tgz
+	httprobe.1.pod"
+
+build() {
+	ls -la
+
+	install -m 0755 -Dt $PKG/usr/bin/ httprobe
+	install -d $PKG/usr/share/man/man1
+	pod2man --nourls -r $version -c ' ' -n httprobe -s 1 \
+		httprobe.1.pod > $PKG/usr/share/man/man1/httprobe.1
+}

@@ -1,0 +1,34 @@
+# Description: Bind tools
+# URL:         https://www.isc.org/bind/
+# Depends on:  json-c libuv openssl readline zlib
+
+name=bindutils
+version=9.18.4
+release=1
+source="https://ftp.isc.org/isc/bind9/$version/bind-$version.tar.xz
+	utils.patch"
+
+build() {
+	cd bind-$version
+
+	./configure \
+		--prefix=/usr \
+		--libdir=/usr/lib/$name \
+		--includedir=/usr/include/$name \
+		--disable-linux-caps \
+		--disable-doh \
+		--with-libxml2=no \
+		--with-gssapi=no \
+
+	make -C lib      V=1
+	make bind.keys.h
+	make -C bin/dig  V=1
+	make -C bin/delv V=1
+	make -C doc/man  V=1
+	make DESTDIR=$PKG -C lib      install
+	make DESTDIR=$PKG -C bin/dig  install
+	make DESTDIR=$PKG -C bin/delv install
+	for util in delv dig host nslookup; do
+		install -m 644 -Dt $PKG/usr/share/man/man1/ doc/man/$util.1
+	done
+}

@@ -1,0 +1,62 @@
+#!/bin/sh
+# See files COPYRIGHT and COPYING for copyright and license information.
+
+findredundantdeps() {
+	DEPS=$(pkgman dep --all "$1") || exit 3
+
+	# Intentional
+	# shellcheck disable=2086
+	pkgman dep --all --recursive --full "$1" | \
+		grep -E "($(echo $DEPS | tr ' ' '|'))$"
+}
+
+show_uniq() {
+	tr ' ' '\n' | sort | uniq -u
+}
+
+print_help() {
+	cat <<EOF
+Usage: $PROGRAM [OPTION] PKGNAME
+Find (un)necessary dependencies of the package.
+
+  -u, --unique    print only unique (required) dependencies in the listing
+  -v, --version   print version and exit
+  -h, --help      print help and exit
+EOF
+}
+
+main() {
+	while [ "$1" ]; do
+		case $1 in
+		-u|--unique)
+			SHOW_UNIQ_CMD=show_uniq
+			;;
+		-v|--version)
+			echo "$PROGRAM (pkgmaint) @VERSION@"
+			exit 0
+			;;
+		-h|--help)
+			print_help
+			exit 0
+			;;
+		-*)
+			echo "$PROGRAM: invalid option $1"
+			exit 1
+			;;
+		*)
+			if [ -z "$1" ]; then
+				echo "$PROGRAM: option missing"
+				exit 2
+			fi
+			PKGNAME=$1
+			;;
+		esac
+		shift
+	done
+	findredundantdeps "$PKGNAME" | ${SHOW_UNIQ_CMD:-cat}
+}
+
+PROGRAM=$(basename "$0")
+main "$@"
+
+# End of file.

@@ -1,0 +1,183 @@
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+pkgmk - make software package
+
+=head1 SYNOPSIS
+
+B<pkgmk> [I<OPTION>]...
+
+=head1 DESCRIPTION
+
+B<pkgmk> is a package management utility, which makes a software
+package.  A package is an archive of files (.pkg.tar.gz, .pkg.tar.bz2
+or .pkg.tar.xz) that can be installed using
+L<pkgadd(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgutils/pkgadd.8.pod>.
+
+To prepare to use B<pkgmk>, you must write a file named F<Pkgfile>,
+that describes how the package should be build.  See
+L<Pkgfile(5)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/Pkgfile.5.pod>
+manual page for more information how-to write Pkgfile files.  Once a
+suitable F<Pkgfile> file exists, each time you change some source
+files, you simple execute B<pkgmk> to bring the package up to date.
+The B<pkgmk> program uses F<Pkgfile> file and the last-modification
+times of the source files to decide if the package needs to be
+updated.
+
+Global configuration file is stored in F</etc/pkgmk.conf>.  This file
+is read by B<pkgmk> at startup.
+
+=head1 OPTIONS
+
+Mandatory arguments to long options are mandatory for short options
+too.
+
+=over 8
+
+=item B<-d>, B<--download>
+
+Download missing source file(s).
+
+=item B<-do>, B<--download-only>
+
+Do not build, only download missing source file(s).
+
+=item B<-utd>, B<--up-to-date>
+
+Do not build, only check if the package is up to date.
+
+=item B<-uf>, B<--update-footprint>
+
+Update footprint and treat last build as successful.
+
+=item B<-if>, B<--ignore-footprint>
+
+Build package without checking footprint.
+
+=item B<-in>, B<--ignore-new>
+
+Build package, ignore new files in a footprint mismatch.
+
+=item B<-um>, B<--update-md5sum>
+
+Update md5sum using the current source files.
+
+=item B<-im>, B<--ignore-md5sum>
+
+Build package without checking md5sum first.
+
+=item B<-cm>, B<--check-md5sum>
+
+Check md5sum without building the package.
+
+=item B<-ns>, B<--no-strip>
+
+Do not strip executable binaries or libraries.
+
+=item B<-f>, B<--force>
+
+Build package even if it appears to be up to date.
+
+=item B<-c>, B<--clean>
+
+Remove the (previously built) package and the downloaded source files.
+
+=item B<-kw>, B<--keep-work>
+
+Keep temporary working directory.
+
+=item B<-cf>, B<--config-file> I<FILE>
+
+Use alternative configuration file (default is F</etc/pkgmk.conf>).
+
+=item B<-v>, B<--version>
+
+Print version and exit.
+
+=item B<-h>, B<--help>
+
+Print help and exit.
+
+=back
+
+=head1 FILES
+
+=over 8
+
+=item F<Pkgfile>
+
+Package build description. See
+L<Pkgfile(5)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/Pkgfile.5.pod>
+manual page for more information.
+
+=item F<.footprint>
+
+Package footprint (used for regression testing).
+
+=item F<.md5sum>
+
+MD5 checksum of source files.
+
+=item F</etc/pkgmk.conf>
+
+Global package make configuration. See
+L<pkgmk.conf(5)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgmk.conf.5.pod>
+manual page for more information.
+
+=back
+
+=head1 EXIT STATUS
+
+=over 8
+
+=item C<0>
+
+No error occurred.
+
+=item C<1>
+
+A general error has occurred.
+
+=item C<2>
+
+The F<Pkgfile> is invalid.
+
+=item C<3>
+
+The source or build directory is missing or is lacking read/write
+permissions.
+
+=item C<4>
+
+An error occurred during the download of source files.
+
+=item C<5>
+
+An error occurred during unpacking of source files.
+
+=item C<6>
+
+An md5sum mismatch occurred.
+
+=item C<7>
+
+A footprint mismatch occurred.
+
+=item C<8>
+
+An error occurred while running the B<build> function.
+
+=back
+
+=head1 SEE ALSO
+
+L<pkgmk.conf(5)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgmk.conf.5.pod>,
+L<Pkgfile(5)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/Pkgfile.5.pod>
+
+=cut
+
+# vim:sw=2:ts=2:sts=2:et:cc=72
+# End of file.

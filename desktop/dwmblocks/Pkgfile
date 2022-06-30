@@ -1,0 +1,18 @@
+# Description: Modular status bar for dwm
+# URL:         file:///usr/src/zeppe-lin/desktop/dwmblocks
+# Depends on:  libbsd xorg-libx11
+
+name=dwmblocks
+version=0.1
+release=1
+source="$(ls -1 *.sh) $name.c config.h"
+
+build() {
+	export CFLAGS="$CFLAGS -pedantic -Wall -Wno-deprecated-declarations"
+	export LDFLAGS="$LDFLAGS -lX11"
+
+	${CC:-cc} -o $name $CFLAGS $LDFLAGS $name.c
+
+	install -m 0755 -Dt $PKG/usr/bin/ $name
+	install -m 0755 -Dt $PKG/usr/share/$name/ $(ls -1 *.sh)
+}

@@ -1,0 +1,34 @@
+ABOUT pkgutils
+
+
+  This directory contains pkgutils, a set of utilities (pkgadd, pkgrm,
+  pkginfo), which are used for managing software packages.
+
+  This is a fork of CRUX' pkgutils.
+
+  The original sources can be downloaded from:
+
+    1. https://crux.nu/gitweb/?p=tools/pkgutils.git;a=summary
+    2. git://crux.nu/tools/pkgutils.git
+
+
+  DEPENDENCIES
+
+  All the following dependencies are required at build time:
+
+    * g++
+    * make(1p)
+    * pod2man(1pm)
+    * libarchive(3)
+
+
+  LICENSE
+
+  pkgutils is licensed through the GNU General Public License v2 or
+  later <https://gnu.org/licenses/gpl.html>.
+
+  Read the COPYING file for the complete license.
+  Read the COPYRIGHT file for the copyright notices.
+
+
+End of file.

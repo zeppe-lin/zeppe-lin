@@ -1,0 +1,46 @@
+# Description: Web scanner that identifies what websites are running
+# URL:         https://github.com/urbanadventurer/WhatWeb
+# Depends on:  ruby libxslt
+
+name=whatweb
+version=0.5.5-ae89986
+_commit=${version##*-}
+release=1
+source="https://github.com/urbanadventurer/WhatWeb/archive/$_commit/WhatWeb-$_commit.tar.gz
+	$name.sh"
+
+build() {
+	cd WhatWeb-$_commit*
+
+	bundle config build.nokogiri --use-system-libraries
+	bundle config set deployment 'false'
+	bundle config set no-cache 'false'
+	bundle install -j $JOBS --path vendor/bundle
+
+	find vendor/bundle/ruby -exec chmod o+r '{}' \;
+	find vendor/bundle/ruby -name gem_make.out -o -name mkmf.log -delete
+
+	install -d $PKG/opt/$name $PKG/usr/bin $PKG/usr/share/man/man1
+	install -m 644 $name.1 $PKG/usr/share/man/man1
+	cp -r . $PKG/opt/$name
+	install -m 755 -D $SRC/$name.sh $PKG/usr/bin/$name
+
+	# remove junk
+	rm -rf $PKG/opt/whatweb/vendor/bundle/ruby/*/gems/*/LICENSE*
+	rm -rf $PKG/opt/whatweb/vendor/bundle/ruby/*/gems/*/*-LICENSE*
+	rm -rf $PKG/opt/whatweb/vendor/bundle/ruby/*/gems/*/README*
+	rm -rf $PKG/opt/whatweb/vendor/bundle/ruby/*/gems/*/CHANGES*
+	rm -rf $PKG/opt/whatweb/vendor/bundle/ruby/*/gems/*/CHANGELOG*
+	rm -rf $PKG/opt/whatweb/vendor/bundle/ruby/*/gems/*/SECURITY*
+	rm -rf $PKG/opt/whatweb/vendor/bundle/ruby/*/gems/*/*.md
+	rm -rf $PKG/opt/whatweb/vendor/bundle/ruby/*/gems/*/.github/
+	rm -rf $PKG/opt/whatweb/vendor/bundle/ruby/*/gems/*/test/
+	rm -rf $PKG/opt/whatweb/*.md
+	rm -rf $PKG/opt/whatweb/whatweb.xsl
+	rm -rf $PKG/opt/whatweb/test/
+	rm -rf $PKG/opt/whatweb/icons/
+	rm -rf $PKG/opt/whatweb/LICENSE
+	rm -rf $PKG/opt/whatweb/.gitignore
+	rm -rf $PKG/opt/whatweb/.travis.yml
+	rm -rf $PKG/opt/whatweb/.rubocop.yml
+}

@@ -1,0 +1,13 @@
+bin
+etc
+lib
+lib32
+opt
+sbin
+usr/bin
+usr/etc
+usr/include
+usr/lib
+usr/lib32
+usr/sbin
+usr/share

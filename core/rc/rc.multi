@@ -1,0 +1,35 @@
+#!/bin/sh
+#
+# /etc/rc.multi: multi-user startup script
+#
+
+# Load configuration.
+. /etc/rc.conf
+
+# Run fixes startup file.
+if [ -x /etc/rc.fix ]; then
+	/etc/rc.fix
+fi
+
+# Start services.
+if [ "$SYSLOG" ] || [ "$SERVICES" ]; then
+	printf "starting services:"
+	if [ -f /etc/rc.d/$SYSLOG ] && [ -x /etc/rc.d/$SYSLOG ]; then
+		printf " %s" $SYSLOG
+		/etc/rc.d/$SYSLOG start >/dev/null 2>&1 || printf "%s" "[ERROR]"
+	fi
+	for service in $SERVICES; do
+		printf " %s" "$service"
+		"/etc/rc.d/$service" start >/tmp/rc.$$ 2>&1 || printf "%s" "[ERROR]"
+		/usr/bin/logger -t "$service" < /tmp/rc.$$
+		/bin/rm -f /tmp/rc.$$
+	done
+	echo
+fi
+
+# Run local startup script.
+if [ -x /etc/rc.local ]; then
+	/etc/rc.local
+fi
+
+# End of file.
