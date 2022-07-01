@@ -2,7 +2,7 @@
 # URL:         https://www.kernel.org
 
 name=linux
-version=5.4.191
+version=5.4.202
 release=1
 source="https://cdn.kernel.org/pub/linux/kernel/v5.x/$name-$version.tar.xz
 	x86_64-dotconfig
@@ -68,10 +68,6 @@ build() {
 	# XXX HOTFIX
 	# *** [kernel/Makefile:151: kernel/kheaders_data.tar.xz] Error 2
 	./scripts/config --disable CONFIG_IKHEADERS
-
-	# Enable CONFIG_UEVENT_HELPER=y needed for smdev
-	./scripts/config --set-str UEVENT_HELPER_PATH ""
-	./scripts/config --enable CONFIG_UEVENT_HELPER
 
 	make -j ${JOBS:-1} V=1 all
 	make -j1 V=1 ARCH=$__karch INSTALL_MOD_STRIP=1 \
