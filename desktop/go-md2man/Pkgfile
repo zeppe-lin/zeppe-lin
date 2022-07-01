@@ -3,7 +3,7 @@
 # Depends on:  go-bin
 
 name=go-md2man
-version=2.0.1
+version=2.0.2
 release=1
 source=https://github.com/cpuguy83/$name/archive/v$version/$name-$version.tar.gz
 
