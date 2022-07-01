@@ -3,7 +3,7 @@
 # Depends on:  cairo libbsd
 
 name=harfbuzz
-version=4.3.0
+version=4.4.1
 release=1
 source=https://github.com/$name/$name/archive/$version/$name-$version.tar.gz
 
