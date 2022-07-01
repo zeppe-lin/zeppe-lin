@@ -3,7 +3,7 @@
 # Depends on:  glibc-32 libpcap libxslt postgresql python3-pyopenssl python3-requests ruby
 
 name=metasploit
-version=6.2.4
+version=6.2.5
 release=1
 source=https://github.com/rapid7/$name-framework/archive/$version/$name-$version.tar.gz
 
