@@ -1,0 +1,24 @@
+# Description: Open and reliable container runtime
+# URL:         https://containerd.io/
+# Depends on:  btrfs-progs git go-bin libseccomp
+
+name=containerd
+version=1.6.6
+release=1
+source=https://github.com/$name/$name/archive/v$version/$name-$version.tar.gz
+
+build() {
+	export GO111MODULE=on
+
+	mkdir -p src/github.com/$name
+	cd src/github.com/$name
+
+	ln -s $SRC/$name-$version $name
+	cd $name
+
+	export GOPATH=$SRC
+
+	make VERSION=v$version REVISION=10c12954828e7c7c9b6e0ea9b0c02b01407d3ae1
+	install -d $PKG/usr/bin
+	install -m 0755 bin/* $PKG/usr/bin/
+}

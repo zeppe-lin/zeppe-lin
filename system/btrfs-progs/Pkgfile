@@ -1,0 +1,26 @@
+# Description: Filesystem utilities for btrfs
+# URL:         http://btrfs.wiki.kernel.org
+# Depends on:  lzo zstd util-linux
+
+name=btrfs-progs
+version=5.18.1
+release=1
+source=https://www.kernel.org/pub/linux/kernel/people/kdave/$name/$name-v$version.tar.xz
+
+build() {
+	cd $name-v$version
+
+	./configure \
+		--prefix=/usr            \
+		--bindir=/sbin           \
+		--disable-documentation  \
+		--disable-convert        \
+		--disable-zoned          \
+		--disable-python         \
+
+	make V=1
+	make DESTDIR=$PKG install
+
+	install -m 644 -D btrfs-completion \
+		$PKG/usr/share/bash-completion/completions/btrfs
+}

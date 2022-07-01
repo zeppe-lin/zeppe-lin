@@ -1,0 +1,19 @@
+# Description: Defining and running multi-container Docker applications
+# URL:         https://github.com/docker/compose
+# Depends on:  go-bin
+
+name=docker-compose
+version=2.6.0
+release=1
+source=https://github.com/docker/compose/archive/v$version/$name-$version.tar.gz
+
+build() {
+	cd compose-$version
+
+	export CGO_FLAGS="$CFLAGS"
+	export CGO_CPPFLAGS="$CXXFLAGS"
+	export CGO_CXXFLAGS="$CXXFLAGS"
+
+	go build -trimpath -o $name ./cmd
+	install -m 755 -D $name $PKG/usr/bin/$name
+}

@@ -1,0 +1,7 @@
+#!/bin/sh
+
+if ! /usr/bin/getent group docker; then
+	/usr/sbin/groupadd --system docker
+fi
+
+# End of file.

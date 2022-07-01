@@ -1,0 +1,26 @@
+# Description: Markdown to manpage generator
+# URL:         https://github.com/cpuguy83/go-md2man
+# Depends on:  go-bin
+
+name=go-md2man
+version=2.0.1
+release=1
+source=https://github.com/cpuguy83/$name/archive/v$version/$name-$version.tar.gz
+
+build() {
+	export GOFLAGS="-buildmode=pie -mod=vendor -trimpath"
+	export CGO_LDFLAGS="$LDFLAGS"
+
+	cd $name-$version
+
+	go build -o $name .
+
+	# prepare manpage
+	sed -i  -e 's/^# Description/# DESCRIPTION/' \
+		-e 's/^# Example/# EXAMPLE/' \
+		$name.1.md
+	./$name -in=$name.1.md -out=$name.1
+
+	install -m 755 -D $name   $PKG/usr/bin/$name
+	install -m 644 -D $name.1 $PKG/usr/share/man/man1/$name.1
+}

@@ -1,0 +1,64 @@
+# Description: Pack, ship and run any application as a lightweight container
+# URL:         https://www.docker.com/community-edition
+# Depends on:  btrfs-progs cgroupfs-mount containerd libdevmapper runc
+
+name=docker
+version=20.10.17
+release=1
+
+# https://github.com/moby/libnetwork/commits/master
+_libnetwork_commit=f6ccccb1c082a432c2a5814aaedaca56af33d9ea
+
+source="https://github.com/moby/moby/archive/v$version/moby-$version.tar.gz
+	https://github.com/docker/cli/archive/v$version/cli-$version.tar.gz
+	https://github.com/docker/libnetwork/archive/$_libnetwork_commit/libnetwork-$_libnetwork_commit.tar.gz
+	rc.$name"
+
+build() {
+	export GO111MODULE=auto
+	export GOPATH=$SRC
+	export DOCKER_GITCOMMIT=a89b842
+	export DOCKER_BUILDTAGS="seccomp"
+	export DISABLE_WARN_OUTSIDE_CONTAINER=1
+
+	mkdir -p src/github.com/docker
+
+	cd src/github.com/docker
+	ln -s $SRC/cli-$version cli
+	cd cli
+	make VERSION=$version dynbinary
+	make VERSION=$version manpages
+	install -d $PKG/usr/share/man
+	cp -r man/man* $PKG/usr/share/man/
+	cd ..
+	
+	ln -s $SRC/moby-$version docker
+	cd docker
+	VERSION=$version hack/make.sh dynbinary
+	cd ../../..
+
+	install -m 0755 -D $SRC/cli-$version/build/$name \
+		$PKG/usr/bin/$name
+	install -m 0755 -D \
+		$SRC/moby-$version/bundles/dynbinary-daemon/dockerd-$version \
+		$PKG/usr/bin/dockerd
+
+	cd ..
+	GOROOT=/usr/lib/go GOPATH=$PKGMK_WORK_DIR \
+		go build -o $PKG/usr/bin/$name-proxy \
+			libnetwork-$_libnetwork_commit/cmd/proxy
+	cd src
+	ln -s containerd      $PKG/usr/bin/docker-containerd
+	ln -s containerd-shim $PKG/usr/bin/docker-containerd-shim
+	ln -s ctr             $PKG/usr/bin/docker-containerd-ctr
+	ln -s runc            $PKG/usr/bin/docker-runc
+
+	install -m 755 -D $SRC/moby-$version/contrib/check-config.sh \
+		$PKG/usr/share/$name/check-config.sh
+	install -m 644 -D $SRC/moby-$version/contrib/udev/80-$name.rules \
+		$PKG/etc/udev/rules.d/80-$name.rules
+	install -m 644 -D $SRC/cli-$version/contrib/completion/bash/docker \
+		$PKG/usr/share/bash-completion/completions/docker
+
+	install -m 755 -D $SRC/rc.$name $PKG/etc/rc.d/$name
+}
