@@ -2,7 +2,7 @@
 # URL:         file:///usr/src/zeppe-lin/core/pkgmk
 
 name=pkgmk
-version=5.41.1
+version=5.42
 release=1
 source="bash_completion
 	Makefile

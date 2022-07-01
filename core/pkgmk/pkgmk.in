@@ -220,7 +220,7 @@ unpack_source() {
 	for __FILE in ${source}; do
 		__LOCAL_FILENAME=$(get_filename "$__FILE")
 		case $__LOCAL_FILENAME in
-			*.tar|*.tar.gz|*.tar.Z|*.tgz|*.tar.bz2|*.tbz2|*.tar.xz|*.txz|*.tar.lzma|*.tar.lz|*.zip|*.rpm|*.7z)
+			*.tar|*.tar.gz|*.tar.Z|*.tgz|*.tar.bz2|*.tbz2|*.tar.xz|*.txz|*.tar.lzma|*.tar.lz|*.zip|*.rpm|*.7z|*.zst)
 				__COMMAND="bsdtar -p -o -C $SRC -xf $__LOCAL_FILENAME"
 				;;
 			*)
