@@ -1,8 +1,9 @@
 ABOUT rssfeeds
 
 
-  This directory contains RSS/Atom feeds for the software used in zeppe-lin.
-  The main purpose of these feeds is to help maintainer to watch for updates.
+  This directory contains RSS/Atom feeds for the software used in
+  zeppe-lin.  The main purpose of these feeds is to help maintainer to
+  watch for updates.
 
     .
     ├── ABOUT     This file.
