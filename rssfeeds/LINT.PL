@@ -17,7 +17,7 @@ my %obsolete = map { $_ => 1 } qw(
 	);
 
 my %pkgsrc = map { $_ => 1 } qw(
-	filesystem rc torify-all-traffic
+	filesystem rc torify-all-traffic tinyramfs
 	dwm60cf st084cf xkbswitch dwmblocks
 	pkgmk pkgman revdep rejmerge pkgutils pkgmaint
 	trinity-gtk-theme trinity-icon-theme trinity-extra-theme
