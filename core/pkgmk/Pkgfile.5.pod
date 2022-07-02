@@ -325,8 +325,8 @@ needs to access the files listed in the C<source> variable, and the
 C<$PKG> variable as the root destination of the output files.
 
 Being a shell script executed in the context of
-L<pkgmk(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgmk.8.pod>
-, the entire F<Pkgfile> file has access to the variables initialized
+L<pkgmk(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgmk.8.pod>,
+the entire F<Pkgfile> file has access to the variables initialized
 in F<pkgmk.conf> and the default values set by
 L<pkgmk(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgmk.8.pod>.
 Also, as an undocumented side effect of how it is used by

@@ -3,7 +3,7 @@
 
 name=pkgmk
 version=5.42
-release=1
+release=2
 source="bash_completion
 	Makefile
 	Pkgfile.5.pod
