@@ -4,7 +4,7 @@
 
 name=dhcpcd
 version=9.4.1
-release=2
+release=3
 source="https://roy.marples.name/downloads/$name/$name-$version.tar.xz
 	rc.dhcpcd"
 
