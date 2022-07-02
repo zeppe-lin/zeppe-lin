@@ -7,7 +7,7 @@ DEV=wlan0
 
 SSD=/sbin/start-stop-daemon
 PROG=/sbin/dhcpcd
-PID=/var/run/dhcpcd/$DEV.pid
+PID=/var/run/dhcpcd/pid
 OPTS=" $DEV"
 
 case $1 in
