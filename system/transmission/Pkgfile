@@ -4,21 +4,24 @@
 
 name=transmission
 version=3.00
-release=1
-source=$name-$version.tar.xz
+release=2
+source="https://github.com/$name/$name-releases/raw/master/$name-$version.tar.xz
+	rc.$name"
 
 build() {
 	cd $name-$version
 
 	./configure \
-		--prefix=/usr    \
-		--disable-nls    \
-		--enable-cli     \
-		--enable-daemon  \
-		--without-gtk    \
+		--prefix=/usr \
+		--disable-nls \
+		--enable-cli \
+		--enable-daemon \
+		--without-gtk \
 
 	make V=1
 	make DESTDIR=$PKG install
+
+	install -m 755 -D $SRC/rc.$name $PKG/etc/rc.d/$name
 
 	rm $PKG/usr/share/transmission/web/LICENSE
 }

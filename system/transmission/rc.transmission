@@ -1,37 +1,41 @@
-#!/bin/sh -e
+#!/bin/sh
 #
 # /etc/rc.d/transmissiond: start/stop transmission-daemon(8)
 #
 
-RUN_AS_USER=me
-USER=transmission
-PASS=letmein1337
-LOGFILE=/var/log/transmission.log
+# Run as user.
+USER=me
 
+SSD=/sbin/start-stop-daemon
+PROG=/usr/bin/transmission-daemon
+PID=/var/run/transmission.pid
+LOG=/var/log/transmission.log
+OPTS="--foreground --port 9091 --logfile $LOG"
 
 case $1 in
 start)
-	[ -f $LOGFILE ] || touch $LOGFILE && chown $RUN_AS_USER $LOGFILE
-	su - $RUN_AS_USER -c \
-		"/usr/bin/transmission-daemon \
-			--allowed '127.0.0.*,192.168.100.*' \
-			--rpc-bind-address 0.0.0.0          \
-			--port 9091                         \
-			--auth                              \
-			--username $USER                    \
-			--password $PASS                    \
-			--logfile  $LOGFILE"
+	[ ! -f $LOG ] && touch $LOG
+	$SSD --start --make-pidfile --pidfile $PID --chuid $USER \
+		--background --exec $PROG -O $LOG -- $OPTS
 	;;
 stop)
-	killall -q /usr/bin/transmission-daemon
+	$SSD --stop --remove-pidfile --pidfile $PID --retry 60
 	;;
 restart)
 	$0 stop
-	sleep 2
 	$0 start
 	;;
+status)
+	$SSD --status --pidfile $PID
+	case $? in
+	0) echo "$PROG is running with pid $(cat $PID)" ;;
+	1) echo "$PROG is not running but the pid file $PID exists" ;;
+	3) echo "$PROG is not running" ;;
+	4) echo "Unable to determine the program status" ;;
+	esac
+	;;
 *)
-	echo "usage: $0 [start|stp[|restart]"
+	echo "usage: $0 [start|stop|restart|status]"
 	;;
 esac	
 
