@@ -169,7 +169,7 @@ Default: I<pkgmk>.
 =item B<addcommand> I<command>
 
 Use an alternate I<command> instead of
-L<pkgadd(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgutils/blob/master/pkgadd.8.pod>
+L<pkgadd(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgutils/pkgadd.8.pod>
 for the command which is used to install the package.
 
 Default: I<pkgadd>.
@@ -177,7 +177,7 @@ Default: I<pkgadd>.
 =item B<removecommand> I<command>
 
 Use an alternate I<command> instead of
-L<pkgrm(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgutils/blob/master/pkgrm.8.pod>
+L<pkgrm(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgutils/pkgrm.8.pod>
 for the command which is used to remove the package.
 
 Default: I<pkgrm>.
