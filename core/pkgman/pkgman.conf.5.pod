@@ -184,7 +184,8 @@ Default: I<pkgrm>.
 
 =item B<runscriptcommand> I<command>
 
-Use an alternate command instead of L<sh(1)> for the command which is
+Use an alternate command instead of
+L<sh(1)|https://www.mankier.com/1/dash> for the command which is
 used to run the C<pre/post-install> and C<pre/post-remove> scripts.
 
 Default: I</bin/sh>.
