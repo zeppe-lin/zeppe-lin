@@ -1,0 +1,12 @@
+drwxr-xr-x	root/root	etc/
+drwxr-xr-x	root/root	etc/qemuconf.d/
+-rw-r--r--	root/root	etc/qemuconf.d/generic.conf
+-rw-r--r--	root/root	etc/qemuconf.d/kali.conf
+drwxr-xr-x	root/root	usr/
+drwxr-xr-x	root/root	usr/bin/
+-rwxr-xr-x	root/root	usr/bin/qemuconf
+-rwxr-xr-x	root/root	usr/bin/qemuconf_import.sh
+drwxr-xr-x	root/root	usr/share/
+drwxr-xr-x	root/root	usr/share/man/
+drwxr-xr-x	root/root	usr/share/man/man1/
+-rw-r--r--	root/root	usr/share/man/man1/qemuconf.1.gz

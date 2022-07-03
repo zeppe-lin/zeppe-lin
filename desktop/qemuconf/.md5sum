@@ -1,0 +1,5 @@
+cf942c584d1d54b407d3bf51cc465576  generic.conf
+d5d3b67268e8f05c0d8990d37004345a  kali.conf
+7359fc369c8d64d3f065d3dbc946ebb0  qemuconf.1
+a0adae5be31576a8ee07c8afed58c7c7  qemuconf.c
+45739c9393efa470df381995e5c0fbfd  qemuconf_import.sh

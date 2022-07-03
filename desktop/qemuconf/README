@@ -1,0 +1,38 @@
+README qemuconf
+
+
+--  CONFIGURATION FILES  ---------------------------------------------
+
+    There are two default configuration files in /etc/qemuconf.d:
+    - generic.conf
+    - kali.conf
+
+    Adjust to your needs.
+
+    Also, you may create configuration file from currently
+    running qemu instance. Run qemuconf_import.sh.
+
+
+--  SHARE THE DIRECTORY  ---------------------------------------------
+
+    Execute qemuconf with the following options:
+
+    qemuconf /etc/qemuconf.d/myvm.conf \
+      -virtfs local,path=/mnt,mount_tag=host0,security_model=none,id=host0
+
+    where /mnt is your host mountpoint.
+
+
+--  USB PASSTHROUGH --------------------------------------------------
+
+    Execute qemuconf with the following options:
+
+    qemuconf /etc/qemuconf.d/kali.conf -- \
+      -device usb-ehci,id=ehci \
+      -device usb-host,bus=ehci.0,hostbus=1,hostaddr=18
+
+    where hostbus and hostaddr is your device's corresponding values.
+    To obtain them, use lsusb(8).
+
+
+End of file.
