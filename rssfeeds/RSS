@@ -472,6 +472,7 @@ https://github.com/pypa/setuptools/releases.atom                                
 https://github.com/benjaminp/six/releases.atom                                                    "~[r  ] python3-six"
 https://pypi.org/rss/project/smmap/releases.xml                                                   "~[r  ] python3-smmap"
 https://github.com/qemu/qemu/releases.atom                                                        "~[r  ] qemu"
+https://github.com/Gottox/qemuconf/commits/master.atom                                            "~[c  ] qemuconf"
 https://github.com/fukuchi/libqrencode/releases.atom                                              "~[r  ] qrencode"
 https://github.com/volgk/qrot/commits/master.atom                                                 "~[c  ] qrot"
 https://github.com/tomnomnom/qsreplace/releases.atom                                              "~[r  ] qsreplace-bin"
