@@ -2,13 +2,14 @@
 # URL:         file:///usr/src/zeppe-lin/desktop/trinity-extra-theme
 
 name=trinity-extra-theme
-version=0.1
-release=2
+version=0.2
+release=1
 source="dircolors
 	dunst
 	gitk
 	hexchat
 	newsboat
+	transmission_web
 	vifm
 	vim
 	wireshark

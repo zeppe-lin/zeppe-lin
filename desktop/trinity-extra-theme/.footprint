@@ -6,6 +6,7 @@ drwxr-xr-x	root/root	usr/share/trinity/
 -rw-r--r--	root/root	usr/share/trinity/gitk
 -rw-r--r--	root/root	usr/share/trinity/hexchat
 -rw-r--r--	root/root	usr/share/trinity/newsboat
+-rw-r--r--	root/root	usr/share/trinity/transmission_web
 -rw-r--r--	root/root	usr/share/trinity/vifm
 -rw-r--r--	root/root	usr/share/trinity/vim
 -rw-r--r--	root/root	usr/share/trinity/wireshark
