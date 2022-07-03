@@ -22,6 +22,11 @@ README qemuconf
 
     where /mnt is your host mountpoint.
 
+    On quest machine add the following line to /etc/fstab:
+    host0 /mnt 9p trans=virtio,access=any,version=9p2000.L 0 0
+
+    Note, that your current host's uid:gid on quest may be different.
+
 
 --  USB PASSTHROUGH --------------------------------------------------
 
