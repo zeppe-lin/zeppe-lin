@@ -1,0 +1,24 @@
+# Description: Papirus Icon Theme
+# URL:         https://github.com/PapirusDevelopmentTeam/papirus-icon-theme
+
+name=papirus-icon-theme
+version=20220606
+release=1
+source=https://github.com/PapirusDevelopmentTeam/$name/archive/$version/$name-$version.tar.gz
+
+build() {
+	cd $name-$version
+
+	make DESTDIR="$PKG" install
+	find $PKG -name AUTHORS -name README -exec rm '{}' \+
+
+	# add trinity colorscheme
+	cd $PKG/usr/share/icons; cp -r Papirus-Dark Trinity
+	sed -i 's/dark themes/trinity theme/'              Trinity/index.theme
+	sed -i 's/Name=Papirus-Dark/Name=Papirus-Trinity/' Trinity/index.theme
+	find Trinity \( -type f -a -not -type l \) -name '*.svg' \
+		-exec sed -i  \
+			-e 's/#dfdfdf/#55af66/gI' \
+			-e 's/#444444/#55af66/gI' \
+			-e 's/#4285f4/#b0569f/gI' '{}' \;
+}
