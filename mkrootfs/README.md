@@ -102,8 +102,8 @@ tag in [pkgsrc](https://github.com/zeppe-lin/pkgsrc) repository. For
 example:
 
 ```sh
-cd /usr/src/pkgsrc
-TAG=$(date +"%Y-%m-%d")
+cd /usr/src/zeppe-lin
+TAG=$(date +%F)
 git tag -a $TAG -m $TAG
 git push
 git push --tags
@@ -111,8 +111,8 @@ git push --tags
 
 Note, that the `tag` format is `YEAR-MONTH-DAY`.
 
-Secondly, go to `pkgsrc` repository on the github and
-[draft a new release](https://github.com/zeppe-lin/pkgsrc/releases/new).
+Secondly, go to `zeppe-lin` repository on the github and
+[draft a new release](https://github.com/zeppe-lin/zeppe-lin/releases/new).
 
 Select **Choose a tag** and select the tag you previously created.
 
@@ -137,7 +137,7 @@ Attach previously created rootfs and signature.
 Publish the release.
 
 **REMEMBER** to update the rootfs URL in the
-[handbook](https://github.com/zeppe-lin/handbook).
+[handbook](https://github.com/zeppe-lin/zeppe-lin/README.pod).
 
 
 <!-- vim:ft=markdown:cc=72
