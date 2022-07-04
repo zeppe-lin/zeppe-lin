@@ -1,14 +1,5 @@
 =pod
 
-=begin comment
-
-  =======================================================================
-  = AFTER EDITING THIS HANDBOOK, DO NOT FORGET TO UPDATE THE VERSION OF =
-  = ITS PACKAGE IN  core/zhandbook.  JUST BUMP THE RELEASE VARIABLE.    =
-  =======================================================================
-
-=end comment
-
 =begin man
 
 =head1 NAME
@@ -715,7 +706,7 @@ This will replace the previously installed bash package with the new
 one.  If you have not previously installed bash,
 L<pkgadd(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgutils/pkgadd.8.pod>
 will print an error message.
-L<pkgadd(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgadd.8.pod>
+L<pkgadd(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgutils/pkgadd.8.pod>
 does not care about the version number of the package in that you can
 "upgrade" version 2.05-1 with version 2.04-1
 (or even with version 2.05-1 itself).  The installed package will be
@@ -1182,7 +1173,7 @@ L<pkgman.conf(5)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgman/
 =head2 Creating Packages
 
 Creating a package is done using
-L<pkgmk(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgman/pkgmk.8.pod>.
+L<pkgmk(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgmk.8.pod>.
 This utility uses a file called Pkgfile (see
 L<Pkgfile(5)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/Pkgfile.5.pod>
 for more info), which contains information about the package (such as
@@ -1339,7 +1330,7 @@ Here are some examples:
   PKGMK_SOURCE_MIRRORS=(http://fileserver.intranet/crux/sources/)
 
 This setting instructs
-L<pkgmk(8)|https://github.com/zeppe-lin/pkgmk/blob/master/pkgmk.8.pod>
+L<pkgmk(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgmk.8.pod>
 to attempt to fetch all source archives from
 L<http://fileserver.intranet/zeppe-lin/sources/>
 before falling back to the source URL specified in the Pkgfile.
@@ -1449,24 +1440,24 @@ sources structure (F</usr/src/zeppe-lin/*>) is empty.  To obtains
 the source at first time, use C<git clone>.  Example:
 
   # cd /usr/src/
-  # git clone https://github.com/zeppe-lin/pkgsrc
+  # git clone https://github.com/zeppe-lin/zeppe-lin
 
 To bring your local packages sources up to date use C<git pull>.
 Example:
 
-  # cd /usr/src/pkgsrc
+  # cd /usr/src/zeppe-lin
   # git pull
 
 =head3 Listing Local Packages Sources
 
 When the local packages sources structure has been updated the
-directory C</usr/src/zeppe-lin> will contain some package categories,
+directory C</usr/src/zeppe-lin/> will contain some package categories,
 C<core>, C<system>, C<xorg>, C<desktop> and C<stuff>.
 Under each of these directories you will find packages sources.  You
 can simply browse around in the directory structure to find out which
 packages sources are available.
 
-  $ cd /usr/src/pkgsrc/core
+  $ cd /usr/src/zeppe-lin/core
   $ ls
   acl              gettext-tiny  libtirpc         python3-setuptools
   asciidoctor      git           libtool          rc
@@ -1660,7 +1651,7 @@ L<pkgman(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgman/pkgma
 already uses it by default in zeppe-lin installation.
 
 If the package was built successfully you can use
-L<pkgadd(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgutils/pkgadd.1.pod>
+L<pkgadd(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgutils/pkgadd.8.pod>
 to install or upgrade it.  Example:
 
   # pkgadd gawk#3.1.5-3.pkg.tar.gz
