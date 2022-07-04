@@ -309,7 +309,7 @@ Also, in the case of updating the major version of Perl/Python, it
 will be useful that the libraries or programs that create Perl/Python
 bindings have a dependency on them.  We will have to rebuild
 everything that depends on Perl/Python with one command (see
-L<pkgman-rdep(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgman/pkgman-rdep.1.pod>).
+L<pkgman-rdep(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgman/pkgman-dep.1.pod>).
 
 =head2 The rc.d scripts
 
