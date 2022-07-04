@@ -14,21 +14,23 @@ B<finddisowned> [I<OPTION>]...
 
 B<finddisowned> lists the files that are disowned by package manager.
 
-In particular, finddisowned compares the package database with contents of the
-directories described in F</etc/finddisowned.whitelist>.
+In particular, finddisowned compares the package database with
+contents of the directories described in
+F</etc/finddisowned.whitelist>.
 
-B<finddisowned> does not compare the package database with the entire file
-system, but only with files from directories described in
-F</etc/finddisowned.whitelist> becase the entire file system contains
-directories such as F</home>, F</mnt> and even dynamic directories like
-F</proc>, F</dev>, etc, the contents of which are definitely not taken into
-account (and should not be) by package manager.
+B<finddisowned> does not compare the package database with the entire
+file system, but only with files from directories described in
+F</etc/finddisowned.whitelist> because the entire file system contains
+directories such as F</home>, F</mnt> and even dynamic directories
+like F</proc>, F</dev>, etc, the contents of which are definitely not
+taken into account (and should not be) by package manager.
 
 Feel free to adjust the whitelist conform your needs.
 
 =head1 OPTIONS
 
-Mandatory arguments to long options are mandatory for short options too.
+Mandatory arguments to long options are mandatory for short options
+too.
 
 =over 8
 
@@ -60,8 +62,8 @@ System package database.
 
 =item F</etc/finddisowned.whitelist>
 
-Contains a list of directories, the contents of which will be compared with
-package database.
+Contains a list of directories, the contents of which will be compared
+with package database.
 
 =back
 
@@ -69,12 +71,16 @@ package database.
 
 Copyright (c) 2021 Alexandr Savca <https://github.com/zeppe-lin>.
 
-License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.
+License GPLv3+: GNU GPL version 3 or later
+L<https://gnu.org/licenses/gpl.html>.
 
 =head1 SEE ALSO
 
-L<finddeps(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/pkgmaint/finddeps.1.pod>,
-L<finddisappeared(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/pkgmaint/finddisappeared.1.pod>,
-L<findredundantdeps(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/pkgmaint/findredundantdeps.1.pod>
+L<finddeps(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/system/pkgmaint/finddeps.1.pod>,
+L<finddisappeared(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/system/pkgmaint/finddisappeared.1.pod>,
+L<findredundantdeps(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/system/pkgmaint/findredundantdeps.1.pod>
 
 =cut
+
+# vim:sw=2:ts=2:sts=2:et:cc=72
+# End of file.

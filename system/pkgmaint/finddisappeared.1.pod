@@ -4,7 +4,8 @@
 
 =head1 NAME
 
-finddisappeared - find files that are owned by package manager but disappeared
+finddisappeared - find files that are owned by package manager but
+disappeared
 
 =head1 SYNOPSIS
 
@@ -13,12 +14,13 @@ B<finddisappeared> [I<OPTION>]
 =head1 DESCRIPTION
 
 B<finddisappeared> lists the files that are owned by package manager
-(listed in the package database), but missing (somehow disappeared) on the
-actual file system.
+(listed in the package database), but missing (somehow disappeared) on
+the actual file system.
 
 =head1 OPTIONS
 
-Mandatory arguments to long options are mandatory for short options too.
+Mandatory arguments to long options are mandatory for short options
+too.
 
 =over 8
 
@@ -42,8 +44,11 @@ Martil Opel L<mo@obbl.net>
 
 =head1 SEE ALSO
 
-L<finddeps(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/pkgmaint/finddeps.1.pod>,
-L<finddisowned(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/pkgmaint/finddisowned.1.pod>,
-L<findredundantdeps(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/pkgmaint/findredundantdeps.1.pod>
+L<finddeps(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/system/pkgmaint/finddeps.1.pod>,
+L<finddisowned(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/system/pkgmaint/finddisowned.1.pod>,
+L<findredundantdeps(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/system/pkgmaint/findredundantdeps.1.pod>
 
 =cut
+
+# vim:sw=2:ts=2:sts=2:et:cc=72
+# End of file.

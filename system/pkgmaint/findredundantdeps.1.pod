@@ -12,13 +12,13 @@ B<findredundantdeps> [I<OPTION>] I<PKGNAME>
 
 =head1 DESCRIPTION
 
-B<findredundantdeps> print the full recursive dependencies of a given package
-displaying the dependencies that are already contained in the depending
-package.
+B<findredundantdeps> print the full recursive dependencies of a given
+package displaying the dependencies that are already contained in the
+depending package.
 
-B<findredundantdeps> operates on packages sources in the pkgsrc tree and
-requires
-L<pkgman(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/pkgman/pkgman.1.pod>.
+B<findredundantdeps> operates on packages sources in the pkgsrc tree
+and requires
+L<pkgman(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgman/pkgman.1.pod>.
 
 =head1 OPTIONS
 
@@ -42,12 +42,16 @@ Print help and exit.
 
 Copyright (c) 2021 Alexandr Savca <https://github.com/zeppe-lin>.
 
-License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.
+License GPLv3+: GNU GPL version 3 or later
+L<https://gnu.org/licenses/gpl.html>.
 
 =head1 SEE ALSO
 
-L<finddeps(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/pkgmaint/finddeps.1.pod>,
-L<finddisappeared(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/pkgmaint/finddisappeared.1.pod>,
-L<finddisowned(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/pkgmaint/finddisowned.1.pod>
+L<finddeps(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/system/pkgmaint/finddeps.1.pod>,
+L<finddisappeared(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/system/pkgmaint/finddisappeared.1.pod>,
+L<finddisowned(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/system/pkgmaint/finddisowned.1.pod>
 
 =cut
+
+# vim:sw=2:ts=2:sts=2:et:cc=72
+# End of file.
