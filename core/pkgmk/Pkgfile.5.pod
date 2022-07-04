@@ -13,10 +13,10 @@ B<Pkgfile>
 =head1 DESCRIPTION
 
 This manual page describes the format of the F<Pkgfile> file.  The
-file is a L<sh(1)|https://www.mankier.com/1/sh> script, which defines
-a number of variables (I<name>, I<version>, I<release> and I<source>)
-and a function (I<build>) that should be executed in order to compile
-a package.
+file is a L<sh(1)|https://www.mankier.com/1/dash> script, which
+defines a number of variables (I<name>, I<version>, I<release> and
+I<source>) and a function (I<build>) that should be executed in order
+to compile a package.
 
 =head2 General guidelines
 
