@@ -14,7 +14,7 @@ B</etc/rc.conf>
 
 This manual page describes the format of the F</etc/rc.conf> file.
 This file is a simple
-L<sh(1)|https://www.mankier.com/1/sh>
+L<sh(1)|https://www.mankier.com/1/dash>
 script that defines font, timezone, hostname and services which are
 used on system initialization and shutdown.
 
