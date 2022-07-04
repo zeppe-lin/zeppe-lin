@@ -14,7 +14,7 @@ B<pkgman> [I<COMMAND>] [I<OPTION>]... [I<ARGS>]
 
 B<pkgman> is a package management tool that provides additional
 functionality to basic package management utilities, like
-L<pkgmk(8)|https://github.com/zeppe-lin/pkgmk/blob/master/pkgmk.8.pod>,
+L<pkgmk(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgmk.8.pod>,
 L<pkgadd(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgutils/pkgadd.8.pod>,
 L<pkgrm(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgutils/pkgrm.8.pod>
 and
@@ -139,7 +139,7 @@ print the missing dependencies of installed packages
 
 print dependencies for a package
 
-=item L<pkgman-rdep(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgman/pkgman-rdep.1.pod>
+=item L<pkgman-rdep(1)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgman/pkgman-dep.1.pod>
 
 print reverse dependencies for a package
 
@@ -171,7 +171,7 @@ search the packages sources directories for a file in package footprint
 
 install package(s)
 
-=item L<pkgman-update(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgman/pkgman-update.8.pod>
+=item L<pkgman-update(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgman/pkgman-install.8.pod>
 
 update installed package(s)
 

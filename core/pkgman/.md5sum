@@ -45,9 +45,9 @@ bfde85634ce4dbfecfcb3898ac32690b  pkgman-printf.1.pod
 76a3415e22acc3641f7efbb71fadfbc2  pkgman-readme.1.pod
 f3ab997e1ae4a9ad2311e32617ff1907  pkgman-remove.8.pod
 68010934500518ad980a0cfb2fbdce3d  pkgman-search.1.pod
-5bdb492439c867719128d657194be14c  pkgman-sysup.8.pod
+b61257214bf0368f56ce2261566f5d4a  pkgman-sysup.8.pod
 3a79ae3d46373f4ab55a66e72c80bf92  pkgman-unlock.8.pod
-22a0ac23e12a9e177095a4875ef103b1  pkgman.1.pod
+864fa9cc4d0d889a9fefca5673f797e8  pkgman.1.pod
 4047e2a67078c8dd3d7f0dfe8e71b894  pkgman.conf
 f0b7a18aa9a0b62cb2e47a65a551bd02  pkgman.conf.5.pod
 a9467f72373c63ef3c2f5526c9470d8c  pkgman.cpp

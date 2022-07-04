@@ -68,7 +68,7 @@ Update all packages, but stop if updating of one package fails.
 =item B<--margs>=I<PKGMK_ARGS>
 
 Arguments to be passed to
-L<pkgmk(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgutils/pkgmk.8.pod>.
+L<pkgmk(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgmk.8.pod>.
 
 =item I<PKGMK_ALIASES>
 
