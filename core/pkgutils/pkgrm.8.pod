@@ -43,7 +43,7 @@ Print help and exit.
 =head1 SEE ALSO
 
 L<pkgadd(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgutils/pkgadd.8.pod>,
-L<pkginfo(8)|https://github.com/zeppe-lin/pkgutils/blob/master/core/pkgutils/pkginfo.8.pod>
+L<pkginfo(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgutils/pkginfo.8.pod>
 
 =cut
 

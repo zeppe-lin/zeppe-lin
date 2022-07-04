@@ -9,7 +9,7 @@ b6222bf7921acecc2a07839af0371959  pkgadd.conf
 dcb3ef543e5832c79c692914fb3f262a  pkginfo.8.pod
 dcc3d94f65da900c99eef5ae5f8836c5  pkginfo.cc
 f5980f25d32cc8b56ffddb35d0800c2b  pkginfo.h
-9774fc16d761bf3f33be94eadef6e0ac  pkgrm.8.pod
+8c7863686df258bd3c4328e7cf230371  pkgrm.8.pod
 19fafcd4055456e1c1e0d5c60abc214a  pkgrm.cc
 ea5b99ccb9200c054e02716df9d384f9  pkgrm.h
 4bf1d9b22a92de8fb7789bd152b5cb43  pkgutil.cc
