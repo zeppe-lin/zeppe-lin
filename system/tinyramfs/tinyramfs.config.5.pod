@@ -51,12 +51,11 @@ it, you can simply prepend C<#>.
 
 =item B<monolith>=1
 
-Monolithic kernel means kernel with builtin modules.
-If you didn't build kernel yourself, then in most cases you have
-modular kernel and you don't need to enable this option. To check if
-you have monolithic you need to check if
-F<< /lib/modules/<kernel version>/modules >>
-exist. If this directory doesn't exist you probably have monolithic
+Monolithic kernel means kernel with builtin modules.  If you didn't
+build kernel yourself, then in most cases you have modular kernel and
+you don't need to enable this option.  To check if you have monolithic
+you need to check if F<< /lib/modules/<kernel version>/modules >>
+exist.  If this directory doesn't exist you probably have monolithic
 kernel which means you need to set B<monolith> to B<1>.
 
 =item B<hostonly>=1
@@ -108,15 +107,15 @@ Lookup device by partition uuid.
 You must install
 L<blkid(8)|https://www.mankier.com/8/blkid>
 (available in B<toybox>, B<busybox>, B<util-linux> or B<e2fsprogs>)
-for ability to use I<UUID>, I<LABEL>, I<PARTUUID>. Note that
+for ability to use I<UUID>, I<LABEL>, I<PARTUUID>.  Note that
 I<PARTUUID> only supported in B<util-linux'>
 L<blkid(8)|https://www.mankier.com/8/blkid>.
 
 =item B<root_type>=I<TYPE>
 
 Explicitly set root filesystem type instead of automatically
-discovering via F</proc/mounts>. This option must be specified if you
-booted from Live CD.
+discovering via F</proc/mounts>.  This option must be specified if
+you booted from Live CD.
 
 =item B<root_opts>=I<OPTS>
 
@@ -127,7 +126,8 @@ fourth field.
 =item B<hooks>=I<HOOK>...
 
 Hooks provide a flexible way to extend tinyramfs with custom scripts.
-You must know that I<hooks are launched in the order in which they are specified>.
+You must know that
+I<hooks are launched in the order in which they are specified>.
 
 List of shipped by default hooks:
 
@@ -143,7 +143,7 @@ LUKS support.
 
 =item I<smdev>
 
-L<smdev|https://github.com/zeppe-lin/smdev/> support.
+smdev support.
 
 =item I<mdev>
 
@@ -184,7 +184,7 @@ If hook doesn't have options, then it's not yet documented or can be
 used "as is".
 
 More detailed information and how to write your own hooks described in
-L<tinyramfs.hooks(7)|https://github.com/zeppe-lin/tinyramfs/blob/master/tinyramfs.hooks.7.pod>.
+L<tinyramfs.hooks(7)|https://github.com/zeppe-lin/zeppe-lin/blob/master/system/tinyramfs/tinyramfs.hooks.7.pod>.
 
 =back
 
@@ -216,7 +216,7 @@ Include F</etc/lvm/lvm.conf> in initramfs.
 
 =item B<lvm_discard>=1
 
-Pass C<issue_discards> to LVM. Useful for SSD's.
+Pass C<issue_discards> to LVM.  Useful for SSD's.
 
 =back
 
@@ -345,8 +345,11 @@ Your configuration may (and should) differ.
 
 =head1 SEE ALSO
 
-L<tinyramfs(8)|https://github.com/zeppe-lin/tinyramfs/blob/master/tinyramfs.8.pod>,
-L<tinyramfs.cmdline(7)|https://github.com/zeppe-lin/tinyramfs/blob/master/tinyramfs.cmdline.7.pod>,
-L<tinyramfs.hooks(7)|https://github.com/zeppe-lin/tinyramfs/blob/master/tinyramfs.hooks.7.pod>
+L<tinyramfs(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/system/tinyramfs/tinyramfs.8.pod>,
+L<tinyramfs.cmdline(7)|https://github.com/zeppe-lin/zeppe-lin/blob/master/system/tinyramfs/tinyramfs.cmdline.7.pod>,
+L<tinyramfs.hooks(7)|https://github.com/zeppe-lin/zeppe-lin/blob/master/system/tinyramfs/tinyramfs.hooks.7.pod>
 
 =cut
+
+# vim:sw=2:ts=2:sts=2:et:cc=72
+# End of file.

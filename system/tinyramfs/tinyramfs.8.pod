@@ -10,12 +10,13 @@ B<tinyramfs> [I<OPTION>]...
 
 =head1 DESCRIPTION
 
-B<tinyramfs> is a simple, extensible and modular initramfs generator tool
-written with focus on portability.
+B<tinyramfs> is a simple, extensible and modular initramfs generator
+tool written with focus on portability.
 
 =head1 OPTIONS
 
-Mandatory arguments to long options are mandatory for short options too.
+Mandatory arguments to long options are mandatory for short options
+too.
 
 =over 8
 
@@ -31,8 +32,8 @@ Default is F</etc/tinyramfs/config>.
 
 =item B<-k>, B<--kernel> I<VERSION>
 
-Specify kernel version. Useful for bootstrapping future system with modular
-kernel.
+Specify kernel version.  Useful for bootstrapping future system with
+modular kernel.
 
 Default is current kernel version.
 
@@ -42,8 +43,8 @@ Specify directory where modules stored.
 
 Default is F</lib/modules>.
 
-This option has no effect if B<monolith> or B<hostonly> were enabled in
-config.
+This option has no effect if B<monolith> or B<hostonly> were enabled
+in config.
 
 =item B<-H>, B<--hooks> I<PATH>
 
@@ -65,7 +66,7 @@ Default is F</usr/share/tinyramfs/init>.
 
 =item B<-d>, B<--debug>
 
-Enable debug mode. Useful for reporting bugs in build stage.
+Enable debug mode.  Useful for reporting bugs in build stage.
 
 =item B<-f>, B<--force>
 
@@ -76,16 +77,19 @@ Forcefully overwrite initramfs image.
 =head1 NOTES
 
 If you have modular kernel and you use B<busybox' modprobe> to handle
-modules, you must note that B<busybox' modprobe> doesn't have ability to
-install soft dependencies of modules (i.e. modules.softdep). You must install
-them yourself using hooks. See
-L<tinyramfs.hooks(7)|https://github.com/zeppe-lin/tinyramfs/blob/master/tinyramfs.hooks.7.pod>
+modules, you must note that B<busybox' modprobe> doesn't have ability
+to install soft dependencies of modules (i.e. modules.softdep).  You
+must install them yourself using hooks.  See
+L<tinyramfs.hooks(7)|https://github.com/zeppe-lin/zeppe-lin/blob/master/system/tinyramfs/tinyramfs.hooks.7.pod>
 how to do it.
 
 =head1 SEE ALSO
 
-L<tinyramfs.config(5)|https://github.com/zeppe-lin/tinyramfs/blob/master/tinyramfs.config.5.pod>,
-L<tinyramfs.cmdline(7)|https://github.com/zeppe-lin/tinyramfs/blob/master/tinyramfs.cmdline.7.pod>,
-L<tinyramfs.hooks(7)|https://github.com/zeppe-lin/tinyramfs/blob/master/tinyramfs.hooks.7.pod>
+L<tinyramfs.config(5)|https://github.com/zeppe-lin/zeppe-lin/blob/master/system/tinyramfs/tinyramfs.config.5.pod>,
+L<tinyramfs.cmdline(7)|https://github.com/zeppe-lin/zeppe-lin/blob/master/system/tinyramfs/tinyramfs.cmdline.7.pod>,
+L<tinyramfs.hooks(7)|https://github.com/zeppe-lin/zeppe-lin/blob/master/system/tinyramfs/tinyramfs.hooks.7.pod>
 
 =cut
+
+# vim:sw=2:ts=2:sts=2:et:cc=72
+# End of file.
