@@ -104,8 +104,8 @@ Configuration file for B<pkgadd>.
 
 =head1 SEE ALSO
 
-L<pkgrm(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkgrm.8.pod>,
-L<pkginfo(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgmk/pkginfo.8.pod>
+L<pkgrm(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgutils/pkgrm.8.pod>,
+L<pkginfo(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/core/pkgutils/pkginfo.8.pod>
 
 =cut
 

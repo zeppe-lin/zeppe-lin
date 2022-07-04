@@ -2,7 +2,7 @@ d06fcaf1a4b600c7a5a21dacdb31c1df  Makefile
 6436f3d94b519eb8423b1ffa0b99d36a  bash_completion
 9366a200e77416423a5d621f9d7b9a69  config.mk
 0713f003a31610a1ca9a474257f26677  main.cc
-432c373317afb0fbd08a219a6c339c4d  pkgadd.8.pod
+7e7e671e225d22be68608a675fdc56cb  pkgadd.8.pod
 3350573ab5b8f5bf7a0030082a41fc8c  pkgadd.cc
 b6222bf7921acecc2a07839af0371959  pkgadd.conf
 3863be5d1f3e348c311e8d055ef5b12a  pkgadd.h
