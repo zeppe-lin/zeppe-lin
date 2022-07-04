@@ -292,17 +292,17 @@ mountpoint.
 
   # cd /mnt
   # wget -c https://github.com/zeppe-lin/zeppe-lin/releases/download/\
-    2022-05-13/rootfs-2022-05-13-x86_64.tar.xz{,.sig}
+    2022-07-04/rootfs-2022-07-04-x86_64.tar.xz{,.sig}
 
 =head4 Signature verification
 
   # gpg --keyserver keyserver.ubuntu.com --recv-keys 59ec1986fbd902cf
-  # gpg --verify rootfs-2022-05-13-x86_64.tar.xz.sig \
-    rootfs-2022-05-13-x86_64.tar.xz
+  # gpg --verify rootfs-2022-07-04-x86_64.tar.xz.sig \
+    rootfs-2022-07-04-x86_64.tar.xz
 
 =head3 Extract rootfs tarball
 
-  # tar -xvf rootfs-2022-05-13-x86_64.tar.xz -C .
+  # tar -xvf rootfs-2022-07-04-x86_64.tar.xz -C .
 
 =head3 Chroot
 
