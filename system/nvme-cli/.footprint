@@ -1,12 +1,12 @@
 drwxr-xr-x	root/root	etc/
 drwxr-xr-x	root/root	etc/nvme/
 -rw-r--r--	root/root	etc/nvme/discovery.conf
+drwxr-xr-x	root/root	lib/
+drwxr-xr-x	root/root	lib/udev/
+drwxr-xr-x	root/root	lib/udev/rules.d/
+-rw-r--r--	root/root	lib/udev/rules.d/70-nvmf-autoconnect.rules
+-rw-r--r--	root/root	lib/udev/rules.d/71-nvmf-iopolicy-netapp.rules
 drwxr-xr-x	root/root	usr/
-drwxr-xr-x	root/root	usr/lib/
-drwxr-xr-x	root/root	usr/lib/udev/
-drwxr-xr-x	root/root	usr/lib/udev/rules.d/
--rw-r--r--	root/root	usr/lib/udev/rules.d/70-nvmf-autoconnect.rules
--rw-r--r--	root/root	usr/lib/udev/rules.d/71-nvmf-iopolicy-netapp.rules
 drwxr-xr-x	root/root	usr/sbin/
 -rwxr-xr-x	root/root	usr/sbin/nvme
 drwxr-xr-x	root/root	usr/share/

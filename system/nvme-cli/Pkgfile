@@ -4,7 +4,7 @@
 
 name=nvme-cli
 version=2.0
-release=2
+release=3
 source=https://github.com/linux-nvme/$name/archive/v$version/$name-$version.tar.gz
 
 build() {
@@ -19,7 +19,7 @@ build() {
 		-D b_pie=true \
 		-D docs=man \
 		-D docs-build=true \
-		-D udevrulesdir=lib/udev/rules.d \
+		-D udevrulesdir=/lib/udev/rules.d \
 
 	ninja -C build -j ${JOBS:-1} -v
 	DESTDIR=$PKG ninja -C build install
