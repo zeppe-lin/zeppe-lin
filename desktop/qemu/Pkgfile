@@ -4,10 +4,11 @@
 
 name=qemu
 version=7.0.0
-release=2
+release=3
 source="https://download.qemu.org/$name-$version.tar.xz
 	qemu-man-$version.tar.xz
-	qemu-5.2.0-disable-keymap.patch"
+	qemu-5.2.0-disable-keymap.patch
+	60-kvm.rules"
 
 build() {
 	cd $name-$version
@@ -39,9 +40,5 @@ build() {
 	make DESTDIR=$PKG install
 
 	cp -r $SRC/man $PKG/usr/share
-
-	install -d $PKG/etc/udev/rules.d/
-	cat <<EOF > $PKG/etc/udev/rules.d/60-kvm.rules
-KERNEL=="kvm", NAME="kvm", OWNER="root", GROUP="kvm", MODE="0660"
-EOF
+	install -m 644 -Dt $PKG/lib/udev/rules.d/ $SRC/60-kvm.rules
 }
