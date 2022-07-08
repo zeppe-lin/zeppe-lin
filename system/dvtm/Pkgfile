@@ -4,7 +4,7 @@
 
 name=dvtm
 version=0.15
-release=1
+release=2
 source="http://www.brain-dump.org/projects/$name/$name-$version.tar.gz
 	config.def.h"
 
@@ -19,6 +19,13 @@ build() {
 	make clean
 	make
 	make PREFIX=/usr DESTDIR=$PKG install
+
+	# add static binary
+	export CFLAGS="$CFLAGS -static"
+	export LDFLAGS="$LDFLAGS -static"
+	make clean
+	make dvtm
+	install -m 755 -D dvtm $PKG/usr/bin/dvtm.static
 
 	# conflicts with ncurses
 	rm -r $PKG/usr/share/terminfo
