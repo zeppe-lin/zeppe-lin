@@ -4,7 +4,7 @@
 
 name=abduco
 version=0.6
-release=1
+release=2
 source="http://www.brain-dump.org/projects/$name/$name-$version.tar.gz
 	config.def.h"
 
@@ -19,4 +19,9 @@ build() {
 
 	make all
 	make PREFIX=/usr DESTDIR=$PKG install
+
+	# add static binary
+	export LDFLAGS="$LDFLAGS -static"
+	make -j1 clean abduco
+	install -m 755 -D abduco $PKG/usr/bin/abduco.static
 }
