@@ -47,9 +47,9 @@ drwxr-xr-x	root/root	usr/include/hwloc/autogen/
 -rw-r--r--	root/root	usr/include/hwloc/shmem.h
 drwxr-xr-x	root/root	usr/lib/
 -rwxr-xr-x	root/root	usr/lib/libhwloc.la
-lrwxrwxrwx	root/root	usr/lib/libhwloc.so -> libhwloc.so.15.5.3
-lrwxrwxrwx	root/root	usr/lib/libhwloc.so.15 -> libhwloc.so.15.5.3
--rwxr-xr-x	root/root	usr/lib/libhwloc.so.15.5.3
+lrwxrwxrwx	root/root	usr/lib/libhwloc.so -> libhwloc.so.15.6.0
+lrwxrwxrwx	root/root	usr/lib/libhwloc.so.15 -> libhwloc.so.15.6.0
+-rwxr-xr-x	root/root	usr/lib/libhwloc.so.15.6.0
 -rwxr-xr-x	root/root	usr/lib/libnetloc.la
 lrwxrwxrwx	root/root	usr/lib/libnetloc.so -> libnetloc.so.0.0.0
 lrwxrwxrwx	root/root	usr/lib/libnetloc.so.0 -> libnetloc.so.0.0.0

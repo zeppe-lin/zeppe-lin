@@ -1,10 +1,10 @@
 # Description: Portable Hardware Locality
 # URL:         http://www.multiprecision.org/
-# Depends on:  libxml2 ncurses xorg-libpciaccess
+# Depends on:  eudev libxml2 ncurses xorg-libpciaccess
 
 name=hwloc
-version=2.7.1
-release=2
+version=2.8.0
+release=1
 source=https://download.open-mpi.org/release/$name/v${version%.*}/$name-$version.tar.gz
 
 build() {
@@ -15,7 +15,6 @@ build() {
 		--sysconfdir=/etc \
 		--enable-netloc \
 		--disable-cairo \
-		--disable-libudev \
 
 	make V=1
 	make DESTDIR=$PKG install
