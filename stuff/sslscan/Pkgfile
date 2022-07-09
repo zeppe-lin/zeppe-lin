@@ -3,7 +3,7 @@
 # Depends on:  openssl
 
 name=sslscan
-version=2.0.14
+version=2.0.15
 release=1
 source=https://github.com/rbsec/$name/archive/$version/$name-$version.tar.gz
 
