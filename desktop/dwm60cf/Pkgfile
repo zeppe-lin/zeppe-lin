@@ -3,19 +3,12 @@
 # Depends on:  xorg-libxft xorg-libxinerama
 
 name=dwm60cf
-version=6.0.1
-release=2
-source="src/$name.c src/$name.1 src/config.h"
+version=6.0.2
+release=1
+source="src/$name.c src/$name.1 src/config.h src/config.mk src/Makefile"
 
 build() {
-	export CFLAGS="$CFLAGS -std=c99 -pedantic -Wall -Wextra \
-		-Wformat -I/usr/include/freetype2"
-	export LDFLAGS="$LDFLAGS -lc -lX11 -lXft -lXinerama"
-	export CPPFLAGS="-D_DEFAULT_SOURCE -DVERSION=$version \
-		-DXINERAMA -DPWKL -DWINTITLE"
+	sed -i 's/CFLAGS = /CFLAGS +=/' config.mk
 
-	${CC:-cc} -o $name $CPPFLAGS $CFLAGS $LDFLAGS $name.c
-
-	install -m 0755 -Dt $PKG/usr/bin/ $name
-	install -m 0644 -Dt $PKG/usr/share/man/man1/ $name.1
+	make VERSION=$version PREFIX=/usr DESTDIR=$PKG install
 }
