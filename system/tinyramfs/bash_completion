@@ -1,0 +1,32 @@
+# Bash programmable completion for tinyramfs.
+
+_tinyramfs() {
+	local cur prev
+	COMPREPLY=()
+	cur=${COMP_WORDS[COMP_CWORD]}
+	prev=${COMP_WORDS[COMP_CWORD-1]}
+
+	case "$prev" in
+	-h|--help|-v|--version|-f|--force|-d|--debug)
+		return 0
+		;;
+	-I|--init|-D|--helper|-H|--hooks|-m|--modules|-c|--config|-o|--output)
+		if [ -z $BASH_COMPLETION ]; then
+			_filedir
+		else
+			COMPREPLY=($(compgen -f $cur))
+		fi
+		return 0
+		;;
+	-k|--kernel)
+		COMPREPLY=($(compgen -W "$(ls -1 /lib/modules/)" -- $cur))
+		return 0
+		;;
+	esac
+
+	COMPREPLY=($(compgen -W \
+		"$(tinyramfs --help | awk '/--/{ printf "%2s ", $2 }')" -- $cur))
+}
+complete -F _tinyramfs -o filenames tinyramfs
+
+# End of file.

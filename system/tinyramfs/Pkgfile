@@ -2,9 +2,11 @@
 # URL:         file:///usr/src/zeppe-lin/system/tinyramfs
 
 name=tinyramfs
-version=0.2.1
+version=0.2.2
 release=1
-source="device-helper
+source="bash_completion
+	config
+	device-helper
 	init
 	Makefile
 	tinyramfs.8.pod
@@ -17,4 +19,7 @@ build() {
 	cp -r $PKGMK_ROOT/hooks .
 
 	make VERSION=$version DESTDIR=$PKG PREFIX=/usr install
+	install -m 0644 -Dt $PKG/etc/tinyramfs/ $SRC/config
+	install -m 0644 -D bash_completion \
+		$PKG/usr/share/bash-completion/completions/$name
 }
