@@ -3,15 +3,17 @@
 
 name=pkgman
 version=6.0.1
-release=2
-source="$(ls -1 *.cpp *.h *.pod) config.mk Makefile bash_completion
-	pkgman.conf"
+release=3
+source="bash_completion pkgman.conf"
 
 build() {
+	cp -r $PKGMK_ROOT/src .
+	cd src
+
 	make VERSION=$version DESTDIR=$PKG PREFIX=/usr install
 	install -m 644 -Dt $PKG/etc/ $SRC/pkgman.conf
 
 	# bash-completion
-	install -m 0644 -D bash_completion \
+	install -m 0644 -D $SRC/bash_completion \
 		$PKG/usr/share/bash-completion/completions/$name
 }
