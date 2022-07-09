@@ -3,30 +3,36 @@ VERSION ?= git
 
 # customize below to fit your system
 
-# optional xinerama support
-WITH_XINERAMA = -DXINERAMA
+# optional xinerama support (comment to disable)
+XINERAMAFLAGS = -DXINERAMA
+XINERAMALIBS = -lXinerama
 
-# optional per window keyboard layout support
-WITH_PWKL = -DPWKL
+# optional per window keyboard layout support (comment to disable)
+PWKL = -DPWKL
 
-# optional windows title support
-WITH_WINTITLE = -DWINTITLE
+# optional windows title support (comment to disable)
+WINTITLE = -DWINTITLE
 
 # paths
 PREFIX = /usr/local
-MANPREFIX = $(PREFIX)/share/man
+MANPREFIX = ${PREFIX}/share/man
 
-X11INC = /usr/X11R6/include
-X11LIB = /usr/X11R6/lib
+X11INC = /usr/local/include
+X11LIB = /usr/local/lib
 
-FT2INC = /usr/include/freetype2
+FT2INC = /usr/local/include/freetype2
+FT2LIB = -lfontconfig -lXft
+
+# includes and libs
+INCS = -I${X11INC} -I${FT2INC}
+LIBS = -L${X11LIB} -lX11 ${FT2LIB} ${XINERAMALIBS}
 
 # flags
-CPPFLAGS = -I $(FT2INC) -D_DEFAULT_SOURCE -DVERSION=\"$(VERSION)\" \
-	   $(WITH_XINERAMA) $(WITH_PWKL) $(WITH_WINTITLE)
+CPPFLAGS = -D_DEFAULT_SOURCE -D_BSD_SOURCE -D_POSIX_C_SOURCE=200809L \
+	   -DVERSION=\"${VERSION}\" ${XINERAMAFLAGS} ${PWKL} ${WINTITLE} \
+	   ${INCS}
 CFLAGS = -std=c99 -pedantic -Wall -Wextra -Wformat
-LDFLAGS = -L$(X11LIB) -L$(XFTLIB) $(if $(WITH_XINERAMA),-L$(XINERAMALIB))
-LDFLAGS = -lc -lX11 -lXft $(if $(WITH_XINERAMA),-lXinerama)
+LDFLAGS = ${LIBS}
 
 # compiler and linker
 CC = cc

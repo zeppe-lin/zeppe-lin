@@ -3,12 +3,13 @@
 # Depends on:  xorg-libxft xorg-libxinerama
 
 name=dwm60cf
-version=6.0.2
+version=6.0.3
 release=1
 source="src/$name.c src/$name.1 src/config.h src/config.mk src/Makefile"
 
 build() {
 	sed -i 's/CFLAGS = /CFLAGS +=/' config.mk
 
-	make VERSION=$version PREFIX=/usr DESTDIR=$PKG install
+	make FT2INC=/usr/include/freetype2 \
+		VERSION=$version PREFIX=/usr DESTDIR=$PKG install
 }

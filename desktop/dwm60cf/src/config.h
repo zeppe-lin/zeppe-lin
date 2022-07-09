@@ -248,7 +248,7 @@ static Key keys[] = {
  { MODKEY,                      XF86XK_AudioRaiseVolume,        spawn,                  {.v = player_vol_inc}   },
 #ifdef __DragonFly__
 // DragonFly Mixer
- { 0,                           XF86XK_AudioMute,               spawn,                  {.v = master_mute_cmd}  },
+ { 0,                           XF86XK_AudioMute,               spawn,                  {.v = mixer_vol_mute}   },
  { 0,                           XF86XK_AudioLowerVolume,        spawn,                  {.v = mixer_vol_dec}    },
  { 0,                           XF86XK_AudioRaiseVolume,        spawn,                  {.v = mixer_vol_inc}    },
 #else
