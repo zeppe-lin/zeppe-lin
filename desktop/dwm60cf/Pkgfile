@@ -4,8 +4,8 @@
 
 name=dwm60cf
 version=6.0.1
-release=1
-source="$name.c $name.1 config.h"
+release=2
+source="src/$name.c src/$name.1 src/config.h"
 
 build() {
 	export CFLAGS="$CFLAGS -std=c99 -pedantic -Wall -Wextra \
