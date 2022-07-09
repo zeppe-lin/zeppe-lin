@@ -1,9 +1,9 @@
 #!/bin/sh -ex
 
-# prepare initramfs if tinyramfs is installed
-if pkgman isinst tinyramfs; then
+# prepare initramfs if mkinitramfs is installed
+if pkgman isinst mkinitramfs; then
 	_kver=$(pkgman printf "%v" --filter=linux)
-	tinyramfs -o /boot/initramfs-$_kver.img -k $_kver -f
+	mkinitramfs -o /boot/initramfs-$_kver.img -k $_kver -f
 fi
 
 # update grub configuration file if installed
