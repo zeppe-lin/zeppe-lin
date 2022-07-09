@@ -4,18 +4,9 @@
 name=trinity-extra-theme
 version=0.2
 release=1
-source="dircolors
-	dunst
-	gitk
-	hexchat
-	newsboat
-	transmission_web
-	vifm
-	vim
-	wireshark
-	xresources
-	zathura"
+source=ABOUT
 
 build() {
-	install -m 644 -Dt $PKG/usr/share/trinity/ *
+	install -m 644 -Dt $PKG/usr/share/trinity/ $PKGMK_ROOT/src/*
+	rm $PKG/usr/share/trinity/LICENSE
 }
