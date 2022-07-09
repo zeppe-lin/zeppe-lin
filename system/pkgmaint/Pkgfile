@@ -3,26 +3,12 @@
 
 name=pkgmaint
 version=0.1
-release=1
-source="finddeps.1.pod
-	finddeps.in
-	finddisappeared.1.pod
-	finddisappeared.in
-	finddisowned.1.pod
-	finddisowned.in
-	finddisowned.whitelist
-	findredundantdeps.1.pod
-	findredundantdeps.in
-	grepcompflags.1.pod
-	grepcompflags.in
-	lafilefixer
-	Makefile
-	Pkgfile
-	pkgmkbuildtime.1.pod
-	pkgmkbuildtime.in
-	pkgmkcflags.1.pod
-	pkgmkcflags.in"
+release=2
+source=ABOUT
 
 build() {
+	cp -r $PKGMK_ROOT/src .
+	cd src
+
 	make VERSION=$version PREFIX=/usr DESTDIR=$PKG install
 }
