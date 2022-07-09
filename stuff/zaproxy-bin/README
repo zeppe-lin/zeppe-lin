@@ -1,21 +1,21 @@
 README zaproxy-bin
 
 
- -- LOOK AND FEEL -----------------------------------------------------------
+  LOOK AND FEEL
 
-    To find out how to setup font settings and GTK appearance, see the README
-    of jdk11-bin package.
+    To find out how to setup font settings and GTK appearance, see the
+    README of jdk11-bin package.
 
 
- -- RUN AS DIFFERENT USER ---------------------------------------------------
+  RUN AS DIFFERENT USER
 
     Add a new user and allow to make connections to the X server:
 
       # useradd -G audio,video -U -m zaproxy
       $ xhost +SI:localuser:zaproxy
 
-    You may wish to customize user's gtk themes. See README file of gtk and
-    gtk3 packages.
+    You may wish to customize user's gtk themes. See README file of gtk
+    and gtk3 packages.
 
     Use the following wrapper as zaproxy launcher:
 
@@ -33,11 +33,11 @@ README zaproxy-bin
 
     into /etc/sudoers.d/99_zaproxy
 
-    And remember that separate user makes sense if your home directory has
-    permission 700.
+    And remember that separate user makes sense if your home directory
+    has permission 700.
 
 
- -- FIREFOX/PALEMOON AND SELF-SIGNED CERTIFICATE ----------------------------
+  FIREFOX/PALEMOON AND SELF-SIGNED CERTIFICATE
 
     Generate a unique private key (KEY):
 
@@ -63,8 +63,8 @@ README zaproxy-bin
     Next, import domain.pem into browser and zaproxy:
 
     (palemoon)
-    Tools -> Preferences -> Advanced -> Certificates -> View Certificates
-      -> Import
+    Tools -> Preferences -> Advanced -> Certificates
+          -> View Certificates -> Import
 
     (firefox)
     Settings -> Preferences -> Privacy & Security -> Security
