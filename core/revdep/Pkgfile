@@ -4,15 +4,18 @@
 
 name=revdep
 version=2.0.1
-release=1
-source="$(ls -1 *.cpp *.h *.pod) config.mk Makefile bash_completion"
+release=2
+source=bash_completion
 
 build() {
+	cp -r $PKGMK_ROOT/src .
+	cd src
+
 	export CXXFLAGS="$CXXFLAGS -O3"
 
 	make VERSION=$version DESTDIR=$PKG PREFIX=/usr install
 
 	# bash-completion
-	install -m 0644 -D bash_completion \
+	install -m 0644 -D $SRC/bash_completion \
 		$PKG/usr/share/bash-completion/completions/$name
 }
