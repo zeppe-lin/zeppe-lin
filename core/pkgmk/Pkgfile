@@ -3,21 +3,18 @@
 
 name=pkgmk
 version=5.42
-release=2
-source="bash_completion
-	Makefile
-	Pkgfile.5.pod
-	pkgmk.8.pod
-	pkgmk.conf
-	pkgmk.conf.5.pod
-	pkgmk.in"
+release=3
+source="bash_completion pkgmk.conf"
 
 build() {
+	cp -r $PKGMK_ROOT/src .
+	cd src
+
 	make VERSION=$version PREFIX=/usr DESTDIR=$PKG install
 	install -m 644 -Dt $PKG/etc/ $SRC/pkgmk.conf
 
-	# bash-comppletion
-	install -m 644 -D bash_completion \
+	# bash-completion
+	install -m 644 -D $SRC/bash_completion \
 		$PKG/usr/share/bash-completion/completions/$name
 
 	# system dirs

@@ -1,5 +1,5 @@
-# pkgmk version
-VERSION = 5.41
+# pkgmk version if undefined
+VERSION ?= git
 
 # paths
 PREFIX  = /usr/local
