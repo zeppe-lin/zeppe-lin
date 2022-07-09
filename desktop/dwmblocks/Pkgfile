@@ -3,16 +3,17 @@
 # Depends on:  bash libbsd xorg-libx11
 
 name=dwmblocks
-version=0.2
-release=2
-source="$(ls -1 src/*.sh) src/$name.c src/config.h"
+version=0.2.1
+release=1
+source=ABOUT
 
 build() {
-	export CFLAGS="$CFLAGS -pedantic -Wall -Wno-deprecated-declarations"
-	export LDFLAGS="$LDFLAGS -lX11"
+	cp -r $PKGMK_ROOT/src .
+	cd src
 
-	${CC:-cc} -o $name $CFLAGS $LDFLAGS $name.c
+	sed -i  -e 's/CFLAGS = /CFLAGS +=/'   \
+		-e 's/LDFLAGS = /LDFLAGS +=/' \
+		config.mk
 
-	install -m 0755 -Dt $PKG/usr/bin/ $name
-	install -m 0755 -Dt $PKG/usr/share/$name/ $(ls -1 *.sh)
+	make VERSION=$version PREFIX=/usr DESTDIR=$PKG install
 }
