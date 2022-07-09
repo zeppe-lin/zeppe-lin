@@ -3,10 +3,13 @@
 
 name=start-stop-daemon
 version=20210417
-release=1
-source="Makefile $name.c $name.8.pod crux-patch.diff"
+release=2
+source=ABOUT
 
 build() {
+	cp -r $PKGMK_ROOT/src .
+	cd src
+
 	patch -p1 -i crux-patch.diff
 
 	make VERSION=$version DESTDIR=$PKG install
