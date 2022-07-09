@@ -2,7 +2,7 @@
 # URL:         http://www.underbit.com/products/mad/
 
 name=libmad
-version=0.16.1
+version=0.16.2
 release=1
 source=https://github.com/tenacityteam/$name/archive/$version/$name-$version.tar.gz
 
