@@ -4,11 +4,12 @@
 
 name=jukebox
 version=1.1.15.10
-release=2
-source=.disable_md5sum
+release=3
+source=ABOUT
 
 build() {
-	cp -a $PKGMK_ROOT/* .
+	cp -r $PKGMK_ROOT/src .
+	cd src
 
 	install -m 0755 -D jukebox.pl $PKG/usr/bin/jukebox
 	install -m 0644 -D jukebox.1  $PKG/usr/share/man/man1/jukebox.1
