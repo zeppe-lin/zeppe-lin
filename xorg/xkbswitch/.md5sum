@@ -1,4 +1,4 @@
-443d12c57fccf2806df469fbe3de080e  Makefile
-a42cbe3ae4a2f15a12427acca8d3d84c  config.mk
-c6f71134683380a835f55146b27587e0  xkbswitch.1.pod
+d7d679e3a1b0ec29fcc0611a934be3cf  Makefile
+a3d3d7ab8de0bb34db08a5666f7e78c9  config.mk
+d4a6173bb6073923b33ddbf0b67c598c  xkbswitch.1
 b1d5004e7f94937e168f6eca57552416  xkbswitch.c

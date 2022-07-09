@@ -5,16 +5,20 @@ VERSION ?= git
 
 # paths
 PREFIX = /usr/local
-MANPREFIX = $(PREFIX)/share/man
+MANPREFIX = ${PREFIX}/share/man
 
-X11INC = /usr/X11R6/include
-X11LIB = /usr/X11R6/lib
+X11INC = /usr/local/include
+X11LIB = /usr/local/lib
+
+# includes and libs
+INCS = -I${X11INC}
+LIBS = -L${X11LIB} -lX11
 
 # flags
-CPPFLAGS = -I$(X11INC) -D_DEFAULT_SOURCE
+CPPFLAGS = -D_DEFAULT_SOURCE -D_BSD_SOURCE -D_POSIX_C_SOURCE=200809L \
+	   -DVERSION=\"${VERSION}\" ${INCS}
 CFLAGS = -std=c99 -pedantic -Wall -Wextra
-LDFLAGS = -L$(X11LIB)
-LDLIBS = -lX11
+LDFLAGS = ${LIBS}
 
 # compiler and linker
 CC = cc

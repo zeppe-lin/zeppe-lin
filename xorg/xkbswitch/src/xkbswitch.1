@@ -1,0 +1,15 @@
+.TH XKBSWITCH 1 xkbswitch\-VERSION
+.SH NAME
+xkbswitch \- keyboard layout switcher for X11
+.SH SYNOPSIS
+.B xkbswitch
+.RB [ 0 | 1 | 2 | 3 ]
+.SH DESCRIPTION
+xkbswitch sets (or gets) the current keyboard layout group index in the
+range of 0..3 (since 4 group limit is forced by the XKB protocol
+format).
+.P 
+If no arguments are given, then xkbswitch prints the current keyboard
+layout group index.
+.SH SEE ALSO
+.BR setxkbmap (1)
