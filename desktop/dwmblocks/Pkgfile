@@ -1,9 +1,9 @@
 # Description: Modular status bar for dwm
-# URL:         file:///usr/src/zeppe-lin/desktop/dwmblocks
+# URL:         file:///usr/src/zeppe-lin/desktop/dwmblocks/src
 # Depends on:  bash libbsd xorg-libx11
 
 name=dwmblocks
-version=0.2.1
+version=0.2.2
 release=1
 source=ABOUT
 

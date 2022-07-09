@@ -3,10 +3,12 @@
 #include<string.h>
 #include<unistd.h>
 #include<signal.h>
+#ifdef __DragonFly__
+#endif
 #ifndef NO_X
 #include<X11/Xlib.h>
 #endif
-#ifdef __OpenBSD__
+#if defined(__OpenBSD__) || defined(__DragonFly__)
 #define SIGPLUS			SIGUSR1+1
 #define SIGMINUS		SIGUSR1-1
 #else
@@ -102,7 +104,7 @@ void getsigcmds(unsigned int signal)
 
 void setupsignals()
 {
-#ifndef __OpenBSD__
+#if !defined(__OpenBSD__) && !defined(__DragonFly__)
 	    /* initialize all real time signals with dummy handler */
     for (int i = SIGRTMIN; i <= SIGRTMAX; i++)
         signal(i, dummysighandler);

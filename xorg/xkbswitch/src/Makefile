@@ -5,7 +5,7 @@ include config.mk
 all: xkbswitch
 
 .c.o:
-	${CC} -c ${CPPFLAGS} ${CFLAGS} $<
+	${CC} -c ${CFLAGS} ${CPPFLAGS} $<
 
 xkbswitch: xkbswitch.o
 	${CC} -o $@ ${LDFLAGS} xkbswitch.o

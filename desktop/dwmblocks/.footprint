@@ -7,3 +7,6 @@ drwxr-xr-x	root/root	usr/share/dwmblocks/
 -rwxr-xr-x	root/root	usr/share/dwmblocks/batt.sh
 -rwxr-xr-x	root/root	usr/share/dwmblocks/cpumem.sh
 -rwxr-xr-x	root/root	usr/share/dwmblocks/diskfree.sh
+drwxr-xr-x	root/root	usr/share/man/
+drwxr-xr-x	root/root	usr/share/man/man1/
+-rw-r--r--	root/root	usr/share/man/man1/dwmblocks.1.gz
