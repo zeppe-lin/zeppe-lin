@@ -2,14 +2,15 @@
 # URL:         https://sourceforge.net/projects/hdparm/
 
 name=hdparm
-version=9.63
+version=9.64
 release=1
-source="https://downloads.sourceforge.net/project/$name/$name/$name-$version.tar.gz"
+source=https://downloads.sourceforge.net/project/$name/$name/$name-$version.tar.gz
 
 build() {
 	cd $name-$version
 
-	sed -e "/^CFLAGS :=/s/-O2//g" -e "/^STRIP/s/strip/true/g" -i Makefile
+	sed -e "/^CFLAGS :=/s/-O2//g" -e "/^STRIP/s/strip/true/g" \
+		-i Makefile
 
 	make V=1
 	make DESTDIR=$PKG install
