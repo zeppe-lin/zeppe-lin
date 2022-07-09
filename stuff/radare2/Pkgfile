@@ -3,7 +3,7 @@
 # Depends on:  capstone file libuv xxhash
 
 name=radare2
-version=5.7.2
+version=5.7.4
 release=1
 source=https://github.com/radare/$name/archive/$version/$name-$version.tar.gz
 
