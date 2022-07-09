@@ -393,12 +393,12 @@ Zeppe-lin provides a package with the kernel and non-free firmware:
     --config-append="runscripts no" linux linux-firmware
 
 The B<linux> package has B<post-install> script that executes
-B<tinyramfs> and updates the grub config.  We turn off the execution
+B<mkinitramfs> and updates the grub config.  We turn off the execution
 of this script, because we'll do it manually.  It is useful when
 regularly updating the system.
 
 If you installed the kernel package through a package manager, you can
-jump over the next paragraph, to the B<Install tinyramfs>.
+jump over the next paragraph, to the B<Install mkinitramfs>.
 
 =head4 Manually
 
@@ -460,17 +460,17 @@ You may still need to install the kernel non-free firmwares:
 
 Next, we need to prepare the initramfs and update our bootloader.
 
-=head3 Install tinyramfs
+=head3 Install mkinitramfs
 
-  (chrooted) # pkgman install --deps tinyramfs
+  (chrooted) # pkgman install --deps mkinitramfs
 
-Add tinyramfs' configuration file (F</etc/tinyramfs/config>) with the
-following content:
+Add mkinitramfs' configuration file (F</etc/mkinitramfs/config>) with
+the following content:
 
   #
-  # /etc/tinyramfs/config: tinyramfs(8) configuration
+  # /etc/mkinitramfs/config: mkinitramfs(8) configuration
   #
-  # See tinyramfs.config(5) for more information.
+  # See mkinitramfs.config(5) for more information.
   #
 
   hostonly=1 #(optional)
@@ -485,7 +485,7 @@ following content:
   # End of file.
 
 See
-L<tinyramfs.config(5)|https://github.com/zeppe-lin/zeppe-lin/blob/master/system/tinyramfs/tinyramfs.config.5.pod>
+L<mkinitramfs.config(5)|https://github.com/zeppe-lin/zeppe-lin/blob/master/system/mkinitramfs/mkinitramfs.config.5.pod>
 for more information.
 
 Note that you can use C</dev/disk/by-uuid/*> instead of C</dev/*>
@@ -499,7 +499,7 @@ manually, you have already set C<KV> set.  Else, type:
 
 Now, generate an initramfs image:
 
-  (chrooted) # tinyramfs -o /boot/initramfs-$KV.img -k $KV
+  (chrooted) # mkinitramfs -o /boot/initramfs-$KV.img -k $KV
 
 =head3 Configure GRUB
 
