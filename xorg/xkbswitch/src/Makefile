@@ -11,10 +11,13 @@ xkbswitch: xkbswitch.o
 	${CC} -o $@ ${LDFLAGS} xkbswitch.o
 
 install: all
-	install -m 0755 -Dt ${DESTDIR}${PREFIX}/bin/     xkbswitch
-	install -m 0644 -Dt ${DESTDIR}${MANPREFIX}/man1/ xkbswitch.1
-	sed -i "s/VERSION/${VERSION}/g" \
+	mkdir -p ${DESTDIR}${PREFIX}/bin
+	cp -f xkbswitch ${DESTDIR}${PREFIX}/bin/
+	chmod 755 ${DESTDIR}${PREFIX}/bin/xkbswitch
+	mkdir -p ${DESTDIR}${MANPREFIX}/man1
+	sed "s/VERSION/${VERSION}/g" < xkbswitch.1 > \
 		${DESTDIR}${MANPREFIX}/man1/xkbswitch.1
+	chmod 644 ${DESTDIR}${MANPREFIX}/man1/xkbswitch.1
 
 uninstall:
 	rm -f ${DESTDIR}${PREFIX}/bin/xkbswitch
