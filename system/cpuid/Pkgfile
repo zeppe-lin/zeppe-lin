@@ -2,7 +2,7 @@
 # URL:         http://www.etallen.com/cpuid.html
 
 name=cpuid
-version=20220224
+version=20220620
 release=1
 source=http://www.etallen.com/cpuid/$name-$version.src.tar.gz
 
