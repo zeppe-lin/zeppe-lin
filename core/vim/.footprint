@@ -607,6 +607,7 @@ drwxr-xr-x	root/root	usr/share/vim/ftplugin/
 -rw-r--r--	root/root	usr/share/vim/ftplugin/vhdl.vim
 -rw-r--r--	root/root	usr/share/vim/ftplugin/vim.vim
 -rw-r--r--	root/root	usr/share/vim/ftplugin/vroom.vim
+-rw-r--r--	root/root	usr/share/vim/ftplugin/vue.vim
 -rw-r--r--	root/root	usr/share/vim/ftplugin/wast.vim
 -rw-r--r--	root/root	usr/share/vim/ftplugin/wget.vim
 -rw-r--r--	root/root	usr/share/vim/ftplugin/wget2.vim
