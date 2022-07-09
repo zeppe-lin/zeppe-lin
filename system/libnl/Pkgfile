@@ -1,8 +1,8 @@
-# Description: Library providing APIs to netlink protocol based Linux kernel interfaces
+# Description: Provide APIs to netlink protocol based kernel interfaces
 # URL:         http://www.infradead.org/~tgr/libnl/
 
 name=libnl
-version=3.6.0
+version=3.7.0
 release=1
 source=https://github.com/thom311/libnl/releases/download/libnl$(echo $version | tr . _)/$name-$version.tar.gz
 
@@ -10,10 +10,7 @@ build() {
 	cd $name-$version
 
 	YACC="bison -y -Wnone" \
-	./configure \
-		--prefix=/usr \
-		--sysconfdir=/etc \
-		--disable-cli \
+	./configure --prefix=/usr --sysconfdir=/etc --disable-cli
 
 	make V=1
 	make DESTDIR=$PKG install
