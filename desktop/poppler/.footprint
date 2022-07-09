@@ -173,8 +173,8 @@ lrwxrwxrwx	root/root	usr/lib/libpoppler-cpp.so -> libpoppler-cpp.so.0
 lrwxrwxrwx	root/root	usr/lib/libpoppler-cpp.so.0 -> libpoppler-cpp.so.0.10.0
 -rwxr-xr-x	root/root	usr/lib/libpoppler-cpp.so.0.10.0
 lrwxrwxrwx	root/root	usr/lib/libpoppler-glib.so -> libpoppler-glib.so.8
-lrwxrwxrwx	root/root	usr/lib/libpoppler-glib.so.8 -> libpoppler-glib.so.8.23.0
--rwxr-xr-x	root/root	usr/lib/libpoppler-glib.so.8.23.0
+lrwxrwxrwx	root/root	usr/lib/libpoppler-glib.so.8 -> libpoppler-glib.so.8.24.0
+-rwxr-xr-x	root/root	usr/lib/libpoppler-glib.so.8.24.0
 lrwxrwxrwx	root/root	usr/lib/libpoppler.so -> libpoppler.so.122
 lrwxrwxrwx	root/root	usr/lib/libpoppler.so.122 -> libpoppler.so.122.0.0
 -rwxr-xr-x	root/root	usr/lib/libpoppler.so.122.0.0
