@@ -4,22 +4,14 @@
 name=mkinitramfs
 version=0.3.0
 release=1
-source="bash_completion
-	config
-	device-helper
-	init
-	Makefile
-	mkinitramfs.8.pod
-	mkinitramfs.cmdline.7.pod
-	mkinitramfs.config.5.pod
-	mkinitramfs.hooks.7.pod
-	mkinitramfs.in"
+source="bash_completion config"
 
 build() {
-	cp -r $PKGMK_ROOT/hooks .
+	cp -r $PKGMK_ROOT/src .
+	cd src
 
 	make VERSION=$version DESTDIR=$PKG PREFIX=/usr install
 	install -m 0644 -Dt $PKG/etc/mkinitramfs/ $SRC/config
-	install -m 0644 -D bash_completion \
+	install -m 0644 -D $SRC/bash_completion \
 		$PKG/usr/share/bash-completion/completions/$name
 }

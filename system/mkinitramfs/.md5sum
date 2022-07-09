@@ -1,10 +1,2 @@
-be15d8a7bb8976ca5662e5359332c23b  Makefile
-09f5cc4d3d5a55e2a8c6861ca6f74f89  bash_completion
-2399020dff38db788e4da064dcd55418  config
-d48bbf8df50f7772de1d60de3714a95f  device-helper
-3d6491cdbe2a48f0528b1d2bbd130bd3  init
-ea9d746ce8ffff57778689e0faf4f1ef  tinyramfs.8.pod
-92f118de8b4cdf1d564df3f0e277f66c  tinyramfs.cmdline.7.pod
-effaff857dc953064db76bf7345cbe07  tinyramfs.config.5.pod
-7fe55ded0d4f124835edeee167bcf3c1  tinyramfs.hooks.7.pod
-5af6921f57aef9bfdbb869a404b64247  tinyramfs.in
+dbf7dfd20a3c94efa51e570a40368179  bash_completion
+a62097b1e4ef5ebb161d2a98acb501fa  config
