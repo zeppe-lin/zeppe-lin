@@ -1,16 +1,18 @@
 # Description: Merge files that were rejected during package upgrades
-# URL:         file:///usr/src/zeppe-lin/core/revdep
+# URL:         file:///usr/src/zeppe-lin/core/rejmerge
 
 name=rejmerge
-version=5.41.1
-release=2
-source="bash_completion $name.conf"
+version=5.41.2
+release=1
+source="bash_completion rejmerge.conf"
 
 build() {
 	cp -r $PKGMK_ROOT/src .
 	cd src
 
 	make VERSION=$version PREFIX=/usr DESTDIR=$PKG install
+
+	# config
 	install -m 644 -D $SRC/rejmerge.conf $PKG/etc/rejmerge.conf
 
 	# bash-completion
