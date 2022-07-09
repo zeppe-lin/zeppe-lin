@@ -4,15 +4,17 @@
 
 name=pkgutils
 version=5.41.1
-release=1
-source="$(ls -1 *.cc *.h *.pod) config.mk Makefile bash_completion
-	pkgadd.conf"
+release=2
+source="bash_completion pkgadd.conf"
 
 build() {
+	cp -r $PKGMK_ROOT/src .
+	cd src
+
 	make VERSION=$version PREFIX=/usr DESTDIR=$PKG install
 	install -m 644 -Dt $PKG/etc/ $SRC/pkgadd.conf
 
 	# bash-completion
-	install -m 0644 -D bash_completion \
+	install -m 0644 -D $SRC/bash_completion \
 		$PKG/usr/share/bash-completion/completions/$name
 }
