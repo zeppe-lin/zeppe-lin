@@ -5,21 +5,12 @@
 name=st084cf
 version=0.8.4
 release=1
-source="Makefile
-	arg.h
-	config.h
-	config.mk
-	normalMode.c
-	normalMode.h
-	st.1
-	st.c
-	st.h
-	st.info
-	utils.h
-	win.h
-	x.c"
+source=ABOUT
 
 build() {
+	cp -r $PKGMK_ROOT/src .
+	cd src
+
 	sed -i '/tic/d' Makefile
 	make all X11INC=/usr/include/X11 X11LIB=/usr/lib PREFIX=/usr
 
