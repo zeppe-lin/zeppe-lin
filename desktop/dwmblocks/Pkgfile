@@ -4,8 +4,8 @@
 
 name=dwmblocks
 version=0.2
-release=1
-source="$(ls -1 *.sh) $name.c config.h"
+release=2
+source="$(ls -1 src/*.sh) src/$name.c src/config.h"
 
 build() {
 	export CFLAGS="$CFLAGS -pedantic -Wall -Wno-deprecated-declarations"
