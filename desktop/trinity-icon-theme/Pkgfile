@@ -4,15 +4,14 @@
 
 name=trinity-icon-theme
 version=0.1
-release=2
+release=3
 source=ABOUT
 
 build() {
 	install -d $PKG/usr/share/icons/trinity
-	cp -r $PKGMK_ROOT/* $PKG/usr/share/icons/trinity
+	cp -r $PKGMK_ROOT/src/* $PKG/usr/share/icons/trinity
 	touch $PKG/usr/share/icons/trinity/icon-theme.cache
 
 	# remove junk
-	cd $PKG/usr/share/icons/trinity/
-	rm Pkgfile post-install ABOUT COPY*
+	rm $PKG/usr/share/icons/trinity/COPY*
 }
