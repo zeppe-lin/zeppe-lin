@@ -3,7 +3,7 @@
 # Depends on:  fontconfig freetype xorg-libx11 xorg-libxext xorg-libxft
 
 name=st084cf
-version=0.8.4
+version=0.8.4.1
 release=1
 source=ABOUT
 
@@ -12,8 +12,12 @@ build() {
 	cd src
 
 	sed -i '/tic/d' Makefile
-	make all X11INC=/usr/include/X11 X11LIB=/usr/lib PREFIX=/usr
+	sed -i 's/CFLAGS = /CFLAGS +=/' config.mk
 
-	install -m 0755 -D st   $PKG/usr/bin/$name
-	install -m 0644 -D st.1 $PKG/usr/share/man/man1/$name.1
+	make install FT2INC=/usr/include/freetype2 \
+		     X11INC=/usr/include/X11 \
+		     X11LIB=/usr/lib \
+		     VERSION=$version \
+		     PREFIX=/usr \
+		     DESTDIR=$PKG
 }
