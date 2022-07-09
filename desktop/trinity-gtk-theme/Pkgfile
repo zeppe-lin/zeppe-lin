@@ -4,11 +4,11 @@
 
 name=trinity-gtk-theme
 version=0.1
-release=2
+release=3
 source=ABOUT
 
 build() {
 	install -d $PKG/usr/share/themes/trinity
-	cp -r $PKGMK_ROOT/gtk-2.0 $PKGMK_ROOT/gtk-3.0 \
-		$PKG/usr/share/themes/trinity
+	cp -r $PKGMK_ROOT/src/gtk-2.0 $PKGMK_ROOT/src/gtk-3.0 \
+		$PKG/usr/share/themes/trinity/
 }
