@@ -1,6 +1,6 @@
-# Bash programmable completion for tinyramfs.
+# Bash programmable completion for mkinitramfs.
 
-_tinyramfs() {
+_mkinitramfs() {
 	local cur prev
 	COMPREPLY=()
 	cur=${COMP_WORDS[COMP_CWORD]}
@@ -25,8 +25,8 @@ _tinyramfs() {
 	esac
 
 	COMPREPLY=($(compgen -W \
-		"$(tinyramfs --help | awk '/--/{ printf "%2s ", $2 }')" -- $cur))
+		"$(mkinitramfs --help | awk '/--/{ printf "%2s ", $2 }')" -- $cur))
 }
-complete -F _tinyramfs -o filenames tinyramfs
+complete -F _mkinitramfs -o filenames mkinitramfs
 
 # End of file.

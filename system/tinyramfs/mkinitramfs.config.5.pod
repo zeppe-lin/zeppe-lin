@@ -2,15 +2,15 @@
 
 =head1 NAME
 
-tinyramfs.config - configuration file for tinyramfs
+mkinitramfs.config - configuration file for mkinitramfs
 
 =head1 SYNOPSIS
 
-B</etc/tinyramfs/config>
+B</etc/mkinitramfs/config>
 
 =head1 DESCRIPTION
 
-Tinyramfs configuration file is a list of environment variables.
+mkinitramfs configuration file is a list of environment variables.
 Each variable must be written in POSIX way, bashism not allowed.
 
 Example:
@@ -82,7 +82,7 @@ You can set compression level by specifying C<-[0-9]> in I<ARGS>.
 
 =item B<root>=I<UUID>|I<LABEL>|I</dev/*>|I<PARTUUID>
 
-Specify which way tinyramfs will use to look up root filesystem
+Specify which way mkinitramfs will use to look up root filesystem
 
 =over 8
 
@@ -125,7 +125,7 @@ fourth field.
 
 =item B<hooks>=I<HOOK>...
 
-Hooks provide a flexible way to extend tinyramfs with custom scripts.
+Hooks provide a flexible way to extend mkinitramfs with custom scripts.
 You must know that
 I<hooks are launched in the order in which they are specified>.
 
@@ -184,7 +184,7 @@ If hook doesn't have options, then it's not yet documented or can be
 used "as is".
 
 More detailed information and how to write your own hooks described in
-L<tinyramfs.hooks(7)|https://github.com/zeppe-lin/zeppe-lin/blob/master/system/tinyramfs/tinyramfs.hooks.7.pod>.
+L<mkinitramfs.hooks(7)|https://github.com/zeppe-lin/zeppe-lin/blob/master/system/mkinitramfs/mkinitramfs.hooks.7.pod>.
 
 =back
 
@@ -273,7 +273,7 @@ B<kbd's loadkeys> not supported.
 
 =item B<resume>=I<UUID>|I<LABEL>|I</dev/*>|I<PARTUUID>
 
-Specify which way tinyramfs will use to look up swap device to resume
+Specify which way mkinitramfs will use to look up swap device to resume
 from hibernation.
 
 See B<root> (above) for argument details.
@@ -345,9 +345,9 @@ Your configuration may (and should) differ.
 
 =head1 SEE ALSO
 
-L<tinyramfs(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/system/tinyramfs/tinyramfs.8.pod>,
-L<tinyramfs.cmdline(7)|https://github.com/zeppe-lin/zeppe-lin/blob/master/system/tinyramfs/tinyramfs.cmdline.7.pod>,
-L<tinyramfs.hooks(7)|https://github.com/zeppe-lin/zeppe-lin/blob/master/system/tinyramfs/tinyramfs.hooks.7.pod>
+L<mkinitramfs(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/system/mkinitramfs/mkinitramfs.8.pod>,
+L<mkinitramfs.cmdline(7)|https://github.com/zeppe-lin/zeppe-lin/blob/master/system/mkinitramfs/mkinitramfs.cmdline.7.pod>,
+L<mkinitramfs.hooks(7)|https://github.com/zeppe-lin/zeppe-lin/blob/master/system/mkinitramfs/mkinitramfs.hooks.7.pod>
 
 =cut
 

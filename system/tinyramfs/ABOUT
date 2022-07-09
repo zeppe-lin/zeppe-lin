@@ -1,7 +1,7 @@
-ABOUT tinyramfs
+ABOUT mkinitramfs
 
 
-  This directory contains tinyramfs, the tool used to create a Linux
+  This directory contains mkinitramfs, the tool used to create a Linux
   boot image (initramfs).
 
   This is a fork of illilliti's tinyramfs.
@@ -60,9 +60,9 @@ ABOUT tinyramfs
 
   USAGE
 
-    * Read tinyramfs.config(5) and setup /etc/tinyramfs/config.
+    * Read mkinitramfs.config(5) and setup /etc/mkinitramfs/config.
     * Next, run as root:
-      $ tinyramfs -o "/boot/initramfs-$(uname -r)"
+      $ mkinitramfs -o "/boot/initramfs-$(uname -r)"
     * Update your bootloader (i.e. grub):
       $ grub-mkconfig -o /boot/grub/grub.cfg
     * Reboot.
@@ -76,8 +76,8 @@ ABOUT tinyramfs
 
   LICENSE
 
-    tinyramfs is licensed through the GNU General Public License v3 or
-    later <https://gnu.org/licenses/gpl.html>.
+    mkinitramfs is licensed through the GNU General Public License v3
+    or later <https://gnu.org/licenses/gpl.html>.
 
     Read the LICENSE file for the complete license.
 

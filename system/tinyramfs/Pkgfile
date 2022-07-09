@@ -1,25 +1,25 @@
 # Description: Tiny initramfs written in POSIX shell
-# URL:         file:///usr/src/zeppe-lin/system/tinyramfs
+# URL:         file:///usr/src/zeppe-lin/system/mkinitramfs
 
-name=tinyramfs
-version=0.2.2
+name=mkinitramfs
+version=0.3.0
 release=1
 source="bash_completion
 	config
 	device-helper
 	init
 	Makefile
-	tinyramfs.8.pod
-	tinyramfs.cmdline.7.pod
-	tinyramfs.config.5.pod
-	tinyramfs.hooks.7.pod
-	tinyramfs.in"
+	mkinitramfs.8.pod
+	mkinitramfs.cmdline.7.pod
+	mkinitramfs.config.5.pod
+	mkinitramfs.hooks.7.pod
+	mkinitramfs.in"
 
 build() {
 	cp -r $PKGMK_ROOT/hooks .
 
 	make VERSION=$version DESTDIR=$PKG PREFIX=/usr install
-	install -m 0644 -Dt $PKG/etc/tinyramfs/ $SRC/config
+	install -m 0644 -Dt $PKG/etc/mkinitramfs/ $SRC/config
 	install -m 0644 -D bash_completion \
 		$PKG/usr/share/bash-completion/completions/$name
 }

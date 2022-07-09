@@ -21,3 +21,5 @@ else
         ${luks_discard:+--allow-discards} -- "$device" \
         "${luks_name:-crypt-${device##*/}}" || panic "failed to unlock LUKS"
 fi
+
+# End of file.

@@ -55,8 +55,8 @@ run_hook()
     # https://www.shellcheck.net/wiki/SC1090
     # shellcheck disable=1090
     for hook in $hooks; do
-        [ -f "/usr/share/tinyramfs/hooks/${hook}/${hook}.${type}" ] || continue
-           . "/usr/share/tinyramfs/hooks/${hook}/${hook}.${type}"
+        [ -f "/usr/share/mkinitramfs/hooks/${hook}/${hook}.${type}" ] || continue
+           . "/usr/share/mkinitramfs/hooks/${hook}/${hook}.${type}"
     done
 }
 
@@ -64,7 +64,7 @@ prepare_environment()
 {
     # https://www.shellcheck.net/wiki/SC1091
     # shellcheck disable=1091
-    . /etc/tinyramfs/config
+    . /etc/mkinitramfs/config
 
     export \
         PATH=/bin TERM=linux SHELL=/bin/sh \

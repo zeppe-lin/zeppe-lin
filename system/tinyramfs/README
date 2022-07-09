@@ -1,4 +1,4 @@
-README tinyramfs
+README mkinitramfs
 
 
   INITRAMFS WITH ENCRYPTED ROOT
@@ -24,10 +24,10 @@ README tinyramfs
       <*> User-space interface for hash algorithms
       <*> User-space interface for symmetric key cipher algorithms
 
-    3. Read the tinyramfs' manual pages to see the various
+    3. Read the mkinitramfs' manual pages to see the various
        configuration settings:
 
-       $ apropos tinyramfs
+       $ apropos mkinitramfs
 
 
 End of file.

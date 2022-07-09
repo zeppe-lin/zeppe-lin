@@ -2,11 +2,11 @@
 
 =head1 NAME
 
-tinyramfs.cmdline - kernel command-line parameters
+mkinitramfs.cmdline - kernel command-line parameters
 
 =head1 DESCRIPTION
 
-Tinyramfs provides a way to control configuration dynamically via
+mkinitramfs provides a way to control configuration dynamically via
 kernel parameters without needing to regenerate initramfs image.
 
 =head1 GENERAL PARAMETERS
@@ -155,9 +155,9 @@ Useful for SSD's, but you must know that security will be decreased.
 
 =head1 SEE ALSO
 
-L<tinyramfs(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/system/tinyramfs/tinyramfs.8.pod>,
-L<tinyramfs.config(5)|https://github.com/zeppe-lin/zeppe-lin/blob/master/system/tinyramfs/tinyramfs.config.5.pod>,
-L<tinyramfs.hooks(7)|https://github.com/zeppe-lin/zeppe-lin/blob/master/system/tinyramfs/tinyramfs.hooks.7.pod>
+L<mkinitramfs(8)|https://github.com/zeppe-lin/zeppe-lin/blob/master/system/mkinitramfs/mkinitramfs.8.pod>,
+L<mkinitramfs.config(5)|https://github.com/zeppe-lin/zeppe-lin/blob/master/system/mkinitramfs/mkinitramfs.config.5.pod>,
+L<mkinitramfs.hooks(7)|https://github.com/zeppe-lin/zeppe-lin/blob/master/system/mkinitramfs/mkinitramfs.hooks.7.pod>
 
 =cut
 
