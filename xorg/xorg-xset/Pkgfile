@@ -1,0 +1,17 @@
+# Description: User preference utility for X
+# URL:         http://xorg.freedesktop.org
+# Depends on:  xorg-libxmu
+
+name=xorg-xset
+version=1.2.4
+release=1
+source=https://www.x.org/releases/individual/app/xset-$version.tar.bz2
+
+build() {
+	cd xset-$version
+
+	./configure --prefix=/usr --without-xf86misc
+
+	make V=1
+	make DESTDIR=$PKG install
+}
