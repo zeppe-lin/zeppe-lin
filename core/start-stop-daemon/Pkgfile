@@ -3,14 +3,19 @@
 
 name=start-stop-daemon
 version=20210417
-release=2
-source=ABOUT
+release=3
+source="src/config.mk
+	src/crux-patch.diff
+	src/Makefile
+	src/start-stop-daemon.8.pod
+	src/start-stop-daemon.c"
 
 build() {
-	cp -r $PKGMK_ROOT/src .
-	cd src
+	sed -i  -e 's/CFLAGS =/CFLAGS +=/'   \
+		-e 's/LDFLAGS =/LDFLAGS +=/' \
+		config.mk
 
-	patch -p1 -i crux-patch.diff
-
-	make VERSION=$version DESTDIR=$PKG install
+	make patch
+	make install VERSION=$version DESTDIR=$PKG PREFIX=/ \
+		MANPREFIX=/usr/share/man DESTDIR=$PKG
 }
