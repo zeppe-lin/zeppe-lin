@@ -1,0 +1,6 @@
+drwxr-xr-x	root/root	opt/
+drwxr-xr-x	root/root	opt/pcsx2/
+-rwxr-xr-x	root/root	opt/pcsx2/pcsx2-v1.7.3064-linux-AppImage-64bit-Qt.AppImage
+drwxr-xr-x	root/root	usr/
+drwxr-xr-x	root/root	usr/bin/
+-rwxr-xr-x	root/root	usr/bin/pcsx2

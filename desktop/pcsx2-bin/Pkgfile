@@ -1,0 +1,26 @@
+# Description: Sony Playstation 2 emulator (appimage)
+# URL:         https://github.com/PCSX2/pcsx2
+# Depends on:  fuse2
+
+name=pcsx2-bin
+version=1.7.3064
+release=1
+source=https://github.com/PCSX2/pcsx2/releases/download/v$version/pcsx2-v$version-linux-AppImage-64bit-Qt.AppImage
+
+build() {
+	install -m 0755 -Dt $PKG/opt/pcsx2/ \
+		pcsx2-v$version-linux-AppImage-64bit-Qt.AppImage
+	install -d $PKG/usr/bin/
+	cat <<EOF > $PKG/usr/bin/pcsx2
+#!/bin/sh
+# pcsx2 wrapper
+if [ -x /usr/bin/apulse ]; then
+	exec apulse /opt/pcsx2/pcsx2-v$version-linux-AppImage-64bit-Qt.AppImage "$@"
+else
+	exec /opt/pcsx2/pcsx2-v$version-linux-AppImage-64bit-Qt.AppImage "$@"
+fi
+
+# End of file.
+EOF
+	chmod 0755 $PKG/usr/bin/pcsx2
+}
