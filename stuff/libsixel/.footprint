@@ -1,0 +1,22 @@
+drwxr-xr-x	root/root	usr/
+drwxr-xr-x	root/root	usr/bin/
+-rwxr-xr-x	root/root	usr/bin/img2sixel
+-rwxr-xr-x	root/root	usr/bin/libsixel-config
+-rwxr-xr-x	root/root	usr/bin/sixel2png
+drwxr-xr-x	root/root	usr/include/
+-rw-r--r--	root/root	usr/include/sixel.h
+drwxr-xr-x	root/root	usr/lib/
+-rw-r--r--	root/root	usr/lib/libsixel.a
+lrwxrwxrwx	root/root	usr/lib/libsixel.so -> libsixel.so.1
+lrwxrwxrwx	root/root	usr/lib/libsixel.so.1 -> libsixel.so.1.0.0
+-rwxr-xr-x	root/root	usr/lib/libsixel.so.1.0.0
+drwxr-xr-x	root/root	usr/lib/pkgconfig/
+-rw-r--r--	root/root	usr/lib/pkgconfig/libsixel.pc
+drwxr-xr-x	root/root	usr/share/
+drwxr-xr-x	root/root	usr/share/bash-completion/
+drwxr-xr-x	root/root	usr/share/bash-completion/completions/
+-rw-r--r--	root/root	usr/share/bash-completion/completions/img2sixel
+drwxr-xr-x	root/root	usr/share/man/
+drwxr-xr-x	root/root	usr/share/man/man1/
+-rw-r--r--	root/root	usr/share/man/man1/img2sixel.1.gz
+-rw-r--r--	root/root	usr/share/man/man1/sixel2png.1.gz
