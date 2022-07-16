@@ -141,7 +141,8 @@ static const char *pass_cmd[] = {
         NULL
 };
 static const char *lock_cmd[] = { "scrlock", NULL };
-static const char *term_cmd[] = { "st084cf", NULL };
+//static const char *term_cmd[] = { "st084cf", NULL };
+static const char *term_cmd[] = { "xterm", NULL };
 static const char *transset_cmd[] = { "transset-df", "-a", "-t", "0.89",  NULL }; // default opacity
 
 // music player settings
