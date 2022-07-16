@@ -141,7 +141,6 @@ https://github.com/chinarulezzz/gencc/releases.atom                             
 #https://github.com/sabotage-linux/gettext-tiny/commits/master.atom                                "~[c  ] gettext-tiny"
 #https://github.com/sabotage-linux/gettext-tiny/releases.atom                                      "~[r  ] gettext-tiny"
 https://github.com/sabotage-linux/gettext-tiny/releases.atom                                      "~[r  ] gettext-tiny"
-https://github.com/tomnomnom/gf/commits/master.atom                                               "~[c  ] gf-bin"
 https://github.com/NationalSecurityAgency/ghidra/releases.atom                                    "~[r  ] ghidra-bin"
 https://sourceforge.net/projects/giflib/rss?path=/                                                "~[r  ] giflib"
 https://github.com/pwmt/girara/tags.atom                                                          "~[r  ] girara"
