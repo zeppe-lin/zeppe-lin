@@ -1,5 +1,5 @@
 # Description: Tools and Helpers for attacking on the 2,3,4 Layers of the OSI
-# URL:         https://github.com/chinarulezzz/level234_attack_tools
+# URL:         https://github.com/chinarulezzz/level234-attack-tools
 # Depends on:  aircrack-ng nmap p5-xml-simple scapy wireshark
 
 name=layer234-attack-tools
