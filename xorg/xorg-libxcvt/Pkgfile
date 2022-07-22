@@ -2,7 +2,7 @@
 # URL:         https://gitlab.freedesktop.org/xorg/lib/libxcvt
 
 name=xorg-libxcvt
-version=0.1.1
+version=0.1.2
 release=1
 source=https://xorg.freedesktop.org/releases/individual/lib/libxcvt-$version.tar.xz
 
