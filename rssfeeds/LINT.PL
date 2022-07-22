@@ -13,11 +13,11 @@ my %obsolete = map { $_ => 1 } qw(
 	ktsuss librsvg-compat libxcrypt2.4 mdk3 newsboat213 pango-compat
 	pm-utils python python-cairo python-gobject-compact smtp-user-enum
 	tnscmd10g transset-df picom shared-mime-info
-	python-gobject-compat gtk-engine-murrine
+	python-gobject-compat gtk-engine-murrine fuse2
 	);
 
 my %pkgsrc = map { $_ => 1 } qw(
-	filesystem rc torify-all-traffic tinyramfs
+	filesystem rc torify-all-traffic mkinitramfs
 	dwm60cf st084cf xkbswitch dwmblocks
 	pkgmk pkgman revdep rejmerge pkgutils pkgmaint
 	trinity-gtk-theme trinity-icon-theme trinity-extra-theme
