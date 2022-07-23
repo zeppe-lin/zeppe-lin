@@ -1,0 +1,29 @@
+# Description: Find leaked emails and passwords
+# URL:         https://github.com/chinarulezzz/karma
+# Depends on:  python3-pip
+
+name=karma
+version=1.0.0-19c0c7e
+release=1
+source="https://github.com/chinarulezzz/$name/archive/${version#*-}/$name-${version#*-}.tar.gz
+	wrapper.sh"
+
+build() {
+	cd $name-${version#*-}*
+
+	# install files in /opt
+	install -d $PKG/opt/$name
+
+	# install requirements
+	/usr/bin/pip3 install -r requirements.txt -t $PKG/opt/$name/
+
+	# install sources
+	/usr/bin/python3 setup.py install -O2 --root=$PKG/opt/$name
+
+	# create an indirect launcher
+	install -m 755 -D $SRC/wrapper.sh $PKG/usr/bin/$name
+
+	# remove junk files
+	cd $PKG/opt/$name
+	rm -r usr/lib/python*/site-packages/*.egg-info  *.dist-info
+}

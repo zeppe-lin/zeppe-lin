@@ -1,0 +1,27 @@
+# Description: Query username and email usage on online platforms
+# URL:         https://github.com/iojw/socialscan
+# Depends on:  python3-pip
+
+name=socialscan
+version=1.4.2-3fc7912
+release=1
+source="https://github.com/iojw/socialscan/archive/${version#*-}/$name-${version#*-}.tar.gz
+	wrapper.sh"
+
+build() {
+	cd $name-${version#*-}*
+
+	install -d $PKG/opt/$name
+	/usr/bin/pip3 install . --target $PKG/opt/$name
+
+	install -m 755 -D $SRC/wrapper.sh $PKG/usr/bin/$name
+
+	# fix permissions
+	#find $PKG/opt -type f -exec chmod 644 {} \;
+	#find $PKG/opt -type d -exec chmod 755 {} \;
+
+	# remove junk
+	cd $PKG/opt/$name
+	rm -r *.dist-info
+	find $PKG -name README.txt | xargs rm -f
+}
