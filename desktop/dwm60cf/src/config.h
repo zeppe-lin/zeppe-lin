@@ -92,7 +92,8 @@ static const Rule rules[] = {
  { "tox",               "tox",            NULL,               NULL,                               4,        false,      false,      0  },
  { "irc",               "tox",            NULL,               NULL,                               4,        false,      false,      0  },
 
- { "St",                "st",             "newsboat",         NULL,                               8,        false,      false,      0  },
+ { "rss_zeppelin",      "xterm",          "newsboat",         NULL,                               8,        false,      false,      0  },
+ { "rss_infosec",       "xterm",          "newsboat",         NULL,                               8,        false,      false,      0  },
 
  { "Jukebox",           "jukebox",        NULL,               "with search and lists 2",          256,      false,      false,      0  },
  { "Jukebox",           "jukebox",        "Settings",         "Pref",                             256,      true,       true,       0  },
