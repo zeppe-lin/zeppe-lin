@@ -3,7 +3,7 @@
 # Depends on:  jdk11-bin
 
 name=jadx-bin
-version=1.4.2
+version=1.4.3
 release=1
 source="https://github.com/skylot/jadx/releases/download/v${version}/jadx-${version}.zip
 	jadx.sh jadx-gui.sh"
