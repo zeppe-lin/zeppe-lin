@@ -3,21 +3,18 @@
 # Depends on:  libunistring
 
 name=libidn2
-version=2.3.2
+version=2.3.3
 release=1
 source=https://ftp.gnu.org/gnu/libidn/$name-$version.tar.gz
 
 build() {
 	cd $name-$version
 
-	./configure \
-		--prefix=/usr \
-		--disable-nls \
-		--disable-gtk-doc-html \
+	./configure --prefix=/usr --disable-nls --disable-gtk-doc-html
 
 	make V=1
 	make DESTDIR=$PKG install
 
 	# remove junk
-	rm -r $PKG/usr/share/gtk-doc $PKG/usr/share/info
+	cd $PKG/usr/share ; rm -r gtk-doc info
 }
