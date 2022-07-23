@@ -37,7 +37,7 @@ https://github.com/bminor/binutils-gdb/releases.atom                            
 https://github.com/akimd/bison/releases.atom                                                      "~[r  ] bison"
 https://crux.nu/gitweb/?p=ports/contrib.git;a=atom;f=boost                                        "~[x  ] boost"
 https://github.com/boostorg/boost/tags.atom                                                       "~[r  ] boost"
-https://git.kernel.org/pub/scm/network/bridge/bridge-utils.git/atom/?h=main                       "~[c  ] bridge-utils"
+https://git.kernel.org/pub/scm/network/bridge/bridge-utils.git/atom/?h=main                       "~[cr ] bridge-utils"
 https://github.com/aanarchyy/bully/commits/master.atom                                            "~[c! ] bully"
 https://github.com/aanarchyy/bully/releases.atom                                                  "~[r  ] bully"
 https://crux.nu/gitweb/?p=ports/core.git;a=atom;f=bzip2                                           "~[x  ] bzip2"
